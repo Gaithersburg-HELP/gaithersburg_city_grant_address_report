@@ -1,6 +1,6 @@
 Attribute VB_Name = "RecordsTest"
 '@TestModule
-'@Folder("Tests")
+'@Folder "City_Grant_Address_Report.test"
 
 
 Option Explicit
