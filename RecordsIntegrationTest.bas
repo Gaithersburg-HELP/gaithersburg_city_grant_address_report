@@ -43,16 +43,17 @@ Private Sub ModuleCleanup()
     Set Assert = Nothing
     Set Fakes = Nothing
     
-    getInterfaceRng.Clear
+    SheetUtilities.getPastedRecordsRng.Clear
+    getTotalsRng.Value = 0
     getFinalReportRng.Clear
     getAddressesRng.Clear
     getDiscardsRng.Clear
     getAutocorrectRng.Clear
 End Sub
 
-Private Sub CompareSheetCSV(ByVal sheetName As String, ByVal csvPath As String)
+Private Sub CompareSheetCSV(ByVal sheetName As String, ByVal csvPath As String, Optional ByVal rng As Range)
     Dim testArr() As String
-    testArr = sheetToCSVArray(sheetName)
+    testArr = sheetToCSVArray(sheetName, rng)
     
     Dim correctArr() As String
     correctArr = getCSV(csvPath)
@@ -70,6 +71,7 @@ Public Sub TestAllAddresses()
     
     addRecords
     
+    CompareSheetCSV "Totals", ActiveWorkbook.path & "\testdata\testaddresses_totalsoutput.csv", getTotalsRng
     CompareSheetCSV "Addresses", ActiveWorkbook.path & "\testdata\testaddresses_addressesoutput.csv"
     CompareSheetCSV "Invalid Discards", ActiveWorkbook.path & "\testdata\testaddresses_discardsoutput.csv"
     CompareSheetCSV "Autocorrected Addresses", ActiveWorkbook.path & "\testdata\testaddresses_autocorrectoutput.csv"

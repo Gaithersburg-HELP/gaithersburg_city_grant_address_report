@@ -15,8 +15,12 @@ Public Function getRng(ByVal sheetName As String, ByVal firstCell As String, ByV
     Set getRng = sheet.Range(sheet.Range(firstCell), sheet.Cells.Item(lastRow, lastColNum))
 End Function
 
-Public Function getInterfaceRng() As Range
-    Set getInterfaceRng = getRng("Interface", "A9", "L9")
+Public Function getPastedRecordsRng() As Range
+    Set getPastedRecordsRng = getRng("Interface", "A9", "L9")
+End Function
+
+Public Function getTotalsRng() As Range
+    Set getTotalsRng = getRng("Interface", "N2", "Q2")
 End Function
 
 Public Function getFinalReportRng() As Range
@@ -37,11 +41,17 @@ Public Function getAutocorrectRng() As Range
     Set getAutocorrectRng = getRng("Autocorrected Addresses", "A2", "M2")
 End Function
 
-Public Function sheetToCSVArray(ByVal sheetName As String) As String()
+Public Function sheetToCSVArray(ByVal sheetName As String, Optional ByVal rng As Range = Nothing) As String()
+    ' From https://stackoverflow.com/a/37038840/13342792
     Dim CurrentWB As Workbook
      
     Set CurrentWB = ActiveWorkbook
-    ActiveWorkbook.Worksheets.[_Default](sheetName).UsedRange.Copy
+    
+    If rng Is Nothing Then
+        ActiveWorkbook.Worksheets.[_Default](sheetName).UsedRange.Copy
+    Else
+        rng.Copy
+    End If
     
     Dim TempWB As Workbook
     Set TempWB = Application.Workbooks.Add(1)
