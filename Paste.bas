@@ -1,9 +1,10 @@
-Attribute VB_Name = "PasteRecords"
+Attribute VB_Name = "Paste"
 Option Explicit
 
 '@Folder("City_Grant_Address_Report.src")
+'@EntryPoint
 Public Sub PasteRecords()
-    ActiveWorkbook.Worksheets("Interface").Activate
+    ActiveWorkbook.Worksheets.[_Default]("Interface").Activate
     Application.ScreenUpdating = False
     
     ' Find last data row (last row containing data)

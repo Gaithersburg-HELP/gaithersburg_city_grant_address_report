@@ -2,21 +2,36 @@ Attribute VB_Name = "FileUtilities"
 Option Explicit
 
 '@Folder "City_Grant_Address_Report.src"
+
+' Expects a complete file path to CSV
+' Returns a zero-based one dimensional array of each row in CSV
+Public Function getCSV(ByVal path As String) As String()
+    On Error GoTo CSVError
+    
+    Dim fileSO As FileSystemObject
+    Dim fileTS As TextStream
+    Set fileSO = New FileSystemObject
+    Set fileTS = fileSO.OpenTextFile(path, ForReading, False, TristateUseDefault)
+    
+    Dim fileArr() As String
+    fileArr = Split(fileTS.ReadAll, vbNewLine)
+    getCSV = fileArr
+    Exit Function
+    
+CSVError:
+    Err.Raise 513
+End Function
+
 ' Expects a CSV formatted as "places_api_old,apikey"
 ' Returns a dictionary of API keys
-Public Function getAPIKeys() As Variant
+Public Function getAPIKeys() As Object
     On Error GoTo APIerror
     
     Dim apiKeysDict As Object
     Set apiKeysDict = CreateObject("Scripting.Dictionary")
         
-    Dim apiFileSO As FileSystemObject
-    Dim apiFileTS As TextStream
-    Set apiFileSO = New FileSystemObject
-    Set apiFileTS = apiFileSO.OpenTextFile(ThisWorkbook.Path & "\apikeys.csv", ForReading, False, TristateUseDefault)
-    
     Dim apiFileArray() As String
-    apiFileArray = Split(apiFileTS.ReadAll, vbNewLine)
+    apiFileArray = getCSV(ThisWorkbook.path & "\apikeys.csv")
     
     Dim i As Long
     Dim apiFileArrLine() As String
@@ -33,9 +48,6 @@ Public Function getAPIKeys() As Variant
     Exit Function
 
 APIerror:
-    MsgBox ("invalid apikeys.csv, cannot continue")
-    Set getAPIKeys = Nothing
-    Exit Function
-    
+    Err.Raise 513, Description:="invalid apikeys.csv, cannot continue"
 End Function
 
