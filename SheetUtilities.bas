@@ -26,7 +26,11 @@ End Function
 Public Function getFinalReportRng() As Range
     Set getFinalReportRng = getRng("Final Report", "A2", "M2")
 End Function
-
+Public Function getAddressServiceHeaderRng() As Range
+    Dim addressWkSht As Worksheet
+    Set addressWkSht = ActiveWorkbook.Worksheets.[_Default]("Addresses")
+    Set getAddressServiceHeaderRng = addressWkSht.Range("L1", addressWkSht.Range("L1").End(xlToRight))
+End Function
 Public Function getAddressesRng() As Range
     Dim lastCol As String
     lastCol = ActiveWorkbook.Worksheets.[_Default]("Addresses").Range("A1").End(xlToRight).Address
@@ -34,11 +38,11 @@ Public Function getAddressesRng() As Range
 End Function
 
 Public Function getDiscardsRng() As Range
-    Set getDiscardsRng = getRng("Invalid Discards", "A2", "L2")
+    Set getDiscardsRng = getRng("Invalid Discards", "A2", "N2")
 End Function
 
 Public Function getAutocorrectRng() As Range
-    Set getAutocorrectRng = getRng("Autocorrected Addresses", "A2", "M2")
+    Set getAutocorrectRng = getRng("Autocorrected Addresses", "A2", "O2")
 End Function
 
 Public Function sheetToCSVArray(ByVal sheetName As String, Optional ByVal rng As Range = Nothing) As String()
@@ -58,7 +62,7 @@ Public Function sheetToCSVArray(ByVal sheetName As String, Optional ByVal rng As
     TempWB.Sheets.[_Default](1).Range("A1").PasteSpecial xlPasteValues
     
     Dim MyFileName As String
-    MyFileName = CurrentWB.path & "\temp.csv"
+    MyFileName = CurrentWB.path & "\test_" & sheetName & Format$(Time, "hh-mm-ss") & ".csv"
     
     Application.DisplayAlerts = False
     TempWB.SaveAs Filename:=MyFileName, FileFormat:=xlCSV, CreateBackup:=False, Local:=True
@@ -69,3 +73,13 @@ Public Function sheetToCSVArray(ByVal sheetName As String, Optional ByVal rng As
     sheetToCSVArray = getCSV(MyFileName)
     Kill (MyFileName)
 End Function
+
+Public Sub ClearAll()
+    getPastedRecordsRng.Clear
+    getTotalsRng.Value = 0
+    getFinalReportRng.Clear
+    getAddressesRng.Clear
+    getAddressServiceHeaderRng.Clear
+    getDiscardsRng.Clear
+    getAutocorrectRng.Clear
+End Sub

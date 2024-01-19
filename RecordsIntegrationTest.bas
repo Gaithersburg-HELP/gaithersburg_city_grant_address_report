@@ -15,6 +15,8 @@ Private Sub ModuleInitialize()
     Set Assert = CreateObject("Rubberduck.AssertClass")
     Set Fakes = CreateObject("Rubberduck.FakesProvider")
     
+    ClearAll
+    
     Dim testFileArray() As String
     testFileArray = getCSV(ThisWorkbook.path & "\testdata\testaddresses.csv")
     
@@ -43,12 +45,7 @@ Private Sub ModuleCleanup()
     Set Assert = Nothing
     Set Fakes = Nothing
     
-    SheetUtilities.getPastedRecordsRng.Clear
-    getTotalsRng.Value = 0
-    getFinalReportRng.Clear
-    getAddressesRng.Clear
-    getDiscardsRng.Clear
-    getAutocorrectRng.Clear
+    ClearAll
 End Sub
 
 Private Sub CompareSheetCSV(ByVal sheetName As String, ByVal csvPath As String, Optional ByVal rng As Range)
