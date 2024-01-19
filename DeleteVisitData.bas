@@ -9,4 +9,6 @@ Public Sub DeleteAllVisitData()
     If confirmResponse = vbNo Then
         Exit Sub
     End If
+    
+    getAddressServiceHeaderRng.Clear
 End Sub

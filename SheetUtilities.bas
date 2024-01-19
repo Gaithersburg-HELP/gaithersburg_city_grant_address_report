@@ -27,14 +27,12 @@ Public Function getFinalReportRng() As Range
     Set getFinalReportRng = getRng("Final Report", "A2", "M2")
 End Function
 Public Function getAddressServiceHeaderRng() As Range
-    Dim addressWkSht As Worksheet
-    Set addressWkSht = ActiveWorkbook.Worksheets.[_Default]("Addresses")
-    Set getAddressServiceHeaderRng = addressWkSht.Range("L1", addressWkSht.Range("L1").End(xlToRight))
+    Dim lastCell As String
+    lastCell = ActiveWorkbook.Worksheets.[_Default]("Addresses").Range("K1").End(xlToRight).Address
+    Set getAddressServiceHeaderRng = getRng("Addresses", "L1", lastCell)
 End Function
 Public Function getAddressesRng() As Range
-    Dim lastCol As String
-    lastCol = ActiveWorkbook.Worksheets.[_Default]("Addresses").Range("A1").End(xlToRight).Address
-    Set getAddressesRng = getRng("Addresses", "A2", lastCol)
+    Set getAddressesRng = getRng("Addresses", "A2", "K2")
 End Function
 
 Public Function getDiscardsRng() As Range
