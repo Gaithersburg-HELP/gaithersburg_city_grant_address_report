@@ -24,7 +24,7 @@ End Function
 
 ' Expects a CSV formatted as "places_api_old,apikey"
 ' Returns a dictionary of API keys
-Public Function getAPIKeys() As Object
+Public Function getAPIKeys() As Dictionary
     On Error GoTo APIerror
     
     Dim apiKeysDict As Object
