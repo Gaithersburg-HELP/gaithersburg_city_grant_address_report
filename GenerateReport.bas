@@ -14,5 +14,33 @@ Public Sub confirmGenerateFinalReport()
 End Sub
 
 Public Sub generateFinalReport()
-
+    ' TODO Load addresses
+    ' Filter by valid in city addresses
+    ' Get Gburg Format address: Odend'hal, O'neill
+    ' City should be Gaithersburg
+    ' State should be UCase(State)
+    
+    ' Loop through all addresses, print by offset
+    ' Add "x" for quarters
+    ' Worksheets("Final Report").Range("A2").Offset(ReportRowOffset, 10).Value = "x"
+    
+    ' Switch to the output worksheet and sort by Street Name,
+    ' Street Number, Street Type and Apt Number
+    
+    
+    ActiveWorkbook.Sheets.[_Default]("Final Report").Range("A2:O2").Select
+    ActiveSheet.Range(Selection, Selection.End(xlDown)).Select
+    ActiveSheet.Sort.SortFields.Clear
+    With ActiveSheet.Sort
+        .SortFields.Clear
+        .SortFields.Add key:=Selection.Columns(3), Order:=xlAscending
+        .SortFields.Add key:=Selection.Columns(2), Order:=xlAscending
+        .SortFields.Add key:=Selection.Columns(4), Order:=xlAscending
+        .SortFields.Add key:=Selection.Columns(6), Order:=xlAscending
+        .Header = xlNo
+        .SetRange Selection
+        .Apply
+    End With
+    
+    ActiveSheet.Range("A2").Select
 End Sub

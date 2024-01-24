@@ -7,13 +7,11 @@ Option Explicit
 Option Private Module
 
 Private Assert As Object
-Private Fakes As Object
 
 '@ModuleInitialize
 Private Sub ModuleInitialize()
     'this method runs once per module.
     Set Assert = CreateObject("Rubberduck.AssertClass")
-    Set Fakes = CreateObject("Rubberduck.FakesProvider")
     
     ClearAll
     
@@ -43,7 +41,6 @@ End Sub
 Private Sub ModuleCleanup()
     'this method runs once per module.
     Set Assert = Nothing
-    Set Fakes = Nothing
     
     ClearAll
 End Sub
@@ -68,8 +65,8 @@ Public Sub TestAllAddresses()
     
     addRecords
     
-    CompareSheetCSV "Totals", ActiveWorkbook.path & "\testdata\testaddresses_totalsoutput.csv", getTotalsRng
     CompareSheetCSV "Addresses", ActiveWorkbook.path & "\testdata\testaddresses_addressesoutput.csv"
+    CompareSheetCSV "Totals", ActiveWorkbook.path & "\testdata\testaddresses_totalsoutput.csv", getTotalsRng
     CompareSheetCSV "Invalid Discards", ActiveWorkbook.path & "\testdata\testaddresses_discardsoutput.csv"
     CompareSheetCSV "Autocorrected Addresses", ActiveWorkbook.path & "\testdata\testaddresses_autocorrectoutput.csv"
 

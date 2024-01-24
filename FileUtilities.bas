@@ -24,7 +24,7 @@ End Function
 
 ' Expects a CSV formatted as "places_api_old,apikey"
 ' Returns a dictionary of API keys
-Public Function getAPIKeys() As Dictionary
+Public Function getAPIKeys() As Scripting.Dictionary
     On Error GoTo APIerror
     
     Dim apiKeysDict As Object
@@ -40,7 +40,7 @@ Public Function getAPIKeys() As Dictionary
         apiKeysDict.Add apiFileArrLine(0), apiFileArrLine(1)
     Next i
     
-    If Not apiKeysDict.Exists("places_api_old") Then
+    If Not apiKeysDict.Exists("address_key") Then
         Err.Raise 513
     End If
     

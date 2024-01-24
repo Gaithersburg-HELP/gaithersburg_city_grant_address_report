@@ -28,7 +28,7 @@ Public Function getFinalReportRng() As Range
 End Function
 Public Function getAddressServiceHeaderRng() As Range
     Dim lastCell As String
-    lastCell = ActiveWorkbook.Worksheets.[_Default]("Addresses").Range("K1").End(xlToRight).Address
+    lastCell = ActiveWorkbook.Worksheets.[_Default]("Addresses").Range("K1").End(xlToRight).address
     Set getAddressServiceHeaderRng = getRng("Addresses", "L1", lastCell)
 End Function
 Public Function getAddressesRng() As Range
