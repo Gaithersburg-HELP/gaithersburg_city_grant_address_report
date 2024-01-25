@@ -6,12 +6,12 @@ Attribute VB_Name = "RecordsIntegrationTest"
 Option Explicit
 Option Private Module
 
-Private Assert As Object
+Private assert As Object
 
 '@ModuleInitialize
 Private Sub ModuleInitialize()
     'this method runs once per module.
-    Set Assert = CreateObject("Rubberduck.AssertClass")
+    Set assert = CreateObject("Rubberduck.AssertClass")
     
     ClearAll
     
@@ -40,24 +40,10 @@ End Sub
 '@ModuleCleanup
 Private Sub ModuleCleanup()
     'this method runs once per module.
-    Set Assert = Nothing
+    Set assert = Nothing
     
     ClearAll
 End Sub
-
-Private Sub CompareSheetCSV(ByVal sheetName As String, ByVal csvPath As String, Optional ByVal rng As Range)
-    Dim testArr() As String
-    testArr = sheetToCSVArray(sheetName, rng)
-    
-    Dim correctArr() As String
-    correctArr = getCSV(csvPath)
-    
-    Dim i As Long
-    For i = LBound(correctArr, 1) To UBound(testArr, 1)
-        Assert.IsTrue StrComp(correctArr(i), testArr(i)) = 0, "Difference at " & sheetName & " row " & i & ": " & correctArr(i) & "|" & testArr(i)
-    Next i
-End Sub
-
 
 '@TestMethod
 Public Sub TestAllAddresses()
@@ -65,17 +51,23 @@ Public Sub TestAllAddresses()
     
     addRecords
     
-    CompareSheetCSV "Addresses", ActiveWorkbook.path & "\testdata\testaddresses_addressesoutput.csv"
-    CompareSheetCSV "Totals", ActiveWorkbook.path & "\testdata\testaddresses_totalsoutput.csv", getTotalsRng
-    CompareSheetCSV "Invalid Discards", ActiveWorkbook.path & "\testdata\testaddresses_discardsoutput.csv"
-    CompareSheetCSV "Autocorrected Addresses", ActiveWorkbook.path & "\testdata\testaddresses_autocorrectoutput.csv"
+    CompareSheetCSV assert, "Addresses", ActiveWorkbook.path & "\testdata\testaddresses_addressesoutput.csv"
+    CompareSheetCSV assert, "Totals", ActiveWorkbook.path & "\testdata\testaddresses_totalsoutput.csv", getTotalsRng
+    CompareSheetCSV assert, "Invalid Discards", ActiveWorkbook.path & "\testdata\testaddresses_discardsoutput.csv"
+    CompareSheetCSV assert, "Autocorrected Addresses", ActiveWorkbook.path & "\testdata\testaddresses_autocorrectoutput.csv"
 
     generateFinalReport
     
-    CompareSheetCSV "Final Report", ActiveWorkbook.path & "\testdata\testaddresses_finalreportoutput.csv"
+    CompareSheetCSV assert, "Final Report", ActiveWorkbook.path & "\testdata\testaddresses_finalreportoutput.csv"
     
     Exit Sub
 
 TestFail:
-    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+    assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub TestLoadAddressesAndAutocorrect()
+    'TODO test
 End Sub

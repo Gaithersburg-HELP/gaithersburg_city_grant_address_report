@@ -28,8 +28,9 @@ Public Sub generateFinalReport()
     ' Street Number, Street Type and Apt Number
     
     
-    ActiveWorkbook.Sheets.[_Default]("Final Report").Range("A2:O2").Select
-    ActiveSheet.Range(Selection, Selection.End(xlDown)).Select
+    'getBlankRow
+    ' ActiveWorkbook.Sheets.[_Default]("Final Report").Range("A2:O2").Select
+    'ActiveSheet.Range(Selection, Selection.End(xlDown)).Select
     ActiveSheet.Sort.SortFields.Clear
     With ActiveSheet.Sort
         .SortFields.Clear

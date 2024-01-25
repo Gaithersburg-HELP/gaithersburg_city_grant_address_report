@@ -51,3 +51,16 @@ APIerror:
     Err.Raise 513, Description:="invalid apikeys.csv, cannot continue"
 End Function
 
+Public Sub CompareSheetCSV(ByVal assert As Object, ByVal sheetName As String, ByVal csvPath As String, Optional ByVal rng As Range)
+    Dim testArr() As String
+    testArr = sheetToCSVArray(sheetName, rng)
+    
+    Dim correctArr() As String
+    correctArr = getCSV(csvPath)
+    
+    Dim i As Long
+    For i = LBound(correctArr, 1) To UBound(testArr, 1)
+        assert.IsTrue StrComp(correctArr(i), testArr(i)) = 0, "Difference at " & sheetName & " row " & i & ": " & correctArr(i) & "|" & testArr(i)
+    Next i
+End Sub
+

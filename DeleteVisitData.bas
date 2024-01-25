@@ -10,5 +10,5 @@ Public Sub DeleteAllVisitData()
         Exit Sub
     End If
     
-    getAddressServiceHeaderRng.Clear
+    getAddressVisitDataRng("Addresses").Clear
 End Sub

@@ -6,7 +6,7 @@ Option Explicit
 ' those street addresses not flagged In-City by lookup on the
 ' Gaithersburg city address search page in browser window.
 Public Sub LookupInCity() ' Ctrl+L
-    Dim CurrentRow As String
+    Dim currentRow As String
     Dim GburgCityURL As String
     Dim AddrLookupURL As String
 '    GburgCityURL = "https://maps.gaithersburgmd.gov/AddressSearch/index.html?address="
@@ -23,4 +23,16 @@ Public Sub LookupInCity() ' Ctrl+L
     AddrLookupURL = Replace(AddrLookupURL, " ", "+")
 ' Go to the Gaithersburg City Address Search site and lookup
     ActiveWorkbook.FollowHyperlink address:=AddrLookupURL
+End Sub
+
+Public Sub OpenAddressValidationWebsite()
+    ActiveWorkbook.FollowHyperlink address:="https://developers.google.com/maps/documentation/address-validation/demo"
+End Sub
+
+Public Sub OpenUSPSZipcodeWebsite()
+    ActiveWorkbook.FollowHyperlink address:="https://tools.usps.com/zip-code-lookup.htm?byaddress"
+End Sub
+
+Public Sub OpenGoogleMapsWebsite()
+    ActiveWorkbook.FollowHyperlink address:="https://www.google.com/maps"
 End Sub

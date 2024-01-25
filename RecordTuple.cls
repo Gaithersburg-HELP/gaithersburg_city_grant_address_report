@@ -10,41 +10,122 @@ Attribute VB_Exposed = False
 '@Folder("City_Grant_Address_Report.src")
 Option Explicit
 
-Private pVisitDate As String
-Private pService As String
+Private pInCity As String
+Private pUserVerified As Boolean
+
+Private pValidAddress As String
+Private pValidUnitWithNum As String
+Private pValidZipcode As String
+
+Private pRawAddress As String
+Private pRawUnitWithNum As String
+Private pRawCity As String
+Private pRawState As String
+Private pRawZip As String
 Private pGuestID As String
 Private pFirstName As String
 Private pLastName As String
-Private pRawAddress As String
-Private pApt As String
-Private pCity As String
-Private pState As String
-Private pZip As String
 Private pHouseholdTotal As Long
 Private pRxTotal As Double
 
-Private pValidAddress As String
-Private pValidZipcode As String
+' Service: Dictionary (Quarter: Visit Date Variant Collection)
+Private pVisitData As Scripting.Dictionary
 
 '@Ignore MoveFieldCloserToUsage
 Private gburgFormatRawAddress As Scripting.Dictionary
 '@Ignore MoveFieldCloserToUsage
 Private gburgFormatValidAddress As Scripting.Dictionary
 
-Public Property Get VisitDate() As String
-    VisitDate = pVisitDate
+Public Property Get InCity() As String
+    InCity = pInCity
 End Property
 
-Public Property Let VisitDate(ByVal str As String)
-    pVisitDate = str
+Public Property Let InCity(ByVal str As String)
+    pInCity = str
 End Property
 
-Public Property Get service() As String
-    service = pService
+Public Property Get UserVerified() As Boolean
+    UserVerified = pUserVerified
 End Property
 
-Public Property Let service(ByVal str As String)
-    pService = str
+Public Property Let UserVerified(ByVal bool As Boolean)
+    pUserVerified = bool
+End Property
+
+Public Property Get ValidAddress() As String
+    ValidAddress = pValidAddress
+End Property
+
+Public Property Let ValidAddress(ByVal str As String)
+    pValidAddress = str
+End Property
+
+Public Property Get ValidUnitWithNum() As String
+    ValidUnitWithNum = pValidUnitWithNum
+End Property
+
+Public Property Let ValidUnitWithNum(ByVal str As String)
+    pValidUnitWithNum = str
+End Property
+
+Public Property Get ValidZipcode() As String
+    ValidZipcode = pValidZipcode
+End Property
+
+Public Property Let ValidZipcode(ByVal str As String)
+    pValidZipcode = str
+End Property
+
+Public Property Get RawAddress() As String
+    RawAddress = pRawAddress
+End Property
+
+Public Property Let RawAddress(ByVal str As String)
+    If pRawAddress <> vbNullString Then
+        Err.Raise Number:=513, Description:="Reassignment of raw address"
+    End If
+    
+    pRawAddress = str
+End Property
+
+Public Property Get RawUnitWithNum() As String
+    RawUnitWithNum = pRawUnitWithNum
+End Property
+
+Public Property Let RawUnitWithNum(ByVal str As String)
+    pRawUnitWithNum = str
+End Property
+
+Public Property Get FullRawAddress() As String
+    If (RawUnitWithNum <> vbNullString) Then
+        FullRawAddress = RawAddress & " " & RawUnitWithNum
+    Else
+        FullRawAddress = RawAddress
+    End If
+End Property
+
+Public Property Get RawCity() As String
+    RawCity = pRawCity
+End Property
+
+Public Property Let RawCity(ByVal str As String)
+    pRawCity = str
+End Property
+
+Public Property Get RawState() As String
+    RawState = pRawState
+End Property
+
+Public Property Let RawState(ByVal str As String)
+    pRawState = str
+End Property
+
+Public Property Get RawZip() As String
+    RawZip = pRawZip
+End Property
+
+Public Property Let RawZip(ByVal str As String)
+    pRawZip = str
 End Property
 
 Public Property Get GuestID() As String
@@ -71,46 +152,6 @@ Public Property Let LastName(ByVal str As String)
     pLastName = str
 End Property
 
-Public Property Get RawAddress() As String
-    RawAddress = pRawAddress
-End Property
-
-Public Property Let RawAddress(ByVal str As String)
-    pRawAddress = str
-End Property
-
-Public Property Get Apt() As String
-    Apt = pApt
-End Property
-
-Public Property Let Apt(ByVal str As String)
-    pApt = str
-End Property
-
-Public Property Get City() As String
-    City = pCity
-End Property
-
-Public Property Let City(ByVal str As String)
-    pCity = str
-End Property
-
-Public Property Get State() As String
-    State = pState
-End Property
-
-Public Property Let State(ByVal str As String)
-    pState = str
-End Property
-
-Public Property Get Zip() As String
-    Zip = pZip
-End Property
-
-Public Property Let Zip(ByVal str As String)
-    pZip = str
-End Property
-
 Public Property Get HouseholdTotal() As Long
     HouseholdTotal = pHouseholdTotal
 End Property
@@ -127,21 +168,73 @@ Public Property Let RxTotal(ByVal num As Double)
     pRxTotal = num
 End Property
 
-Public Property Get ValidAddress() As String
-    ValidAddress = pValidAddress
+Public Property Get visitData() As Scripting.Dictionary
+    If pVisitData Is Nothing Then Set pVisitData = New Scripting.Dictionary
+    Set visitData = pVisitData
 End Property
 
-Public Property Let ValidAddress(ByVal str As String)
-    pValidAddress = str
+Public Property Set visitData(ByVal dict As Scripting.Dictionary)
+    Set pVisitData = dict
 End Property
 
-Public Property Get ValidZipcode() As String
-    ValidZipcode = pValidZipcode
-End Property
+Public Sub AddVisit(ByVal service As String, ByVal visitDate As String)
+    Dim newVisitData As Scripting.Dictionary
+    Set newVisitData = New Scripting.Dictionary
+    
+    Dim serviceVisits As Scripting.Dictionary
+    Set serviceVisits = New Scripting.Dictionary
+    
+    Dim visits As Collection
+    Set visits = New Collection
+    
+    visits.Add visitDate
+    serviceVisits.Add getQuarter(visitDate), visits
+    newVisitData.Add service, serviceVisits
+    
+    MergeVisitData newVisitData
+End Sub
 
-Public Property Let ValidZipcode(ByVal str As String)
-    pValidZipcode = str
-End Property
+Public Sub MergeRecordVisitData(ByVal record As RecordTuple)
+    MergeVisitData record.visitData
+End Sub
+
+Public Sub MergeVisitData(ByVal visitDataToMerge As Scripting.Dictionary)
+    Dim i As Long
+    
+    For i = 0 To visitDataToMerge.Count - 1
+        Dim service As String
+        service = visitDataToMerge.Keys(i)
+        If visitData.Exists(service) Then
+            ' Loop through quarters and merge
+            Dim j As Long
+            For j = 0 To visitDataToMerge.Item(service).Count - 1
+                Dim quarters() As Variant
+                Dim quarter As String
+                quarters = visitDataToMerge.Item(service).Keys
+                quarter = quarters(j)
+                If visitData.Item(service).Exists(quarter) Then
+                    Dim visitDateToMerge As Variant
+                    For Each visitDateToMerge In visitDataToMerge.Item(service).Item(quarter)
+                        Dim visitExists As Boolean
+                        Dim existingVisitDate As Variant
+                        For Each existingVisitDate In visitData.Item(service).Item(quarter)
+                            If visitDateToMerge = existingVisitDate Then
+                                visitExists = True
+                                Exit For
+                            End If
+                        Next existingVisitDate
+                        
+                        If Not visitExists Then visitData.Item(service).Item(quarter).Add visitDateToMerge
+                    Next visitDateToMerge
+                Else
+                    visitData.Item(service).Add quarter, visitDataToMerge.Item(service).Item(quarter)
+                End If
+            Next
+        Else
+            visitData.Add service, visitDataToMerge.Item(service)
+        End If
+    Next
+End Sub
 
 Public Property Get CleanFirstName() As String
     CleanFirstName = StrConv(FirstName, vbProperCase)
@@ -175,9 +268,9 @@ Private Function LWordTrim(ByVal str As String) As String()
     spaceIndex = InStr(1, str, " ", vbTextCompare)
     If (spaceIndex <> 0) Then
         firstWord = Left$(str, spaceIndex - 1)
-        LWordTrim = Array(firstWord, Right$(str, Len(str) - spaceIndex))
+        LWordTrim = Split(firstWord & "|" & Right$(str, Len(str) - spaceIndex), "|")
     Else
-        LWordTrim = Array(str, vbNullString)
+        LWordTrim = Split(str & "|", "|")
     End If
 End Function
 
@@ -189,9 +282,9 @@ Private Function RWordTrim(ByVal str As String) As String()
     spaceIndex = InStrRev(str, " ", -1, vbTextCompare)
     If (spaceIndex <> 0) Then
         lastWord = Right$(str, Len(str) - spaceIndex)
-        RWordTrim = Array(Left$(str, spaceIndex - 1), lastWord)
+        RWordTrim = Split(Left$(str, spaceIndex - 1) & "|" & lastWord, "|")
     Else
-        RWordTrim = Array(str, vbNullString)
+        RWordTrim = Split(str & "|", "|")
     End If
 End Function
 
@@ -230,33 +323,93 @@ Private Function GetDirection(ByVal start As Long, ByVal street As String) As St
     End If
 End Function
 
+' Replaces 2 or 3 spaces with single space with nullstring, returns result as ProperCase
+'@Ignore AssignedByValParameter
+Private Function CleanString(ByVal str As String) As String
+    str = Trim$(str)
+    str = Replace(str, "   ", " ")
+    str = Replace(str, "  ", " ")
+    ' Street numbers can have periods, see https://pe.usps.com/text/pub28/28c2_013.htm
+    CleanString = StrConv(str, vbProperCase)
+End Function
 
-Public Property Get StreetNum() As String
-    StreetNum = "StreetNum"
+' Splits unit into zero-based array of abbreviated unit type, unit num, additional words
+' If only one word, assumes unit is Apt
+'@Ignore AssignedByValParameter
+Private Function SplitUnit(ByVal unitWithNum As String) As String()
+    unitWithNum = CleanString(unitWithNum)
+    
+    ' See https://public-dhhs.ne.gov/nfocus/HowDoI/howdoi/usps_address_unit_types.htm
+    unitWithNum = Replace(unitWithNum, "Apartment", "Apt")
+    unitWithNum = Replace(unitWithNum, "Building", "Bldg")
+    unitWithNum = Replace(unitWithNum, "Basement", "Bsmt")
+    unitWithNum = Replace(unitWithNum, "Department", "Dept")
+    unitWithNum = Replace(unitWithNum, "Floor", "Fl")
+    unitWithNum = Replace(unitWithNum, "Front", "Frnt")
+    unitWithNum = Replace(unitWithNum, "Hanger", "Hngr")
+    unitWithNum = Replace(unitWithNum, "Key", "Key")
+    unitWithNum = Replace(unitWithNum, "Lobby", "Lbby")
+    unitWithNum = Replace(unitWithNum, "Lot", "Lot")
+    unitWithNum = Replace(unitWithNum, "Lower", "Lowr")
+    unitWithNum = Replace(unitWithNum, "Ofc", "Office")
+    unitWithNum = Replace(unitWithNum, "Penthouse", "Ph")
+    unitWithNum = Replace(unitWithNum, "Pier", "Pier")
+    unitWithNum = Replace(unitWithNum, "Rear", "Rear")
+    unitWithNum = Replace(unitWithNum, "Room", "Rm")
+    unitWithNum = Replace(unitWithNum, "Side", "Side")
+    unitWithNum = Replace(unitWithNum, "Slip", "Slip")
+    unitWithNum = Replace(unitWithNum, "Space", "Spc")
+    unitWithNum = Replace(unitWithNum, "Suite", "Ste")
+    unitWithNum = Replace(unitWithNum, "Stop", "Stop")
+    unitWithNum = Replace(unitWithNum, "Trailer", "Trlr")
+    unitWithNum = Replace(unitWithNum, "Unit", "Unit")
+    unitWithNum = Replace(unitWithNum, "Upper", "Uppr")
+    
+    ' If # assume Apt
+    unitWithNum = Replace(unitWithNum, "#", "Apt")
+    
+    Dim splitArr() As String
+    splitArr = Split(unitWithNum, " ")
+    
+    Select Case UBound(splitArr)
+        Case 0
+            ' If one word, assume Apt
+            SplitUnit = Split("Apt." & unitWithNum, ".")
+        Case -1
+            ' unitWithNum was ""
+            SplitUnit = Split(",", ",")
+        Case Else
+            SplitUnit = splitArr
+    End Select
+End Function
+
+Public Property Get StreetNumKey() As String
+    StreetNumKey = "StreetNum"
 End Property
-Public Property Get PrefixedStreetName() As String
-    PrefixedStreetName = "PrefixedStreetName"
+Public Property Get PrefixedStreetNameKey() As String
+    PrefixedStreetNameKey = "PrefixedStreetName"
 End Property
-Public Property Get StreetType() As String
-    StreetType = "StreetType"
+Public Property Get StreetTypeKey() As String
+    StreetTypeKey = "StreetType"
 End Property
-Public Property Get Postfix() As String
-    Postfix = "Postfix"
+Public Property Get PostfixKey() As String
+    PostfixKey = "Postfix"
 End Property
-Public Property Get FullAddress() As String
-    FullAddress = "FullAddress"
+Public Property Get UnitTypeKey() As String
+    UnitTypeKey = "UnitType"
+End Property
+Public Property Get UnitNumKey() As String
+    UnitNumKey = "UnitNum"
+End Property
+Public Property Get FullAddressKey() As String
+    FullAddressKey = "FullAddress"
 End Property
 
-' Returns dictionary of StreetNum, PrefixedStreetName, StreetType, Postfix, FullAddress
+' Returns dictionary of StreetNum, PrefixedStreetName, StreetType, Postfix, UnitType, UnitNum, FullAddress
 ' - capitalized Street Name with abbr. prefix, cap. abbr. Street Type, cap. abbr. Postfix
 '@Ignore AssignedByValParameter
 Private Function getFormattedSplitAddr(ByVal addr As String) As Scripting.Dictionary
-    addr = Trim$(RawAddress)
-    addr = Replace(addr, "   ", " ")
-    addr = Replace(addr, "  ", " ")
-    addr = Replace(addr, ".", vbNullString)
-    
-    addr = StrConv(addr, vbProperCase)
+    addr = CleanString(addr)
     
     ' - Gaithersburg has O'Neill and Odend'hal, but Soxbox exports as Oneill (and Oneil misspelling) and Odendhal
     ' - Mccausland Pl renamed to Prism Pl
@@ -296,26 +449,32 @@ Private Function getFormattedSplitAddr(ByVal addr As String) As Scripting.Dictio
 
     Dim splitAddr As Scripting.Dictionary
     Set splitAddr = New Scripting.Dictionary
-    splitAddr.Add FullAddress, addr
+    splitAddr.Add FullAddressKey, addr
 
     Dim splitNumArr() As String
     ' Split Street Number from Street name
     splitNumArr = LWordTrim(addr)
-    splitAddr.Add StreetNum, splitNumArr(0)
+    splitAddr.Add StreetNumKey, splitNumArr(0)
     
     Dim streetPostfix As String
     streetPostfix = GetDirection(Len(addr) - 3, addr)
     Dim splitTypeArr() As String
     ' Remove postfix if it exists
     If streetPostfix <> vbNullString Then
-        splitTypeArr = LWordTrim(LWordTrim(splitNumArr(1))(0))
+        splitTypeArr = RWordTrim(RWordTrim(splitNumArr(1))(0))
     Else
-        splitTypeArr = LWordTrim(splitNumArr(1))
+        splitTypeArr = RWordTrim(splitNumArr(1))
     End If
     
-    splitAddr.Add PrefixedStreetName, splitTypeArr(0)
-    splitAddr.Add StreetType, splitTypeArr(1)
-    splitAddr.Add Postfix, streetPostfix
+    splitAddr.Add PrefixedStreetNameKey, splitTypeArr(0)
+    splitAddr.Add StreetTypeKey, splitTypeArr(1)
+    splitAddr.Add PostfixKey, streetPostfix
+    
+    Dim splitUnitArr() As String
+    splitUnitArr = SplitUnit(RawUnitWithNum)
+    
+    splitAddr.Add UnitTypeKey, splitUnitArr(0)
+    splitAddr.Add UnitNumKey, splitUnitArr(1)
     
     Set getFormattedSplitAddr = splitAddr
 End Function
@@ -334,9 +493,25 @@ Public Function getGburgFormatValidAddress() As Scripting.Dictionary
     Set getGburgFormatValidAddress = gburgFormatValidAddress
 End Function
 
-' TODO check if is correctable
 Public Function isCorrectableAddress() As Boolean
-    isCorrectableAddress = True
+    Dim splitAddr() As String
+    splitAddr = Split(Trim$(RawAddress), " ")
+    Select Case UBound(splitAddr)
+        Case -1 'null
+            isCorrectableAddress = False
+        Case Else
+            Dim hasNumber As Boolean
+            Dim hasLetter As Boolean
+            Dim i As Long
+            For i = 1 To Len(RawAddress)
+                Dim char As String
+                char = Mid$(RawAddress, i, 1)
+                If IsNumeric(char) Then hasNumber = True
+                If Not IsNumeric(char) Then hasLetter = True
+                If hasNumber And hasLetter Then Exit For
+            Next
+            isCorrectableAddress = hasNumber And hasLetter
+    End Select
 End Function
 
 

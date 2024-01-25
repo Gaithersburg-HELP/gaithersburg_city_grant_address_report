@@ -12,16 +12,8 @@ Public Sub confirmAddRecords()
     
     addRecords
 End Sub
-' Returns autocorrected address, address valid json, autocorrect json
-Public Function autocorrectAddress(ByVal address As String) As String()
-    ' TODO write test for this function
-    ' TODO Submit street name + Gaithersburg city only to place autocomplete
-    ' ? Get list of street names from Gaithersburg, Autocorrect to closest street name
-    ' Autocorrect Av to Ave, W Deer Pk to W Deer Park Rd
-    ' Check postfixes
-    autocorrectAddress = Array(address, "valid json", "autocorrect json")
-End Function
-Private Function getQuarter(ByVal dateStr As String) As String
+
+Public Function getQuarter(ByVal dateStr As String) As String
     Select Case Month(dateStr)
         Case 7 To 9
             getQuarter = "Q1"
@@ -33,34 +25,6 @@ Private Function getQuarter(ByVal dateStr As String) As String
             getQuarter = "Q4"
     End Select
 End Function
-
-Private Sub writeToAddresses(ByVal record As RecordTuple)
-    ' TODO write to addresses
-    'getQuarter
-    Dim testDict As Scripting.Dictionary
-    Set testDict = New Scripting.Dictionary
-    testDict.Add "Key1", "Basic value"
-    
-    Dim testArr() As String
-    testArr = Split("arr1,arr2", ",")
-    testDict.Add "Key2", testArr
-    
-    Debug.Print ConvertToJson(testDict)
-End Sub
-
-'@Ignore ParameterCanBeByVal
-Private Sub tryAutocorrectRecord(ByRef addressDict As Dictionary, ByRef discardDict As Dictionary, ByRef record As RecordTuple)
-    ' TODO autocorrecting
-    ' autocorrectAddress(address)
-    ' If autocorrected address is valid
-        ' run against gaithersburg db
-        ' Write to autocorrected addresses with json, highlight diff in yellow
-        ' Add to address dictionary with gaithersburg result
-    ' Else
-        'add to discards dict, write to discards with autocorrect json
-        ' If street name is in Gaithersburg street names
-            ' highlight red
-End Sub
 
 ' Prints Collection, checks if Collection contains JSON
 '@Ignore ParameterCanBeByVal
@@ -98,7 +62,7 @@ End Sub
 ' Address should be given unencoded, in Proper Case
 ' Returns the number of results
 ' - 0 would be no results, 1 would be exact match, >2 would be multiple matches
-Public Function ExecuteQuery(ByVal field As String, ByVal address As String) As Long
+Private Function ExecuteQuery(ByVal field As String, ByVal address As String) As Long
     ' ' is escaped as ''
     Dim formatAddress As String
     formatAddress = Replace(address, "'", "''")
@@ -148,28 +112,135 @@ Public Function ExecuteQuery(ByVal field As String, ByVal address As String) As 
     End If
 End Function
 
-
-Private Function loadRecord(ByVal recordRow As Range) As RecordTuple
+Private Function loadRecordFromRaw(ByVal recordRowFirstCell As Range) As RecordTuple
     Dim record As RecordTuple
     Set record = New RecordTuple
     
-    record.VisitDate = recordRow.Value
-    record.service = recordRow.Offset(0, 1).Value
-    record.GuestID = recordRow.Offset(0, 2).Value
-    record.FirstName = recordRow.Offset(0, 3).Value
-    record.LastName = recordRow.Offset(0, 4).Value
-    record.RawAddress = recordRow.Offset(0, 5).Value
-    record.Apt = recordRow.Offset(0, 6).Value
-    record.City = recordRow.Offset(0, 7).Value
-    record.State = recordRow.Offset(0, 8).Value
-    record.Zip = recordRow.Offset(0, 9).Value
-    record.HouseholdTotal = recordRow.Offset(0, 10).Value
-    record.RxTotal = recordRow.Offset(0, 11).Value
+    record.AddVisit recordRowFirstCell.Offset(0, 1).Value, recordRowFirstCell.Value
+    record.UserVerified = False
+
+    record.GuestID = recordRowFirstCell.Offset(0, 2).Value
+    record.FirstName = recordRowFirstCell.Offset(0, 3).Value
+    record.LastName = recordRowFirstCell.Offset(0, 4).Value
+    record.RawAddress = recordRowFirstCell.Offset(0, 5).Value
+    record.RawUnitWithNum = recordRowFirstCell.Offset(0, 6).Value
+    record.RawCity = recordRowFirstCell.Offset(0, 7).Value
+    record.RawState = recordRowFirstCell.Offset(0, 8).Value
+    record.RawZip = recordRowFirstCell.Offset(0, 9).Value
+    record.HouseholdTotal = recordRowFirstCell.Offset(0, 10).Value
+    record.RxTotal = recordRowFirstCell.Offset(0, 11).Value
     
-    Set loadRecord = record
+    Set loadRecordFromRaw = record
 End Function
+
+Private Function loadServiceNames(ByVal sheetName As String) As String()
+    Dim servicesRng As Range
+    Set servicesRng = SheetUtilities.getServiceHeaderRng(sheetName)
+    ReDim services(servicesRng.Count) As String
+    Dim i As Long
+    i = 1
+    Do While i <= servicesRng.Count
+        services(i) = servicesRng.Cells.Item(1, i).Value
+    Loop
+    
+    loadServiceNames = services
+End Function
+
+Private Function loadAddresses(ByVal sheetName As String) As Scripting.Dictionary
+    Dim sheet As Worksheet
+    Set sheet = ActiveWorkbook.Worksheets.[_Default](sheetName)
+    
+    Dim addresses As Scripting.Dictionary
+    Set addresses = New Scripting.Dictionary
+    
+    If sheet.Range("A2").Value = vbNullString Then
+        Set loadAddresses = addresses
+        Exit Function
+    End If
+    
+    Dim services() As String
+    services = loadServiceNames(sheetName)
+    
+    Dim i As Long
+    i = 1
+    Do While i < getBlankRow(sheetName).row
+        Dim recordRow As Range
+        Set recordRow = sheet.Rows.Item(i).Cells
+        
+        Dim record As RecordTuple
+        Set record = New RecordTuple
+        
+        record.InCity = recordRow.Cells.Item(1, 1).Value
+        record.UserVerified = CBool(recordRow.Cells.Item(1, 2).Value)
+        record.ValidAddress = recordRow.Cells.Item(1, 3).Value
+        record.ValidUnitWithNum = recordRow.Cells.Item(1, 4).Value
+        record.ValidZipcode = recordRow.Cells.Item(1, 5).Value
+        record.RawAddress = recordRow.Cells.Item(1, 6).Value
+        record.RawUnitWithNum = recordRow.Cells.Item(1, 7).Value
+        record.RawCity = recordRow.Cells.Item(1, 8).Value
+        record.RawState = recordRow.Cells.Item(1, 9).Value
+        record.RawZip = recordRow.Cells.Item(1, 10).Value
+        record.GuestID = recordRow.Cells.Item(1, 11).Value
+        record.FirstName = recordRow.Cells.Item(1, 12).Value
+        record.LastName = recordRow.Cells.Item(1, 13).Value
+        record.HouseholdTotal = recordRow.Cells.Item(1, 14).Value
+        record.RxTotal = recordRow.Cells.Item(1, 15).Value
+        
+        Dim visitData As Scripting.Dictionary
+        Set visitData = New Scripting.Dictionary
+        
+        Dim j As Long
+        j = 1
+        Do While j <= UBound(services) + 1
+            visitData.Add services(j - 1), JsonConverter.ParseJson(recordRow.Cells.Item(1, 15 + j).Value)
+        Loop
+        
+        Set record.visitData = visitData
+        
+        addresses.Add record.FullRawAddress, record
+        i = i + 1
+    Loop
+
+    Set loadAddresses = addresses
+End Function
+
+Private Sub writeAddress(ByVal sheetName As String, ByVal record As RecordTuple)
+    Dim sheet As Worksheet
+    Set sheet = ActiveWorkbook.Worksheets.[_Default](sheetName)
+    
+    Dim addresses As Scripting.Dictionary
+    Set addresses = New Scripting.Dictionary
+    
+    Dim services() As String
+    If sheet.Range("A2").Value <> vbNullString Then
+        services = loadServiceNames(sheetName)
+    End If
+
+    Dim recordRow As Range
+    Set recordRow = getBlankRow(sheetName)
+    ' BUG pick up here
+    recordRow.Cells(1, 1).Value = record.InCity
+    
+    Dim visitData As Scripting.Dictionary
+    Set visitData = New Scripting.Dictionary
+    
+    Dim j As Long
+    j = 1
+    Do While j <= UBound(services) + 1
+        visitData.Add services(j - 1), JsonConverter.ParseJson(recordRow.Cells.Item(1, 15 + j).Value)
+    Loop
+    
+    Set record.visitData = visitData
+    
+    addresses.Add record.FullRawAddress, record
+        
+    Dim serviceColumn As Scripting.Dictionary
+    ' If service doesn't yet exist, add service with column number
+    
+    ' Sort service columns
+End Sub
+
 Public Sub addRecords()
-    ' TODO import REST, json helper functions and json converter from Module 1
     ' TODO import MicroTimer from Module 1
     Dim currentRecord As RecordTuple
     
@@ -183,7 +254,7 @@ Public Sub addRecords()
     If Application.StatusBar = False Then appStatus = False Else appStatus = Application.StatusBar
     
     ' LOOP through records until hit last row with data
-    ' ws.Cells(ws.Rows.Count, column).End(xlUp).Row
+    ' getBlankRow
         ' loadRecord(row)
         ' If row is blank or is not correctable, remove row, next row
         ' If address is in discards dictionary
