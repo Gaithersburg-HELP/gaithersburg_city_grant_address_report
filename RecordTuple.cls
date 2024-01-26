@@ -25,16 +25,18 @@ Private pRawZip As String
 Private pGuestID As String
 Private pFirstName As String
 Private pLastName As String
-Private pHouseholdTotal As Long
-Private pRxTotal As Double
 
-' Service: Dictionary (Quarter: Visit Date Variant Collection)
+'BUG does not track household total by quarter
+Private pHouseholdTotal As Long
+
+' Quarter: Dictionary (VisitDate Date: RxTotal Double)
+Private pRxTotal As Scripting.Dictionary
+
+' Service: Dictionary (Quarter: VisitDate Date Collection)
 Private pVisitData As Scripting.Dictionary
 
-'@Ignore MoveFieldCloserToUsage
-Private gburgFormatRawAddress As Scripting.Dictionary
-'@Ignore MoveFieldCloserToUsage
-Private gburgFormatValidAddress As Scripting.Dictionary
+Private pGburgFormatRawAddress As Scripting.Dictionary
+Private pGburgFormatValidAddress As Scripting.Dictionary
 
 Public Property Get InCity() As String
     InCity = pInCity
@@ -66,6 +68,14 @@ End Property
 
 Public Property Let ValidUnitWithNum(ByVal str As String)
     pValidUnitWithNum = str
+End Property
+
+Public Property Get FullValidAddress() As String
+    If (ValidUnitWithNum <> vbNullString) Then
+        FullValidAddress = ValidAddress & " " & ValidUnitWithNum
+    Else
+        FullValidAddress = ValidAddress
+    End If
 End Property
 
 Public Property Get ValidZipcode() As String
@@ -152,20 +162,21 @@ Public Property Let LastName(ByVal str As String)
     pLastName = str
 End Property
 
-Public Property Get HouseholdTotal() As Long
-    HouseholdTotal = pHouseholdTotal
+Public Property Get householdTotal() As Long
+    householdTotal = pHouseholdTotal
 End Property
 
-Public Property Let HouseholdTotal(ByVal num As Long)
+Public Property Let householdTotal(ByVal num As Long)
     pHouseholdTotal = num
 End Property
 
-Public Property Get RxTotal() As Double
-    RxTotal = pRxTotal
+Public Property Get rxTotal() As Scripting.Dictionary
+    If pRxTotal Is Nothing Then Set pRxTotal = New Scripting.Dictionary
+    Set rxTotal = pRxTotal
 End Property
 
-Public Property Let RxTotal(ByVal num As Double)
-    pRxTotal = num
+Public Property Set rxTotal(ByVal dict As Scripting.Dictionary)
+    Set pRxTotal = dict
 End Property
 
 Public Property Get visitData() As Scripting.Dictionary
@@ -177,7 +188,20 @@ Public Property Set visitData(ByVal dict As Scripting.Dictionary)
     Set pVisitData = dict
 End Property
 
-Public Sub AddVisit(ByVal service As String, ByVal visitDate As String)
+Private Function getQuarterStr(ByVal dateStr As String) As String
+    Select Case Month(dateStr)
+        Case 7 To 9
+            getQuarterStr = "Q1"
+        Case 10 To 12
+            getQuarterStr = "Q2"
+        Case 1 To 3
+            getQuarterStr = "Q3"
+        Case 4 To 6
+            getQuarterStr = "Q4"
+    End Select
+End Function
+
+Public Sub AddVisit(ByVal visitDate As String, ByVal service As String)
     Dim newVisitData As Scripting.Dictionary
     Set newVisitData = New Scripting.Dictionary
     
@@ -187,18 +211,48 @@ Public Sub AddVisit(ByVal service As String, ByVal visitDate As String)
     Dim visits As Collection
     Set visits = New Collection
     
-    visits.Add visitDate
-    serviceVisits.Add getQuarter(visitDate), visits
+    visits.Add CDate(visitDate)
+    serviceVisits.Add getQuarterStr(visitDate), visits
     newVisitData.Add service, serviceVisits
     
     MergeVisitData newVisitData
 End Sub
 
-Public Sub MergeRecordVisitData(ByVal record As RecordTuple)
-    MergeVisitData record.visitData
+Public Sub addRx(ByVal visitDate As String, ByVal rx As Double)
+    Dim newRx As Scripting.Dictionary
+    Set newRx = New Scripting.Dictionary
+    
+    Dim rxVisits As Scripting.Dictionary
+    Set rxVisits = New Scripting.Dictionary
+    
+    rxVisits.Add CDate(visitDate), rx
+    newRx.Add getQuarterStr(visitDate), rxVisits
+    
+    MergeRx newRx
 End Sub
 
-Public Sub MergeVisitData(ByVal visitDataToMerge As Scripting.Dictionary)
+Public Sub MergeRecord(ByVal record As RecordTuple)
+    MergeVisitData record.visitData
+    MergeRx record.rxTotal
+End Sub
+
+Private Sub MergeRx(ByVal rxToMerge As Scripting.Dictionary)
+    Dim quarter As Variant
+    For Each quarter In rxToMerge.Keys
+        If rxTotal.Exists(quarter) Then
+            Dim visit As Variant
+            For Each visit In rxToMerge.Item(quarter).Keys
+                If Not rxTotal.Item(quarter).Exists(visit) Then
+                    rxTotal.Item(quarter).Add visit, rxToMerge.Item(quarter).Item(visit)
+                End If
+            Next visit
+        Else
+            rxTotal.Add quarter, rxToMerge.Item(quarter)
+        End If
+    Next quarter
+End Sub
+
+Private Sub MergeVisitData(ByVal visitDataToMerge As Scripting.Dictionary)
     Dim i As Long
     
     For i = 0 To visitDataToMerge.Count - 1
@@ -224,7 +278,9 @@ Public Sub MergeVisitData(ByVal visitDataToMerge As Scripting.Dictionary)
                             End If
                         Next existingVisitDate
                         
-                        If Not visitExists Then visitData.Item(service).Item(quarter).Add visitDateToMerge
+                        If Not visitExists Then
+                            visitData.Item(service).Item(quarter).Add visitDateToMerge
+                        End If
                     Next visitDateToMerge
                 Else
                     visitData.Item(service).Add quarter, visitDataToMerge.Item(service).Item(quarter)
@@ -242,17 +298,12 @@ End Property
 
 Public Property Get CleanLastName() As String
     Dim properLastName As String
-    properLastName = LastName
     properLastName = StrConv(LastName, vbProperCase)
     ' Last names beginning with "Mc" should have next letter capitalized
     If Left$(properLastName, 2) = "Mc" Then
         properLastName = "Mc" & UCase$(Mid$(properLastName, 3, 1)) & Mid$(properLastName, 4, 99)
     End If
     CleanLastName = properLastName
-End Property
-
-Public Property Get CleanFullName() As String
-    CleanFullName = CleanFirstName & " " & CleanLastName
 End Property
 
 Public Property Get CleanInitials() As String
@@ -383,34 +434,13 @@ Private Function SplitUnit(ByVal unitWithNum As String) As String()
     End Select
 End Function
 
-Public Property Get StreetNumKey() As String
-    StreetNumKey = "StreetNum"
-End Property
-Public Property Get PrefixedStreetNameKey() As String
-    PrefixedStreetNameKey = "PrefixedStreetName"
-End Property
-Public Property Get StreetTypeKey() As String
-    StreetTypeKey = "StreetType"
-End Property
-Public Property Get PostfixKey() As String
-    PostfixKey = "Postfix"
-End Property
-Public Property Get UnitTypeKey() As String
-    UnitTypeKey = "UnitType"
-End Property
-Public Property Get UnitNumKey() As String
-    UnitNumKey = "UnitNum"
-End Property
-Public Property Get FullAddressKey() As String
-    FullAddressKey = "FullAddress"
-End Property
-
 ' Returns dictionary of StreetNum, PrefixedStreetName, StreetType, Postfix, UnitType, UnitNum, FullAddress
 ' - capitalized Street Name with abbr. prefix, cap. abbr. Street Type, cap. abbr. Postfix
 '@Ignore AssignedByValParameter
 Private Function getFormattedSplitAddr(ByVal addr As String) As Scripting.Dictionary
     addr = CleanString(addr)
     
+    ' BUG these will not show up in autocorrected
     ' - Gaithersburg has O'Neill and Odend'hal, but Soxbox exports as Oneill (and Oneil misspelling) and Odendhal
     ' - Mccausland Pl renamed to Prism Pl
     addr = Replace(addr, "Oneill", "O'neill")
@@ -449,12 +479,12 @@ Private Function getFormattedSplitAddr(ByVal addr As String) As Scripting.Dictio
 
     Dim splitAddr As Scripting.Dictionary
     Set splitAddr = New Scripting.Dictionary
-    splitAddr.Add FullAddressKey, addr
+    splitAddr.Add AddressKey.Full, addr
 
     Dim splitNumArr() As String
     ' Split Street Number from Street name
     splitNumArr = LWordTrim(addr)
-    splitAddr.Add StreetNumKey, splitNumArr(0)
+    splitAddr.Add AddressKey.StreetNum, splitNumArr(0)
     
     Dim streetPostfix As String
     streetPostfix = GetDirection(Len(addr) - 3, addr)
@@ -466,32 +496,32 @@ Private Function getFormattedSplitAddr(ByVal addr As String) As Scripting.Dictio
         splitTypeArr = RWordTrim(splitNumArr(1))
     End If
     
-    splitAddr.Add PrefixedStreetNameKey, splitTypeArr(0)
-    splitAddr.Add StreetTypeKey, splitTypeArr(1)
-    splitAddr.Add PostfixKey, streetPostfix
+    splitAddr.Add AddressKey.PrefixedStreetName, splitTypeArr(0)
+    splitAddr.Add AddressKey.StreetType, splitTypeArr(1)
+    splitAddr.Add AddressKey.Postfix, streetPostfix
     
     Dim splitUnitArr() As String
     splitUnitArr = SplitUnit(RawUnitWithNum)
     
-    splitAddr.Add UnitTypeKey, splitUnitArr(0)
-    splitAddr.Add UnitNumKey, splitUnitArr(1)
+    splitAddr.Add AddressKey.UnitType, splitUnitArr(0)
+    splitAddr.Add AddressKey.UnitNum, splitUnitArr(1)
     
     Set getFormattedSplitAddr = splitAddr
 End Function
 
-Public Function getGburgFormatRawAddress() As Scripting.Dictionary
-    If gburgFormatRawAddress Is Nothing Then
-        Set gburgFormatRawAddress = getFormattedSplitAddr(RawAddress)
+Public Property Get GburgFormatRawAddress() As Scripting.Dictionary
+    If pGburgFormatRawAddress Is Nothing Then
+        Set pGburgFormatRawAddress = getFormattedSplitAddr(RawAddress)
     End If
-    Set getGburgFormatRawAddress = gburgFormatRawAddress
-End Function
+    Set GburgFormatRawAddress = pGburgFormatRawAddress
+End Property
 
-Public Function getGburgFormatValidAddress() As Scripting.Dictionary
-    If gburgFormatValidAddress Is Nothing Then
-        Set gburgFormatValidAddress = getFormattedSplitAddr(ValidAddress)
+Public Property Get GburgFormatValidAddress() As Scripting.Dictionary
+    If pGburgFormatValidAddress Is Nothing Then
+        Set pGburgFormatValidAddress = getFormattedSplitAddr(ValidAddress)
     End If
-    Set getGburgFormatValidAddress = gburgFormatValidAddress
-End Function
+    Set GburgFormatValidAddress = pGburgFormatValidAddress
+End Property
 
 Public Function isCorrectableAddress() As Boolean
     Dim splitAddr() As String

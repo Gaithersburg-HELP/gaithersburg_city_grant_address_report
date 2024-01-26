@@ -1,6 +1,8 @@
 Attribute VB_Name = "FileUtilities"
 Option Explicit
 
+Public Const addressValidationKeyname As String = "address_key"
+
 '@Folder "City_Grant_Address_Report.src"
 
 ' Expects a complete file path to CSV
@@ -22,7 +24,7 @@ CSVError:
     Err.Raise 513
 End Function
 
-' Expects a CSV formatted as "places_api_old,apikey"
+' Expects a CSV formatted as "keyname,apikey"
 ' Returns a dictionary of API keys
 Public Function getAPIKeys() As Scripting.Dictionary
     On Error GoTo APIerror
@@ -40,7 +42,7 @@ Public Function getAPIKeys() As Scripting.Dictionary
         apiKeysDict.Add apiFileArrLine(0), apiFileArrLine(1)
     Next i
     
-    If Not apiKeysDict.Exists("address_key") Then
+    If Not apiKeysDict.Exists(addressValidationKeyname) Then
         Err.Raise 513
     End If
     

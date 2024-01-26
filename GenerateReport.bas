@@ -14,6 +14,17 @@ Public Sub confirmGenerateFinalReport()
 End Sub
 
 Public Sub generateFinalReport()
+    Dim addresses As Scripting.Dictionary
+    Set addresses = Records.loadAddresses("Addresses")
+    
+    Dim address As Variant
+    For Each address In addresses.Keys()
+        Dim record As RecordTuple
+        Set record = addresses.Item(address)
+        ActiveWorkbook.Sheets.[_Default]("Final Report").Cells(2, 1).Value = record.CleanInitials
+        ActiveWorkbook.Sheets.[_Default]("Final Report").Cells(2, 2).Value = record.GburgFormatValidAddress.Item(AddressKey.StreetName)
+    Next address
+    
     ' TODO Load addresses
     ' Filter by valid in city addresses
     ' Get Gburg Format address: Odend'hal, O'neill

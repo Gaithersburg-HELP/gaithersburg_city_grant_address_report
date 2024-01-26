@@ -26,18 +26,18 @@ Public Sub TestMergeRecord()
     Dim recordToMerge As RecordTuple
     Set recordToMerge = New RecordTuple
     
-    record.AddVisit "food", "09/10/2023"
-    record.AddVisit "food", "08/17/2023"
-    recordToMerge.AddVisit "food", "10/20/2024"
+    record.AddVisit "09/10/2023", "food"
+    record.AddVisit "08/17/2023", "food"
+    recordToMerge.AddVisit "10/20/2024", "food"
     
-    record.MergeRecordVisitData recordToMerge
+    record.MergeRecord recordToMerge
     
     assert.IsTrue record.visitData.Exists("food")
     assert.IsTrue record.visitData.Item("food").Exists("Q1")
     assert.IsTrue record.visitData.Item("food").Exists("Q2")
-    assert.IsTrue record.visitData.Item("food").Item("Q1")(1) = "09/10/2023"
-    assert.IsTrue record.visitData.Item("food").Item("Q1")(2) = "08/17/2023"
-    assert.IsTrue record.visitData.Item("food").Item("Q2")(1) = "10/20/2024"
+    assert.IsTrue record.visitData.Item("food").Item("Q1")(1) = CDate("09/10/2023")
+    assert.IsTrue record.visitData.Item("food").Item("Q1")(2) = CDate("08/17/2023")
+    assert.IsTrue record.visitData.Item("food").Item("Q2")(1) = CDate("10/20/2024")
 End Sub
 
 '@TestMethod
@@ -72,26 +72,26 @@ Public Sub TestFormatAddress()
     assert.IsTrue record.isCorrectableAddress()
     
     Dim gburgFormat As Scripting.Dictionary
-    Set gburgFormat = record.getGburgFormatRawAddress()
+    Set gburgFormat = record.GburgFormatRawAddress
     
-    assert.IsTrue gburgFormat.Item(record.FullAddressKey) = "501a S Frederick Ave E", "Full address incorrect"
-    assert.IsTrue gburgFormat.Item(record.PostfixKey) = "E", "Postfix incorrect"
-    assert.IsTrue gburgFormat.Item(record.PrefixedStreetNameKey) = "S Frederick", "Street name incorrect"
-    assert.IsTrue gburgFormat.Item(record.StreetNumKey) = "501a", "Street no. incorrect"
-    assert.IsTrue gburgFormat.Item(record.StreetTypeKey) = "Ave", "Street type incorrect"
-    assert.IsTrue gburgFormat.Item(record.UnitNumKey) = "1", "Unit no. incorrect"
-    assert.IsTrue gburgFormat.Item(record.UnitTypeKey) = "Ste", "Unit type incorrect"
+    assert.IsTrue gburgFormat.Item(AddressKey.Full) = "501a S Frederick Ave E", "Full address incorrect"
+    assert.IsTrue gburgFormat.Item(AddressKey.Postfix) = "E", "Postfix incorrect"
+    assert.IsTrue gburgFormat.Item(AddressKey.PrefixedStreetName) = "S Frederick", "Street name incorrect"
+    assert.IsTrue gburgFormat.Item(AddressKey.StreetNum) = "501a", "Street no. incorrect"
+    assert.IsTrue gburgFormat.Item(AddressKey.StreetType) = "Ave", "Street type incorrect"
+    assert.IsTrue gburgFormat.Item(AddressKey.UnitNum) = "1", "Unit no. incorrect"
+    assert.IsTrue gburgFormat.Item(AddressKey.UnitType) = "Ste", "Unit type incorrect"
     
     Dim recordNoPostfix As RecordTuple
     Set recordNoPostfix = New RecordTuple
     
     recordNoPostfix.RawAddress = "2 Nina Ave"
-    Set gburgFormat = recordNoPostfix.getGburgFormatRawAddress()
+    Set gburgFormat = recordNoPostfix.GburgFormatRawAddress
     
-    assert.IsTrue gburgFormat.Item(record.PostfixKey) = vbNullString, "Postfix incorrect"
-    assert.IsTrue gburgFormat.Item(record.PrefixedStreetNameKey) = "Nina", "Street name incorrect"
-    assert.IsTrue gburgFormat.Item(record.UnitNumKey) = vbNullString, "Unit no. incorrect"
-    assert.IsTrue gburgFormat.Item(record.UnitTypeKey) = vbNullString, "Unit type incorrect"
+    assert.IsTrue gburgFormat.Item(AddressKey.Postfix) = vbNullString, "Postfix incorrect"
+    assert.IsTrue gburgFormat.Item(AddressKey.PrefixedStreetName) = "Nina", "Street name incorrect"
+    assert.IsTrue gburgFormat.Item(AddressKey.UnitNum) = vbNullString, "Unit no. incorrect"
+    assert.IsTrue gburgFormat.Item(AddressKey.UnitType) = vbNullString, "Unit type incorrect"
     
     Dim numericRecord As RecordTuple
     Set numericRecord = New RecordTuple
@@ -105,3 +105,5 @@ Public Sub TestFormatAddress()
     alphabeticRecord.RawAddress = "Asdfcvn Dfdwer"
     assert.IsFalse alphabeticRecord.isCorrectableAddress(), "Alphabetic record marked as correctable"
 End Sub
+
+

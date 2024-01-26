@@ -7,9 +7,10 @@ Private Function getRemainingRequests() As Long
 End Function
 Private Sub printRemainingRequests(ByVal num As Long)
     'TODO print remaining requests and month refresh date
-    ActiveSheet.Shapes("API Limit").TextFrame.Characters.Text = "8000 / 8000 left"
+    ActiveSheet.Shapes("API Limit").TextFrame.Characters.Text = num & " / 8000 left"
 End Sub
 
+'@EntryPoint
 Public Sub confirmAttemptValidation()
     Dim confirmResponse As VbMsgBoxResult
     confirmResponse = MsgBox("Are you sure you wish to attempt validation? You have " & _
@@ -22,6 +23,7 @@ Public Sub confirmAttemptValidation()
     attemptValidation
 End Sub
 
+'@EntryPoint
 Public Sub confirmDiscardAll()
     Dim confirmResponse As VbMsgBoxResult
     confirmResponse = MsgBox("Are you sure you wish to discard all records?", vbYesNo + vbQuestion, "Confirmation")
@@ -33,6 +35,14 @@ Public Sub confirmDiscardAll()
 End Sub
 
 Public Sub attemptValidation()
+    Dim addressAPIKey As String
+    addressAPIKey = getAPIKeys().Item(addressValidationKeyname)
+    
+    Dim addresses As Scripting.Dictionary
+    Set addresses = Records.loadAddresses("Needs Autocorrect")
+    Debug.Print (addresses.Keys().Count & addressAPIKey)
+    
+    printRemainingRequests (1)
     ' TODO check if user has verified, if so then skip autocorrection and validate against Gaithersburg
     
     ' TODO autocorrecting

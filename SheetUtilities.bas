@@ -1,7 +1,7 @@
 Attribute VB_Name = "SheetUtilities"
 '@Folder("City_Grant_Address_Report.src")
 Option Explicit
-' Returns blank row after all data
+' Returns blank row after all data, assuming Column A is filled in last row
 Public Function getBlankRow(ByVal sheetName As String) As Range
     Dim sheet As Worksheet
     Set sheet = ActiveWorkbook.Worksheets.[_Default](sheetName)
@@ -51,18 +51,31 @@ End Function
 
 Public Function getServiceHeaderRng(ByVal sheetName As String) As Range
     Set getServiceHeaderRng = ActiveWorkbook.Worksheets.[_Default](sheetName) _
-                                    .Range("O1:" & getServiceHeaderLastCell(sheetName, "N1"))
+                                    .Range("P1:" & getServiceHeaderLastCell(sheetName, "O1"))
+End Function
+
+' Returns zero based service array
+Public Function loadServiceNames(ByVal sheetName As String) As String()
+    Dim servicesRng As Range
+    Set servicesRng = SheetUtilities.getServiceHeaderRng(sheetName)
+    ReDim services(servicesRng.Count) As String
+    Dim i As Long
+    i = 1
+    Do While i <= servicesRng.Count
+        services(i - 1) = servicesRng.Cells.Item(1, i).Value
+    Loop
+    
+    loadServiceNames = services
 End Function
 
 Public Function getAddressRng(ByVal sheetName As String) As Range
-    Set getAddressRng = getRng(sheetName, "A2", "M2")
+    Set getAddressRng = getRng(sheetName, "A2", "N2")
 End Function
 
 Public Function getAddressVisitDataRng(ByVal sheetName As String) As Range
-    Set getAddressVisitDataRng = Application.Union(getRng(sheetName, "N2", "N2"), _
-                                                   getRng(sheetName, "N2", _
-                                                          getServiceHeaderLastCell(sheetName, "N1")), _
-                                                   getServiceHeaderRng(sheetName))
+    Set getAddressVisitDataRng = Application.Union(getRng(sheetName, "O2", "O2"), _
+                                                   getRng(sheetName, "P1", _
+                                                          getServiceHeaderLastCell(sheetName, "O1")))
 End Function
 
 Public Function sheetToCSVArray(ByVal sheetName As String, Optional ByVal rng As Range = Nothing) As String()
@@ -101,10 +114,58 @@ Public Sub ClearAll()
     
     Dim i As Long
     For i = 3 To ActiveWorkbook.Sheets.Count
-        getAddressRng(ActiveWorkbook.Sheets.[_Default](i).Name).Clear
-        getAddressVisitDataRng(ActiveWorkbook.Sheets.[_Default](i).Name).Clear
-        getServiceHeaderRng(ActiveWorkbook.Sheets.[_Default](i).Name).Clear
+        getAddressRng(ActiveWorkbook.Sheets.[_Default](i).name).Clear
+        getAddressVisitDataRng(ActiveWorkbook.Sheets.[_Default](i).name).Clear
+        getServiceHeaderRng(ActiveWorkbook.Sheets.[_Default](i).name).Clear
     Next
+End Sub
+
+Public Sub SortAll()
+    getAddressRng("Addresses").Sort _
+        key1:=ActiveWorkbook.Sheets.[_Default]("Addresses").Range("C2"), Order1:=xlAscending, Header:=xlNo
+    getAddressRng("Needs Autocorrect").Sort _
+        key1:=ActiveWorkbook.Sheets.[_Default]("Needs Autocorrect").Range("C2"), Order1:=xlAscending, Header:=xlNo
+    getAddressRng("Discards").Sort _
+        key1:=ActiveWorkbook.Sheets.[_Default]("Discards").Range("C2"), Order1:=xlAscending, Header:=xlNo
+    getAddressRng("Autocorrected").Sort _
+        key1:=ActiveWorkbook.Sheets.[_Default]("Autocorrected").Range("C2"), Order1:=xlAscending, Header:=xlNo
+End Sub
+
+' Prints Collection, checks if Collection contains JSON
+'@Ignore ParameterCanBeByVal
+Public Sub PrintCollection(ByRef collectionResult As Collection)
+    Dim i As Long
+    Debug.Print ("[")
+    For i = 1 To collectionResult.Count
+        If TypeOf collectionResult.Item(i) Is Dictionary Then
+            PrintJson collectionResult.Item(i)
+        ElseIf TypeOf collectionResult.Item(i) Is Collection Then
+            PrintCollection collectionResult.Item(i)
+        Else
+            Debug.Print (collectionResult.Item(i));
+        End If
+        Debug.Print (",")
+    Next
+    Debug.Print ("]")
+End Sub
+
+' Prints JSON
+'@Ignore ParameterCanBeByVal
+Public Sub PrintJson(ByRef jsonResult As Dictionary)
+    Debug.Print ("{")
+    Dim key As Variant
+    For Each key In jsonResult
+        Debug.Print (key & ":")
+        If TypeOf jsonResult.Item(key) Is Collection Then
+            PrintCollection jsonResult.Item(key)
+        ElseIf TypeOf jsonResult.Item(key) Is Dictionary Then
+            PrintJson jsonResult.Item(key)
+        Else
+            Debug.Print (CStr(jsonResult.Item(key)))
+        End If
+        Debug.Print (",")
+    Next
+    Debug.Print ("}")
 End Sub
 
 

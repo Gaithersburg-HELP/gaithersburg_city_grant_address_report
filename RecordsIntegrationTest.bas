@@ -12,11 +12,23 @@ Private assert As Object
 Private Sub ModuleInitialize()
     'this method runs once per module.
     Set assert = CreateObject("Rubberduck.AssertClass")
+End Sub
+
+'@ModuleCleanup
+Private Sub ModuleCleanup()
+    'this method runs once per module.
+    Set assert = Nothing
+    ClearAll
+End Sub
+
+'@TestMethod
+Public Sub TestAllAddresses()
+    On Error GoTo TestFail
     
     ClearAll
     
-    Dim testFileArray() As String
-    testFileArray = getCSV(ThisWorkbook.path & "\testdata\testaddresses.csv")
+    Dim testAddressesArr() As String
+    testAddressesArr = getCSV(ThisWorkbook.path & "\testdata\testaddresses.csv")
     
     ActiveWorkbook.Worksheets.[_Default]("Interface").Activate
     
@@ -24,9 +36,9 @@ Private Sub ModuleInitialize()
     
     Dim i As Long
     Dim fileArrLine() As String
-    For i = 1 To UBound(testFileArray, 1)
-        If testFileArray(i) <> vbNullString Then
-            fileArrLine = Split(testFileArray(i), ",")
+    For i = 1 To UBound(testAddressesArr, 1)
+        If testAddressesArr(i) <> vbNullString Then
+            fileArrLine = Split(testAddressesArr(i), ",")
             Dim j As Long
             For j = 0 To 11
                 ActiveCell.Value = fileArrLine(j)
@@ -35,19 +47,6 @@ Private Sub ModuleInitialize()
             ActiveCell.Offset(1, -12).Select
         End If
     Next i
-End Sub
-
-'@ModuleCleanup
-Private Sub ModuleCleanup()
-    'this method runs once per module.
-    Set assert = Nothing
-    
-    ClearAll
-End Sub
-
-'@TestMethod
-Public Sub TestAllAddresses()
-    On Error GoTo TestFail
     
     addRecords
     
@@ -68,6 +67,28 @@ End Sub
 
 
 '@TestMethod
-Public Sub TestLoadAddressesAndAutocorrect()
-    'TODO test
+Public Sub TestLoadExtraAddressesAndWrite()
+    ActiveWorkbook.Worksheets.[_Default]("Addresses").Activate
+    ActiveSheet.Range("A2").Select
+    
+    ' TODO write some extra addresses
+    
+    ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Activate
+    ActiveSheet.Range("A2").Select
+    
+    ' TODO write some extra addresses
+    
+    ActiveWorkbook.Worksheets.[_Default]("Discards").Activate
+    ActiveSheet.Range("A2").Select
+    
+    ' TODO write some extra addresses
+    
+    ActiveWorkbook.Worksheets.[_Default]("Autocorrected").Activate
+    ActiveSheet.Range("A2").Select
+    
+    ' TODO write some extra addresses
+    
+    ' assert new addresses are written after existing extra addresses
+    ' assert existing extra addresses are merged with new addresses
+    
 End Sub
