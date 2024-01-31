@@ -51,13 +51,10 @@ Public Sub TestAllAddresses()
     addRecords
     
     CompareSheetCSV assert, "Addresses", ActiveWorkbook.path & "\testdata\testaddresses_addressesoutput.csv"
-    CompareSheetCSV assert, "Totals", ActiveWorkbook.path & "\testdata\testaddresses_totalsoutput.csv", getTotalsRng
-    CompareSheetCSV assert, "Invalid Discards", ActiveWorkbook.path & "\testdata\testaddresses_discardsoutput.csv"
-    CompareSheetCSV assert, "Autocorrected Addresses", ActiveWorkbook.path & "\testdata\testaddresses_autocorrectoutput.csv"
-
-    generateFinalReport
-    
-    CompareSheetCSV assert, "Final Report", ActiveWorkbook.path & "\testdata\testaddresses_finalreportoutput.csv"
+    CompareSheetCSV assert, "Interface", ActiveWorkbook.path & "\testdata\testaddresses_totalsoutput.csv", getTotalsRng
+    CompareSheetCSV assert, "Needs Autocorrect", ActiveWorkbook.path & "\testdata\testaddresses_autocorrectoutput.csv"
+    CompareSheetCSV assert, "Discards", ActiveWorkbook.path & "\testdata\testaddresses_discardsoutput.csv"
+    CompareSheetCSV assert, "Autocorrected", ActiveWorkbook.path & "\testdata\testaddresses_autocorrectedoutput.csv"
     
     Exit Sub
 
@@ -91,4 +88,12 @@ Public Sub TestLoadExtraAddressesAndWrite()
     ' assert new addresses are written after existing extra addresses
     ' assert existing extra addresses are merged with new addresses
     
+End Sub
+
+'@TestMethod
+Public Sub TestAutocorrectAndFinalReport()
+    ' TODO autocorrect method test
+    generateFinalReport
+    
+    CompareSheetCSV assert, "Final Report", ActiveWorkbook.path & "\testdata\testaddresses__postvalidation_finalreportoutput.csv"
 End Sub

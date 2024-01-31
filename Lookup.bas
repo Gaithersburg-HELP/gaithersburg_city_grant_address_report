@@ -76,7 +76,7 @@ Public Function gburgQuery(ByVal fullAddress As String) As Scripting.Dictionary
         If (Not (jsonResult Is Nothing)) And jsonResult.Item("features").Count > 0 Then
             ' Since searching on Full_Address, expect only one feature to be returned
             Dim gburgAddress As Scripting.Dictionary
-            Set gburgAddress = jsonResult.Item("features").Item(0).Item("attributes")
+            Set gburgAddress = jsonResult.Item("features").Item(1).Item("attributes")
             
             validatedAddress.Item(AddressKey.StreetNum) = gburgAddress.Item("Address_Number")
             

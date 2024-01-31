@@ -58,11 +58,12 @@ End Function
 Public Function loadServiceNames(ByVal sheetName As String) As String()
     Dim servicesRng As Range
     Set servicesRng = SheetUtilities.getServiceHeaderRng(sheetName)
-    ReDim services(servicesRng.Count) As String
+    ReDim services(servicesRng.Count - 1) As String
     Dim i As Long
     i = 1
     Do While i <= servicesRng.Count
         services(i - 1) = servicesRng.Cells.Item(1, i).Value
+        i = i + 1
     Loop
     
     loadServiceNames = services
@@ -104,8 +105,21 @@ Public Function sheetToCSVArray(ByVal sheetName As String, Optional ByVal rng As
     
     
     sheetToCSVArray = getCSV(MyFileName)
-    Kill (MyFileName)
+    ' Kill (MyFileName)
 End Function
+
+Public Sub CompareSheetCSV(ByVal assert As Object, ByVal sheetName As String, ByVal csvPath As String, Optional ByVal rng As Range)
+    Dim testArr() As String
+    testArr = sheetToCSVArray(sheetName, rng)
+    
+    Dim correctArr() As String
+    correctArr = getCSV(csvPath)
+    
+    Dim i As Long
+    For i = LBound(correctArr, 1) To UBound(testArr, 1)
+        assert.IsTrue StrComp(correctArr(i), testArr(i)) = 0, "Difference at " & sheetName & " row " & i & ": " & correctArr(i) & "|" & testArr(i)
+    Next i
+End Sub
 
 Public Sub ClearAll()
     getPastedRecordsRng.Clear

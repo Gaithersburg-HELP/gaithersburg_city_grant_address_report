@@ -38,6 +38,11 @@ Private pVisitData As Scripting.Dictionary
 Private pGburgFormatRawAddress As Scripting.Dictionary
 Private pGburgFormatValidAddress As Scripting.Dictionary
 
+Public Property Get key() As String
+    key = pGuestID
+End Property
+
+
 Public Property Get InCity() As String
     InCity = pInCity
 End Property
@@ -211,7 +216,8 @@ Public Sub AddVisit(ByVal visitDate As String, ByVal service As String)
     Dim visits As Collection
     Set visits = New Collection
     
-    visits.Add CDate(visitDate)
+    ' CStr formats Date more nicely for readability
+    visits.Add CStr(CDate(visitDate))
     serviceVisits.Add getQuarterStr(visitDate), visits
     newVisitData.Add service, serviceVisits
     
@@ -225,6 +231,7 @@ Public Sub addRx(ByVal visitDate As String, ByVal rx As Double)
     Dim rxVisits As Scripting.Dictionary
     Set rxVisits = New Scripting.Dictionary
     
+    ' NOTE Adding Date as dictionary key silently changes string formatting on print for some reason
     rxVisits.Add CDate(visitDate), rx
     newRx.Add getQuarterStr(visitDate), rxVisits
     
@@ -253,19 +260,13 @@ Private Sub MergeRx(ByVal rxToMerge As Scripting.Dictionary)
 End Sub
 
 Private Sub MergeVisitData(ByVal visitDataToMerge As Scripting.Dictionary)
-    Dim i As Long
+    Dim service As Variant
     
-    For i = 0 To visitDataToMerge.Count - 1
-        Dim service As String
-        service = visitDataToMerge.Keys(i)
+    For Each service In visitDataToMerge.Keys
         If visitData.Exists(service) Then
             ' Loop through quarters and merge
-            Dim j As Long
-            For j = 0 To visitDataToMerge.Item(service).Count - 1
-                Dim quarters() As Variant
-                Dim quarter As String
-                quarters = visitDataToMerge.Item(service).Keys
-                quarter = quarters(j)
+            Dim quarter As Variant
+            For Each quarter In visitDataToMerge.Item(service)
                 If visitData.Item(service).Exists(quarter) Then
                     Dim visitDateToMerge As Variant
                     For Each visitDateToMerge In visitDataToMerge.Item(service).Item(quarter)
@@ -285,11 +286,11 @@ Private Sub MergeVisitData(ByVal visitDataToMerge As Scripting.Dictionary)
                 Else
                     visitData.Item(service).Add quarter, visitDataToMerge.Item(service).Item(quarter)
                 End If
-            Next
+            Next quarter
         Else
             visitData.Add service, visitDataToMerge.Item(service)
         End If
-    Next
+    Next service
 End Sub
 
 Public Property Get CleanFirstName() As String
@@ -425,7 +426,7 @@ Private Function SplitUnit(ByVal unitWithNum As String) As String()
     Select Case UBound(splitArr)
         Case 0
             ' If one word, assume Apt
-            SplitUnit = Split("Apt." & unitWithNum, ".")
+            SplitUnit = Split("Apt," & unitWithNum, ",")
         Case -1
             ' unitWithNum was ""
             SplitUnit = Split(",", ",")
@@ -434,7 +435,7 @@ Private Function SplitUnit(ByVal unitWithNum As String) As String()
     End Select
 End Function
 
-' Returns dictionary of StreetNum, PrefixedStreetName, StreetType, Postfix, UnitType, UnitNum, FullAddress
+' Returns dictionary of all AddressKey enum
 ' - capitalized Street Name with abbr. prefix, cap. abbr. Street Type, cap. abbr. Postfix
 '@Ignore AssignedByValParameter
 Private Function getFormattedSplitAddr(ByVal addr As String) As Scripting.Dictionary
@@ -479,7 +480,6 @@ Private Function getFormattedSplitAddr(ByVal addr As String) As Scripting.Dictio
 
     Dim splitAddr As Scripting.Dictionary
     Set splitAddr = New Scripting.Dictionary
-    splitAddr.Add AddressKey.Full, addr
 
     Dim splitNumArr() As String
     ' Split Street Number from Street name
@@ -505,6 +505,12 @@ Private Function getFormattedSplitAddr(ByVal addr As String) As Scripting.Dictio
     
     splitAddr.Add AddressKey.UnitType, splitUnitArr(0)
     splitAddr.Add AddressKey.UnitNum, splitUnitArr(1)
+    
+    If splitUnitArr(0) <> vbNullString Then
+        splitAddr.Add AddressKey.Full, addr & " " & splitUnitArr(0) & " " & splitUnitArr(1)
+    Else
+        splitAddr.Add AddressKey.Full, addr
+    End If
     
     Set getFormattedSplitAddr = splitAddr
 End Function

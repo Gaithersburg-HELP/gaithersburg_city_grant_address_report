@@ -42,7 +42,10 @@ Private Function loadRecordFromRaw(ByVal recordRowFirstCell As Range) As RecordT
     record.RawState = recordRowFirstCell.Offset(0, 8).Value
     record.RawZip = recordRowFirstCell.Offset(0, 9).Value
     record.householdTotal = recordRowFirstCell.Offset(0, 10).Value
-    record.addRx recordRowFirstCell.Value, recordRowFirstCell.Offset(0, 11).Value
+    
+    Dim rx As Double
+    rx = recordRowFirstCell.Offset(0, 11).Value
+    If rx <> 0 Then record.addRx recordRowFirstCell.Value, rx
     
     Set loadRecordFromRaw = record
 End Function
@@ -105,7 +108,7 @@ Public Function loadAddresses(ByVal sheetName As String) As Scripting.Dictionary
         Dim record As RecordTuple
         Set record = loadRecordFromSheet(recordRowFirstCell)
         
-        addresses.Add record.FullValidAddress, record
+        addresses.Add record.key, record
         i = i + 1
     Loop
 
@@ -152,20 +155,20 @@ Public Sub writeAddress(ByVal sheetName As String, ByVal record As RecordTuple)
     
     recordRow.Cells.Item(1, 15).Value = JsonConverter.ConvertToJson(record.rxTotal)
     
-    Dim j As Long
-    j = 1
-    Do While j <= UBound(record.visitData.Keys) + 1
-        Dim serviceToAdd As String
-        serviceToAdd = record.visitData.Keys(j)
+    Dim serviceToAdd As Variant
+    For Each serviceToAdd In record.visitData.Keys
         Dim visitDataToAdd As String
         visitDataToAdd = JsonConverter.ConvertToJson(record.visitData.Item(serviceToAdd))
         
         If Not serviceCols.Exists(serviceToAdd) Then
-            serviceCols.Add serviceToAdd, 15 + 1 + UBound(serviceCols.Keys.Count) + 1
+            Dim newServiceCol As Long
+            newServiceCol = 15 + 1 + UBound(serviceCols.Keys) + 1
+            serviceCols.Add serviceToAdd, newServiceCol
+            ActiveWorkbook.Worksheets.[_Default](sheetName).Cells(1, newServiceCol).Value = serviceToAdd
         End If
         
         recordRow.Cells.Item(1, serviceCols.Item(serviceToAdd)).Value = visitDataToAdd
-    Loop
+    Next serviceToAdd
 End Sub
 
 Public Sub addRecords()
@@ -199,31 +202,32 @@ Public Sub addRecords()
         
         Dim existingRecord As RecordTuple
         
-        If addresses.Exists(recordToAdd.FullRawAddress) Then
-            Set existingRecord = addresses.Item(recordToAdd.FullRawAddress)
+        If addresses.Exists(recordToAdd.key) Then
+            Set existingRecord = addresses.Item(recordToAdd.key)
             existingRecord.MergeRecord recordToAdd
-            If autocorrected.Exists(recordToAdd.FullRawAddress) Then
-                Set existingRecord = autocorrected.Item(recordToAdd.FullRawAddress)
+            If autocorrected.Exists(recordToAdd.key) Then
+                Set existingRecord = autocorrected.Item(recordToAdd.key)
                 existingRecord.MergeRecord recordToAdd
             End If
-        ElseIf needsAutocorrect.Exists(recordToAdd.FullRawAddress) Then
-            Set existingRecord = needsAutocorrect.Item(recordToAdd.FullRawAddress)
+        ElseIf needsAutocorrect.Exists(recordToAdd.key) Then
+            Set existingRecord = needsAutocorrect.Item(recordToAdd.key)
             existingRecord.MergeRecord recordToAdd
-        ElseIf discards.Exists(recordToAdd.FullRawAddress) Then
-            Set existingRecord = discards.Item(recordToAdd.FullRawAddress)
+        ElseIf discards.Exists(recordToAdd.key) Then
+            Set existingRecord = discards.Item(recordToAdd.key)
             existingRecord.MergeRecord recordToAdd
-        ElseIf recordsToValidate.Exists(recordToAdd.FullRawAddress) Then
-            Set existingRecord = recordsToValidate.Item(recordToAdd.FullRawAddress)
+        ElseIf recordsToValidate.Exists(recordToAdd.key) Then
+            Set existingRecord = recordsToValidate.Item(recordToAdd.key)
             existingRecord.MergeRecord recordToAdd
         Else
             If recordToAdd.isCorrectableAddress() Then
-                recordsToValidate.Add recordToAdd.FullRawAddress, recordToAdd
+                recordsToValidate.Add recordToAdd.key, recordToAdd
             Else
-                discards.Add recordToAdd.FullRawAddress, recordToAdd
+                recordToAdd.InCity = "Not correctable"
+                discards.Add recordToAdd.key, recordToAdd
             End If
         End If
         
-        Application.StatusBar = "Adding record " & (i - 8) & " of " & getBlankRow("Interface").row
+        Application.StatusBar = "Adding record " & (i - 8) & " of " & (getBlankRow("Interface").row - 8)
         ' yield execution so Excel remains responsive and user can hit Esc
         DoEvents
         i = i + 1
@@ -231,10 +235,10 @@ Public Sub addRecords()
     
     ' Validate recordsToValidate
     i = 1
-    Dim address As Variant
-    For Each address In recordsToValidate.Keys
+    Dim key As Variant
+    For Each key In recordsToValidate.Keys
         Dim recordToValidate As RecordTuple
-        Set recordToValidate = recordsToValidate.Item(address)
+        Set recordToValidate = recordsToValidate.Item(key)
         Dim gburgAddress As Scripting.Dictionary
         Set gburgAddress = Lookup.gburgQuery(recordToValidate.GburgFormatRawAddress.Item(AddressKey.Full))
         
@@ -244,18 +248,20 @@ Public Sub addRecords()
         
         If gburgAddress.Item(AddressKey.Full) <> vbNullString Then
             ' Valid address
-            addresses.Add recordToAdd.GburgFormatValidAddress, recordToAdd
+            recordToValidate.InCity = "Yes"
+            addresses.Add recordToValidate.key, recordToValidate
             
             If recordToValidate.ValidZipcode <> recordToValidate.RawZip Then
-                autocorrected.Add recordToAdd.GburgFormatValidAddress, recordToAdd
+                autocorrected.Add recordToValidate.key, recordToValidate
             End If
         Else
-            needsAutocorrect.Add recordToAdd.FullRawAddress, recordToAdd
+            recordToValidate.InCity = "Unknown"
+            needsAutocorrect.Add recordToValidate.key, recordToValidate
         End If
         Application.StatusBar = "Validating record " & i & " of " & (UBound(recordsToValidate.Keys) + 1)
         i = i + 1
         DoEvents
-    Next address
+    Next key
     
 
     Application.StatusBar = "Writing addresses and computing totals"
@@ -269,10 +275,10 @@ Public Sub addRecords()
     Dim householdTotal(1 To 4) As Long
     Dim rxTotal(1 To 4) As Double
     
-    For Each address In addresses.Keys
+    For Each key In addresses.Keys
         Dim record As RecordTuple
-        Set record = addresses.Item(address)
-        writeAddress "Addresses", addresses.Item(address)
+        Set record = addresses.Item(key)
+        writeAddress "Addresses", addresses.Item(key)
         
         If record.InCity = "Yes" Then
             Dim rxCount(1 To 4) As Double
@@ -306,7 +312,7 @@ Public Sub addRecords()
                 rxTotal(i) = rxTotal(i) + rxCount(i)
             Next i
         End If
-    Next address
+    Next key
     
     Dim totalsRng As Range
     Set totalsRng = SheetUtilities.getTotalsRng
@@ -319,15 +325,15 @@ Public Sub addRecords()
         totalsRng.Cells.Item(5, i) = rxTotal(i)
     Next i
     
-    For Each address In needsAutocorrect.Keys()
-        writeAddress "Needs Autocorrect", needsAutocorrect.Item(address)
-    Next address
-    For Each address In discards.Keys()
-        writeAddress "Discards", discards.Item(address)
-    Next address
-    For Each address In autocorrected.Keys()
-        writeAddress "Autocorrected", autocorrected.Item(address)
-    Next address
+    For Each key In needsAutocorrect.Keys()
+        writeAddress "Needs Autocorrect", needsAutocorrect.Item(key)
+    Next key
+    For Each key In discards.Keys()
+        writeAddress "Discards", discards.Item(key)
+    Next key
+    For Each key In autocorrected.Keys()
+        writeAddress "Autocorrected", autocorrected.Item(key)
+    Next key
     
     SortAll
 
