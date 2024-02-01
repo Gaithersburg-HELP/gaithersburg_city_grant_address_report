@@ -488,8 +488,11 @@ Private Function getFormattedSplitAddr(ByVal addr As String) As Scripting.Dictio
     
     ' Remove periods, hyphens, not in street name
     ' see https://pe.usps.com/text/pub28/28c2_013.htm & https://pe.usps.com/text/dmm100/addressing-mail.htm
-    splitNumArr(0) = Replace(splitNumArr(1), ".", vbNullString)
-    splitNumArr(0) = Replace(splitNumArr(1), "-", vbNullString)
+    splitNumArr(1) = Replace(splitNumArr(1), ".", vbNullString)
+    splitNumArr(1) = Replace(splitNumArr(1), "-", vbNullString)
+    
+    Dim fullAddress As String
+    fullAddress = splitNumArr(0) & " " & splitNumArr(1)
     
     Dim streetPostfix As String
     streetPostfix = GetDirection(Len(addr) - 3, addr)
@@ -512,9 +515,9 @@ Private Function getFormattedSplitAddr(ByVal addr As String) As Scripting.Dictio
     splitAddr.Add AddressKey.UnitNum, splitUnitArr(1)
     
     If splitUnitArr(0) <> vbNullString Then
-        splitAddr.Add AddressKey.Full, addr & " " & splitUnitArr(0) & " " & splitUnitArr(1)
+        splitAddr.Add AddressKey.Full, fullAddress & " " & splitUnitArr(0) & " " & splitUnitArr(1)
     Else
-        splitAddr.Add AddressKey.Full, addr
+        splitAddr.Add AddressKey.Full, fullAddress
     End If
     
     Set getFormattedSplitAddr = splitAddr

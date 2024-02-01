@@ -68,7 +68,11 @@ Public Sub TestAllAddresses()
     
     addRecords
     
-    ' TODO assert existing extra addresses are merged with new addresses
+    CompareSheetCSV assert, "Addresses", ActiveWorkbook.path & "\testdata\test2extraaddresses_addressesoutput.csv"
+    CompareSheetCSV assert, "Interface", ActiveWorkbook.path & "\testdata\test2extraaddresses_totalsoutput.csv", getTotalsRng
+    CompareSheetCSV assert, "Needs Autocorrect", ActiveWorkbook.path & "\testdata\test2extraaddresses_autocorrectoutput.csv"
+    CompareSheetCSV assert, "Discards", ActiveWorkbook.path & "\testdata\test2extraaddresses_discardsoutput.csv"
+    CompareSheetCSV assert, "Autocorrected", ActiveWorkbook.path & "\testdata\test2extraaddresses_autocorrectedoutput.csv"
     
     Dim testAutocorrectAddressesArr() As String
     testAutocorrectAddressesArr = getCSV(ThisWorkbook.path & "\testdata\testautocorrectaddresses.csv")
@@ -81,8 +85,12 @@ Public Sub TestAllAddresses()
     
     generateFinalReport
     
-    ' TODO assert validated addresses and final report
-    CompareSheetCSV assert, "Final Report", ActiveWorkbook.path & "\testdata\testaddresses_postvalidation_finalreportoutput.csv"
+    CompareSheetCSV assert, "Addresses", ActiveWorkbook.path & "\testdata\test3autocorrectaddresses_addressesoutput.csv"
+    CompareSheetCSV assert, "Interface", ActiveWorkbook.path & "\testdata\test3autocorrectaddresses_totalsoutput.csv", getTotalsRng
+    CompareSheetCSV assert, "Needs Autocorrect", ActiveWorkbook.path & "\testdata\test3autocorrectaddresses_autocorrectoutput.csv"
+    CompareSheetCSV assert, "Discards", ActiveWorkbook.path & "\testdata\test3autocorrectaddresses_discardsoutput.csv"
+    CompareSheetCSV assert, "Autocorrected", ActiveWorkbook.path & "\testdata\test3autocorrectaddresses_autocorrectedoutput.csv"
+    CompareSheetCSV assert, "Final Report", ActiveWorkbook.path & "\testdata\test3autocorrectaddresses_finalreportoutput.csv"
     Exit Sub
 
 TestFail:
