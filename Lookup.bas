@@ -81,7 +81,7 @@ Public Function gburgQuery(ByVal fullAddress As String) As Scripting.Dictionary
             validatedAddress.Item(AddressKey.StreetNum) = gburgAddress.Item("Address_Number")
             
             If gburgAddress.Item("Road_Prefix_Dir") <> vbNullString Then
-                validatedAddress.Item(AddressKey.PrefixedStreetName) = gburgAddress.Item("Road_Prefix_Dir") & _
+                validatedAddress.Item(AddressKey.PrefixedStreetName) = gburgAddress.Item("Road_Prefix_Dir") & " " & _
                                                                        gburgAddress.Item("Road_Name")
             Else
                 validatedAddress.Item(AddressKey.PrefixedStreetName) = gburgAddress.Item("Road_Name")

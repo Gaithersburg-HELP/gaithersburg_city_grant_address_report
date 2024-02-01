@@ -21,7 +21,7 @@ Private Sub ModuleCleanup()
     ClearAll
 End Sub
 
-Private Sub PasteRecords(ByRef addressArr() As String)
+Private Sub PasteTestRecords(ByRef addressArr() As String)
     ActiveWorkbook.Worksheets.[_Default]("Interface").Activate
     
     ActiveSheet.Range("A9").Select
@@ -51,7 +51,7 @@ Public Sub TestAllAddresses()
     Dim testAddressesArr() As String
     testAddressesArr = getCSV(ThisWorkbook.path & "\testdata\test1addresses.csv")
     
-    PasteRecords testAddressesArr
+    PasteTestRecords testAddressesArr
     
     addRecords
     
@@ -64,7 +64,7 @@ Public Sub TestAllAddresses()
     Dim testAddAddressesArr() As String
     testAddAddressesArr = getCSV(ThisWorkbook.path & "\testdata\testaddaddresses.csv")
     
-    PasteRecords testAddAddressesArr
+    PasteTestRecords testAddAddressesArr
     
     addRecords
     
@@ -73,7 +73,7 @@ Public Sub TestAllAddresses()
     Dim testAutocorrectAddressesArr() As String
     testAutocorrectAddressesArr = getCSV(ThisWorkbook.path & "\testdata\testautocorrectaddresses.csv")
     
-    PasteRecords testAutocorrectAddressesArr
+    PasteTestRecords testAutocorrectAddressesArr
     
     addRecords
     

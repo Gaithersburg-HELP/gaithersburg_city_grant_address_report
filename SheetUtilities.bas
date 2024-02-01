@@ -70,7 +70,9 @@ Public Function loadServiceNames(ByVal sheetName As String) As String()
 End Function
 
 Public Function getAddressRng(ByVal sheetName As String) As Range
-    Set getAddressRng = getRng(sheetName, "A2", "N2")
+    Set getAddressRng = Application.Union(getRng(sheetName, "A2", "O2"), _
+                                          getRng(sheetName, "P2", _
+                                                 getServiceHeaderLastCell(sheetName, "O1")))
 End Function
 
 Public Function getAddressVisitDataRng(ByVal sheetName As String) As Range
@@ -138,9 +140,9 @@ Public Sub SortAll()
     getAddressRng("Addresses").Sort _
         key1:=ActiveWorkbook.Sheets.[_Default]("Addresses").Range("C2"), Order1:=xlAscending, Header:=xlNo
     getAddressRng("Needs Autocorrect").Sort _
-        key1:=ActiveWorkbook.Sheets.[_Default]("Needs Autocorrect").Range("C2"), Order1:=xlAscending, Header:=xlNo
+        key1:=ActiveWorkbook.Sheets.[_Default]("Needs Autocorrect").Range("F2"), Order1:=xlAscending, Header:=xlNo
     getAddressRng("Discards").Sort _
-        key1:=ActiveWorkbook.Sheets.[_Default]("Discards").Range("C2"), Order1:=xlAscending, Header:=xlNo
+        key1:=ActiveWorkbook.Sheets.[_Default]("Discards").Range("F2"), Order1:=xlAscending, Header:=xlNo
     getAddressRng("Autocorrected").Sort _
         key1:=ActiveWorkbook.Sheets.[_Default]("Autocorrected").Range("C2"), Order1:=xlAscending, Header:=xlNo
 End Sub
