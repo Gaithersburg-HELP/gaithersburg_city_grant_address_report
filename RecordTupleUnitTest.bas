@@ -74,7 +74,7 @@ Public Sub TestFormatAddress()
     Dim gburgFormat As Scripting.Dictionary
     Set gburgFormat = record.GburgFormatRawAddress
     
-    assert.IsTrue gburgFormat.Item(AddressKey.Full) = "501a S Frederick Ave E", "Full address incorrect"
+    assert.IsTrue gburgFormat.Item(AddressKey.Full) = "501a S Frederick Ave E Ste 1", "Full address incorrect"
     assert.IsTrue gburgFormat.Item(AddressKey.Postfix) = "E", "Postfix incorrect"
     assert.IsTrue gburgFormat.Item(AddressKey.PrefixedStreetName) = "S Frederick", "Street name incorrect"
     assert.IsTrue gburgFormat.Item(AddressKey.StreetNum) = "501a", "Street no. incorrect"

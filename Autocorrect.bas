@@ -23,17 +23,6 @@ Public Sub confirmAttemptValidation()
     attemptValidation
 End Sub
 
-'@EntryPoint
-Public Sub confirmDiscardAll()
-    Dim confirmResponse As VbMsgBoxResult
-    confirmResponse = MsgBox("Are you sure you wish to discard all records?", vbYesNo + vbQuestion, "Confirmation")
-    If confirmResponse = vbNo Then
-        Exit Sub
-    End If
-    
-    'TODO discard all remaining
-End Sub
-
 Public Sub attemptValidation()
     Dim addressAPIKey As String
     addressAPIKey = getAPIKeys().Item(addressValidationKeyname)
@@ -44,6 +33,7 @@ Public Sub attemptValidation()
     
     printRemainingRequests (1)
     ' TODO check if user has verified, if so then skip autocorrection and validate against Gaithersburg
+    ' If fails Gaithersburg validation, remark as FALSE
     
     ' TODO autocorrecting
     ' autocorrectAddress(address)
@@ -64,4 +54,13 @@ Public Sub attemptValidation()
     ' Autocorrect Av to Ave, W Deer Pk to W Deer Park Rd
     ' Check postfixes
     'autocorrectAddress = Array(address, "valid json", "autocorrect json")
+    
+    'If usps cass valid, intersect polygon
+    ' if in Gaithersburg, highlight for user verification(check 501 S Frederick Ave)
+    ' Using valid address Google, use USPS standardized (test 2 nina ave (CT).
+    ' usps returns odendhal and oneill, add apostrophe. postfix test: 775 kimberly ct e
+    ' - Adding Gaithersburg does work: 15119 frederick rd, gaithersburg, md corrects to Rockville, MD (or possibly Woodbine, MD)
+    ' - go with USPS CASS address comparison, google "replaced" or "spellCorrected" is not always present,
+    ' - 501 frederick ave, gaithersburg, md replaces to 501 S Frederick Ave
+    ' - 501 frederik returns "spellCorrected",
 End Sub

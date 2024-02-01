@@ -1,6 +1,6 @@
 Visit on,Tracking Method,Guest ID,First Name,Last Name,Address,Apartment/Suite,City/Town,State/Province,Zip/Postal Code,Total Individuals,--- TOTAL Rx COSTS (number only 0.00),,,,,Test notes
 7/7/2023 11:02,Food,7511,Apple,Banana,2 GENTLE CT,,Montgomery Village,MD,20886,5,,,,,,shouldn't match 902 Gentlewood St. valid address but not in gaithersburg
-1/6/2023 10:04,Food,7544,Crabcake,Dinosaur,501 S. Frederick Ave,1,Gaithersburg,MD,20877,1,,,,,,"should match Road_Name ""Frederick"", Road_Prefix_Dir ""S"""
+1/6/2023 10:04,Food,7544,Crabcake,Dinosaur,501A S. Frederick Ave,1,Gaithersburg,MD,20877,1,,,,,,"period after prefix, should match Road_Name ""Frederick"", Road_Prefix_Dir ""S"""
 4/5/2023,Food,3575,Pluto,Neptune Michael,422 N GIRARD ST E,103  Room 1,Gaithersburg,MD,20877,3,,,,,,fake address but should split prefix and postfix correctly and match Girard St
 10/3/2023 9:55,Rx Asst,6468,Jupiter,Quinoa,742 QUINCE ORCHARD BLVD,T1,Gaithersburg,MD,20878,1,28,,,,,"multiple apartments at this address, should mark as in city without question"
 2/28/2023,Food,7728,Moxie Doxie,Manifold Populate,9 E Deer Park DR,305,Gaithersburg,MD,20877,3,,,,,,shouldn't delete E in street name
@@ -19,9 +19,8 @@ Visit on,Tracking Method,Guest ID,First Name,Last Name,Address,Apartment/Suite,C
 7/11/2023,Choice Pantry 13 Firstfield Road,Panoply Toilet Seat,Toilet Seat,Panoply,13308,,Germantown,MD,20874,4,,,,,,number only address
 7/13/2023,Choice Pantry 13 Firstfield Road,Rapier Human,Human,Rapier,200 N Ho,,Rockville,MD,20850,4,,,,,,prefix + street name only address
 5/31/2023,Food,1111,Why,This,101 Odendhal AVE,1007,Gaitheburg,ME,20870,6,,,,,,"incorrect city, state, zip"
-2/28/2023,Food,7728,Moxie Doxie,Manifold Populate,9 E Deer Park DR,305,Gaithersburg,MD,20877,3,,,,,,repeated visit same date and service
+2/28/2023,7,7728,Moxie Doxie,Manifold Populate,9 E Deer Park DR,305,Gaithersburg,MD,20877,3,,,,,,repeated visit same date different service
 3/28/2023,Food,1001,Knife,Fightin,9 Park Ave,Suite 100,Gaithersburg,MD,20877,3,,,,,,suite in apartment should be ste
 4/28/2023,Food,1002,O'Hanna,Mulligan,409 Christopher Ave,T3 RM 1,Gaithersburg,MD,20879,2,,,,,,"apostrophe in name, multiple apartment should match Apt T3"
-5/28/2023,Food,1003,Bobby,Hill,150 Chevy Chase St,Unit 102,Gaithersburg,MD,20878,2,,,,,,"only unit types in gaithersburg are unit, fl, bldg, ste, apt. gaithersburg has this as unit, USPS as Apt"
-3/11/2023,Food,1004,Uber,Victor,2 nina ave,,Gaitherburg,MD,20871,3,,,,,,"should autocorrect to 2 Nina Ct, Gaithersburg, 20877"
 3/15/2023,Food,9999,Hats,Off,534 Odend'hal Dr,5,Gaithersburg,MD,20877,6,30,,,,,test tracking method & rx merge and totals
+2/1/2023,Food,9998,Nancy,Drew,501A S Frederick Ave,0,Gaithersburg,MD,20877,5,,,,,,"wrong apartment, right address, should require user verification"

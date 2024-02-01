@@ -336,6 +336,8 @@ Public Sub addRecords()
     Next key
     
     SortAll
+    
+    SheetUtilities.getPastedRecordsRng.Clear
 
     Application.StatusBar = appStatus
 End Sub
