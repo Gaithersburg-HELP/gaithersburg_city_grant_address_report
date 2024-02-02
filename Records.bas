@@ -250,10 +250,7 @@ Public Sub addRecords()
             ' Valid address
             recordToValidate.InCity = "Yes"
             addresses.Add recordToValidate.key, recordToValidate
-            
-            If recordToValidate.ValidZipcode <> recordToValidate.RawZip Then
-                autocorrected.Add recordToValidate.key, recordToValidate
-            End If
+            ' NOTE Choosing not to add changed zipcodes to autocorrected, unlikely to have same address in two different zip codes
         Else
             recordToValidate.InCity = "Unknown"
             needsAutocorrect.Add recordToValidate.key, recordToValidate
@@ -286,7 +283,8 @@ Public Sub addRecords()
             For Each quarter In record.rxTotal.Keys
                 Dim visit As Variant
                 For Each visit In record.rxTotal.Item(quarter).Keys
-                    rxCount(getQuarterNum(quarter)) = rxCount(getQuarterNum(quarter)) + 1
+                    rxCount(getQuarterNum(quarter)) = rxCount(getQuarterNum(quarter)) + _
+                                                      record.rxTotal.Item(quarter).Item(visit)
                 Next visit
             Next quarter
             
@@ -310,6 +308,10 @@ Public Sub addRecords()
                 guestIDTotal(i) = guestIDTotal(i) + visitCount(i)
                 householdTotal(i) = householdTotal(i) + (visitCount(i) * record.householdTotal)
                 rxTotal(i) = rxTotal(i) + rxCount(i)
+                
+                ' arrays are not reset on loop iteration!
+                rxCount(i) = 0
+                visitCount(i) = 0
             Next i
         End If
     Next key

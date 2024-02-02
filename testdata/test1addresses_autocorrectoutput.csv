@@ -1,11 +1,8 @@
 In City,User Verified,Validated Address,Validated Unit Type and No.,Validated Zip Code,Raw Address,Raw Unit Type With Number,Raw City,Raw State,Raw Zipcode,Guest ID,First Name,Last Name,Household Total,Rx Total,Food,Choice Pantry 13 Firstfield Road
-Unknown,FALSE,, ,,19718 Circle,,Darnestown,MD,20874,Napster Rainman,Rainman,Napster,5,{},"{""Q1"":[""7/7/2023 11:02:00 AM""]}",
-Unknown,FALSE,, ,,2 GENTLE CT,,Montgomery Village,MD,20886,7511,Apple,Banana,5,{},"{""Q3"":[""1/6/2023 10:04:00 AM""]}",
-Unknown,FALSE,, ,,200 N Ho,,Rockville,MD,20850,Rapier Human,Human,Rapier,4,{},"{""Q4"":[""4/5/2023""]}",
-Unknown,FALSE,, ,,409 Christopher Ave,T3 RM 1,Gaithersburg,MD,20879,1002,O'Hanna,Mulligan,2,"{""Q3"":{""1/31/2023"":22}}","{""Q3"":[""1/31/2023""]}",
-Unknown,FALSE,, ,,422 N GIRARD ST E,103  Room 1,Gaithersburg,MD,20877,3575,Pluto,Neptune Michael,3,"{""Q3"":{""2/15/2023"":45,""3/15/2023"":30}}","{""Q3"":[""2/15/2023"",""3/15/2023""]}",
-Unknown,FALSE,, ,,501A S Frederick Ave,0,Gaithersburg,MD,20877,9998,Nancy,Drew,5,{},,"{""Q2"":[""11/6/2023""]}"
-Unknown,FALSE,, ,,501A S. Frederick Ave,1,Gaithersburg,MD,20877,7544,Crabcake,Dinosaur,1,{},,"{""Q1"":[""7/13/2023""]}"
-Unknown,FALSE,, ,,534 Odendhal AVE,5,Gaithersburg,MD,20877,8888,Junk,Yard,6,{},"{""Q3"":[""3/28/2023""]}",
-Unknown,FALSE,, ,,534 Odend'hal Dr,5,Gaithersburg,MD,20877,9999,Hats,Off,6,{},"{""Q4"":[""4/28/2023""]}",
-Unknown,FALSE,, ,,9 Park Ave,Suite 100,Gaithersburg,MD,20877,1001,Knife,Fightin,3,{},"{""Q3"":[""2/1/2023""]}",
+Unknown,FALSE,, ,,19718 Circle,,Darnestown,MD,20874,Napster Rainman,Rainman,Napster,5,{},,"{""Q2"":[""11/6/2023""]}"
+Unknown,FALSE,, ,,2 GENTLE CT,,Montgomery Village,MD,20886,7511,Apple,Banana,5,{},"{""Q1"":[""7/7/2023 11:02:00 AM""]}",
+Unknown,FALSE,, ,,200 N Ho,,Rockville,MD,20850,Rapier Human,Human,Rapier,4,{},,"{""Q1"":[""7/13/2023""]}"
+Unknown,FALSE,, ,,409 Christopher Ave,T3 RM 1,Gaithersburg,MD,20879,1002,O'Hanna,Mulligan,2,{},"{""Q4"":[""4/28/2023""]}",
+Unknown,FALSE,, ,,422 N GIRARD ST E,103  Room 1,Gaithersburg,MD,20877,3575,Pluto,Neptune Michael,3,{},"{""Q4"":[""4/5/2023""]}",
+Unknown,FALSE,, ,,501A S Frederick Ave,0,Gaithersburg,MD,20877,9998,Nancy,Drew,5,{},"{""Q3"":[""2/1/2023""]}",
+Unknown,FALSE,, ,,537 Odend'hal Dr,,Gaithersburg,MD,20877,9999,Hats,Off,6,"{""Q3"":{""2/15/2023"":45,""3/15/2023"":30}}","{""Q3"":[""2/15/2023"",""3/15/2023""]}",
