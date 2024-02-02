@@ -79,7 +79,12 @@ Public Function loadRecordFromSheet(ByVal recordRowFirstCell As Range) As Record
     Dim j As Long
     j = 1
     Do While j <= UBound(services) + 1
-        visitData.Add services(j - 1), JsonConverter.ParseJson(recordRowFirstCell.Offset(0, 14 + j).Value)
+        Dim visitJson As String
+        visitJson = recordRowFirstCell.Offset(0, 14 + j).Value
+        If visitJson <> vbNullString Then
+            visitData.Add services(j - 1), JsonConverter.ParseJson(visitJson)
+        End If
+        j = j + 1
     Loop
     
     Set record.visitData = visitData
@@ -100,7 +105,7 @@ Public Function loadAddresses(ByVal sheetName As String) As Scripting.Dictionary
     End If
     
     Dim i As Long
-    i = 1
+    i = 2
     Do While i < getBlankRow(sheetName).row
         Dim recordRowFirstCell As Range
         Set recordRowFirstCell = sheet.Rows.Item(i).Cells.Item(1, 1)
