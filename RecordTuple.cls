@@ -72,7 +72,7 @@ End Property
 
 ' Should be String or InCityCode
 ' VBA properties don't allow overloading
-Public Sub SetInCity(code As Variant)
+Public Sub SetInCity(ByVal code As Variant)
     Select Case VarType(code)
         Case vbLong
             pInCity = code
@@ -130,6 +130,15 @@ End Property
 Public Property Let ValidZipcode(ByVal str As String)
     pValidZipcode = str
 End Property
+
+' Expects AddressKey
+Public Sub SetValidAddress(ByVal address As Scripting.Dictionary)
+    ValidAddress = address.Item(AddressKey.StreetAddress)
+    If address.Item(AddressKey.UnitType) <> vbNullString Then
+        ValidUnitWithNum = address.Item(AddressKey.UnitType) & " " & address.Item(AddressKey.UnitNum)
+    End If
+    ValidZipcode = address.Item(AddressKey.Zip)
+End Sub
 
 Public Property Get RawAddress() As String
     RawAddress = pRawAddress

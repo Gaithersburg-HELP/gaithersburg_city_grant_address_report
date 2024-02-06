@@ -255,9 +255,7 @@ Public Sub addRecords()
         Dim gburgAddress As Scripting.Dictionary
         Set gburgAddress = Lookup.gburgQuery(recordToValidate.GburgFormatRawAddress.Item(AddressKey.Full))
         
-        recordToValidate.ValidAddress = gburgAddress.Item(AddressKey.StreetAddress)
-        recordToValidate.ValidUnitWithNum = gburgAddress.Item(AddressKey.UnitType) & " " & gburgAddress.Item(AddressKey.UnitNum)
-        recordToValidate.ValidZipcode = gburgAddress.Item(AddressKey.Zip)
+        recordToValidate.SetValidAddress gburgAddress
         
         If gburgAddress.Item(AddressKey.Full) <> vbNullString Then
             ' Valid address
