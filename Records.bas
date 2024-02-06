@@ -57,7 +57,7 @@ Public Function loadRecordFromSheet(ByVal recordRowFirstCell As Range) As Record
     Dim services() As String
     services = loadServiceNames(recordRowFirstCell.Worksheet.name)
     
-    record.InCity = recordRowFirstCell.Offset(0, 0).Value
+    record.SetInCity recordRowFirstCell.Offset(0, 0).Value
     record.UserVerified = CBool(recordRowFirstCell.Offset(0, 1).Value)
     record.ValidAddress = recordRowFirstCell.Offset(0, 2).Value
     record.ValidUnitWithNum = recordRowFirstCell.Offset(0, 3).Value
@@ -143,7 +143,7 @@ Public Sub writeAddress(ByVal sheetName As String, ByVal record As RecordTuple)
     Dim recordRow As Range
     Set recordRow = getBlankRow(sheetName)
     
-    recordRow.Cells.Item(1, 1).Value = record.InCity
+    recordRow.Cells.Item(1, 1).Value = record.InCityStr
     recordRow.Cells.Item(1, 2).Value = record.UserVerified
     recordRow.Cells.Item(1, 3).Value = record.ValidAddress
     recordRow.Cells.Item(1, 4).Value = record.ValidUnitWithNum
@@ -235,7 +235,7 @@ Public Sub addRecords()
             If recordToAdd.isCorrectableAddress() Then
                 recordsToValidate.Add recordToAdd.key, recordToAdd
             Else
-                recordToAdd.InCity = "Not correctable"
+                recordToAdd.SetInCity InCityCode.NotCorrectable
                 discards.Add recordToAdd.key, recordToAdd
             End If
         End If
@@ -261,11 +261,11 @@ Public Sub addRecords()
         
         If gburgAddress.Item(AddressKey.Full) <> vbNullString Then
             ' Valid address
-            recordToValidate.InCity = "Yes"
+            recordToValidate.SetInCity InCityCode.ValidInCity
             addresses.Add recordToValidate.key, recordToValidate
             ' NOTE Choosing not to add changed zipcodes to autocorrected, unlikely to have same address in two different zip codes
         Else
-            recordToValidate.InCity = "Unknown"
+            recordToValidate.SetInCity InCityCode.NotYetAutocorrected
             needsAutocorrect.Add recordToValidate.key, recordToValidate
         End If
         Application.StatusBar = "Validating record " & i & " of " & (UBound(recordsToValidate.Keys) + 1)
@@ -290,7 +290,7 @@ Public Sub addRecords()
         Set record = addresses.Item(key)
         writeAddress "Addresses", addresses.Item(key)
         
-        If record.InCity = "Yes" Then
+        If record.InCity = InCityCode.ValidInCity Then
             Dim rxCount(1 To 4) As Double
             Dim quarter As Variant
             For Each quarter In record.rxTotal.Keys

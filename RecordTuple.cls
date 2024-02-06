@@ -10,7 +10,16 @@ Attribute VB_Exposed = False
 '@Folder("City_Grant_Address_Report.src")
 Option Explicit
 
-Private pInCity As String
+Public Enum InCityCode
+    NotCorrectable = -2
+    NotYetAutocorrected = -1
+    FailedAutocorrect = 0
+    ValidInCity = 1
+    ValidNotInCity = 2
+End Enum
+
+Private pInCity As InCityCode
+
 Private pUserVerified As Boolean
 
 Private pValidAddress As String
@@ -42,14 +51,45 @@ Public Property Get key() As String
     key = pGuestID
 End Property
 
-
-Public Property Get InCity() As String
+Public Property Get InCity() As InCityCode
     InCity = pInCity
 End Property
 
-Public Property Let InCity(ByVal str As String)
-    pInCity = str
+Public Property Get InCityStr() As String
+    Select Case pInCity
+        Case InCityCode.NotCorrectable
+            InCityStr = "Not correctable"
+        Case InCityCode.NotYetAutocorrected
+            InCityStr = "Not yet autocorrected"
+        Case InCityCode.FailedAutocorrect
+            InCityStr = "Failed autocorrection"
+        Case InCityCode.ValidInCity
+            InCityStr = "Yes"
+        Case InCityCode.ValidNotInCity
+            InCityStr = "No"
+    End Select
 End Property
+
+' Should be String or InCityCode
+' VBA properties don't allow overloading
+Public Sub SetInCity(code As Variant)
+    Select Case VarType(code)
+        Case vbLong
+            pInCity = code
+        Case vbString
+            If code = "Not correctable" Then
+                pInCity = NotCorrectable
+            ElseIf code = "Not yet autocorrected" Then
+                pInCity = NotYetAutocorrected
+            ElseIf code = "Failed autocorrection" Then
+                pInCity = FailedAutocorrect
+            ElseIf code = "Yes" Then
+                pInCity = ValidInCity
+            ElseIf code = "No" Then
+                pInCity = ValidNotInCity
+            End If
+    End Select
+End Sub
 
 Public Property Get UserVerified() As Boolean
     UserVerified = pUserVerified

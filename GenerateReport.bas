@@ -22,7 +22,7 @@ Public Sub generateFinalReport()
         Dim record As RecordTuple
         Set record = addresses.Item(address)
         ActiveWorkbook.Sheets.[_Default]("Final Report").Cells(2, 1).Value = record.CleanInitials
-        ActiveWorkbook.Sheets.[_Default]("Final Report").Cells(2, 2).Value = record.GburgFormatValidAddress.Item(AddressKey.StreetName)
+        ActiveWorkbook.Sheets.[_Default]("Final Report").Cells(2, 2).Value = record.GburgFormatValidAddress.Item(AddressKey.PrefixedStreetName)
     Next address
     
     ' TODO Load addresses
