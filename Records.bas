@@ -176,6 +176,14 @@ Public Sub writeAddress(ByVal sheetName As String, ByVal record As RecordTuple)
     Next serviceToAdd
 End Sub
 
+Public Sub writeAddresses(ByVal sheetName As String, ByVal addresses As Scripting.Dictionary)
+    ClearSheet sheetName
+    Dim key As Variant
+    For Each key In addresses.Keys
+        writeAddress sheetName, addresses.Item(key)
+    Next key
+End Sub
+
 Public Sub addRecords()
     ' TODO import MicroTimer from Module 1
     ' Save application status bar to restore it later
@@ -332,15 +340,9 @@ Public Sub addRecords()
         totalsRng.Cells.Item(5, i) = rxTotal(i)
     Next i
     
-    For Each key In needsAutocorrect.Keys()
-        writeAddress "Needs Autocorrect", needsAutocorrect.Item(key)
-    Next key
-    For Each key In discards.Keys()
-        writeAddress "Discards", discards.Item(key)
-    Next key
-    For Each key In autocorrected.Keys()
-        writeAddress "Autocorrected", autocorrected.Item(key)
-    Next key
+    writeAddresses "Needs Autocorrect", needsAutocorrect
+    writeAddresses "Discards", discards
+    writeAddresses "Autocorrected", autocorrected
     
     SortAll
     
