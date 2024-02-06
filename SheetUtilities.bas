@@ -127,6 +127,12 @@ Public Sub CompareSheetCSV(ByVal assert As Object, ByVal sheetName As String, By
     Next i
 End Sub
 
+Public Sub ClearSheet(ByVal sheetName As String)
+    getAddressRng(sheetName).Clear
+    getAddressVisitDataRng(sheetName).Clear
+    getServiceHeaderRng(sheetName).Clear
+End Sub
+
 Public Sub ClearAll()
     getPastedRecordsRng.Clear
     getTotalsRng.Value = 0
@@ -134,9 +140,7 @@ Public Sub ClearAll()
     
     Dim i As Long
     For i = 3 To ActiveWorkbook.Sheets.Count
-        getAddressRng(ActiveWorkbook.Sheets.[_Default](i).name).Clear
-        getAddressVisitDataRng(ActiveWorkbook.Sheets.[_Default](i).name).Clear
-        getServiceHeaderRng(ActiveWorkbook.Sheets.[_Default](i).name).Clear
+        ClearSheet ActiveWorkbook.Sheets.[_Default](i).name
     Next
 End Sub
 
