@@ -12,25 +12,39 @@ Public Enum AddressKey
     UnitType = 5
     UnitNum = 6
     Zip = 7
+    minLongitude = 8 ' Double
+    maxLongitude = 9 ' Double
+    minLatitude = 10 ' Double
+    maxLatitude = 11 ' Double
 End Enum
+
+Private Function initAddressKey() As Scripting.Dictionary
+    Dim address As Scripting.Dictionary
+    Set address = New Scripting.Dictionary
+    address.Add AddressKey.StreetAddress, vbNullString
+    address.Add AddressKey.Full, vbNullString
+    address.Add AddressKey.StreetNum, vbNullString
+    address.Add AddressKey.PrefixedStreetName, vbNullString
+    address.Add AddressKey.StreetType, vbNullString
+    address.Add AddressKey.Postfix, vbNullString
+    address.Add AddressKey.UnitType, vbNullString
+    address.Add AddressKey.UnitNum, vbNullString
+    address.Add AddressKey.Zip, vbNullString
+    address.Add AddressKey.minLongitude, 0
+    address.Add AddressKey.maxLongitude, 0
+    address.Add AddressKey.minLatitude, 0
+    address.Add AddressKey.maxLatitude, 0
+    Set initAddressKey = address
+End Function
 
 ' Executes REST query on Gaithersburg ArcGIS website to see if address is in city or not
 ' Expects Gaithersburg full formatted address
-' Returns address dictionary of validated fields. All keys will exist but may be set to vbNullString
-' - If all fields validated, AddressKey.Full will not be vbNullString
+' Returns address dictionary of validated fields. All keys will exist but may be set to vbNullString or 0
+' - If all address fields validated, AddressKey.Full will not be vbNullString
 ' - Since only one feature will be returned if not searching with wildcard %, will always be a fully validated address
 Public Function gburgQuery(ByVal fullAddress As String) As Scripting.Dictionary
     Dim validatedAddress As Scripting.Dictionary
-    Set validatedAddress = New Scripting.Dictionary
-    validatedAddress.Add AddressKey.StreetAddress, vbNullString
-    validatedAddress.Add AddressKey.Full, vbNullString
-    validatedAddress.Add AddressKey.StreetNum, vbNullString
-    validatedAddress.Add AddressKey.PrefixedStreetName, vbNullString
-    validatedAddress.Add AddressKey.StreetType, vbNullString
-    validatedAddress.Add AddressKey.Postfix, vbNullString
-    validatedAddress.Add AddressKey.UnitType, vbNullString
-    validatedAddress.Add AddressKey.UnitNum, vbNullString
-    validatedAddress.Add AddressKey.Zip, vbNullString
+    Set validatedAddress = initAddressKey()
     
     ' ' is escaped as ''
     Dim formatAddress As String
@@ -111,6 +125,55 @@ Public Function gburgQuery(ByVal fullAddress As String) As Scripting.Dictionary
         End If
     End If
     Set gburgQuery = validatedAddress
+End Function
+
+' Executes REST query on Gaithersburg ARCGIS to see if address envelope
+' intersects Gaithersburg boundaries
+Public Function possibleInGburgQuery(ByVal minLongitude As Double, ByVal minLatitude As Double, _
+                                     ByVal maxLongitude As Double, ByVal maxLatitude As Double) As Boolean
+    Dim service As Object
+    Set service = New MSXML2.XMLHTTP60
+    Dim queryString As String
+    queryString = "https://maps.gaithersburgmd.gov/arcgis/rest/services/layers/basicLayers/MapServer/17/query?" & _
+        "f=json&" & "returnGeometry=false&" & _
+        "outFields=OBJECTID&" & _
+        "where=1%3D1&" & _
+        "geometryType=esriGeometryEnvelope&" & "inSR=4326&" & "spatialRel=esriSpatialRelIntersects&" & _
+        "geometry=" & minLongitude & "%2C" & minLatitude & "%2C" & maxLongitude & "%2C" & maxLatitude
+    
+    Dim queryResult As String
+    With service
+        .Open "GET", queryString, False
+        .setRequestHeader "Content-Type", "application/x-www-form-urlencoded"
+        .send
+        Do While .readyState <> 4
+            DoEvents
+        Loop
+        
+        If .Status >= 400 And .Status <= 599 Then
+            queryResult = CStr(.Status) + " - " + .statusText
+            If .responseText <> vbNullString Then
+                queryResult = queryResult + vbCrLf & .responseText
+            End If
+            MsgBox "Error " + queryResult, vbCritical, "Connection"
+            possibleInGburgQuery = False
+            Exit Function
+        End If
+        
+        ' Rubberduck inspection bug see https://github.com/rubberduck-vba/Rubberduck/issues/6142
+        '@Ignore AssignmentNotUsed
+        queryResult = .responseText
+    End With
+    
+    Dim jsonResult As Scripting.Dictionary
+    
+    If queryResult <> vbNullString Then
+        Set jsonResult = JsonConverter.ParseJson(queryResult)
+        possibleInGburgQuery = (Not (jsonResult Is Nothing)) And jsonResult.Item("features").Count > 0
+    Else
+        MsgBox "Error, unable to check if address is in Gaithersburg"
+        possibleInGburgQuery = False
+    End If
 End Function
 
 ' This macro subroutine may be used to double-check

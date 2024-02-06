@@ -3,3 +3,4 @@ Visit on,Tracking Method,Guest ID,First Name,Last Name,Address,Apartment/Suite,C
 3/11/2023,Food,1004,Uber,Victor,2 nina ave,,Gaitherburg,MD,20871,3,,,,,,"should autocorrect to 2 Nina Ct, Gaithersburg, 20877"
 5/28/2023,Food,1003,Bobby,Hill,150 Chevy Chase St,Unit 102,Gaithersburg,MD,20878,2,,,,,,"only unit types in gaithersburg are unit, fl, bldg, ste, apt. gaithersburg has this as unit, USPS as Apt"
 1/7/2023,Food,6012,Regret,Much,13-15 E Deer Park Dr,202,Gaithersburg,MD,20877,9,,,,,,"hyphens do exist in street number, should match suite 202"
+3/4/2023,Food,N Zombies Ghouls,Ghouls,N Zombies,600 Frederick Ave,,Gaithersburg,MD,20877,4,,,,,,"falls in Gaithersburg but fails Gaithersburg database due to no prefix, fails DPV validation due to no secondary number"
