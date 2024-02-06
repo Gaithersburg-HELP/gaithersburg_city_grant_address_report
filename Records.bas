@@ -184,6 +184,83 @@ Public Sub writeAddresses(ByVal sheetName As String, ByVal addresses As Scriptin
     Next key
 End Sub
 
+Public Sub writeAddressesComputeTotals(ByVal addresses As Scripting.Dictionary, _
+                                       ByVal needsAutocorrect As Scripting.Dictionary, _
+                                       ByVal discards As Scripting.Dictionary, _
+                                       ByVal autocorrected As Scripting.Dictionary)
+    SheetUtilities.ClearAll
+    
+    ' All initialized to 0
+    Dim uniqueGuestIDTotal(1 To 4) As Long
+    Dim uniqueGuestIDHouseholdTotal(1 To 4) As Long
+    Dim guestIDTotal(1 To 4) As Long
+    Dim householdTotal(1 To 4) As Long
+    Dim rxTotal(1 To 4) As Double
+    
+    Dim key As Variant
+    For Each key In addresses.Keys
+        Dim record As RecordTuple
+        Set record = addresses.Item(key)
+        writeAddress "Addresses", addresses.Item(key)
+        
+        If record.InCity = InCityCode.ValidInCity Then
+            Dim rxCount(1 To 4) As Double
+            Dim quarter As Variant
+            For Each quarter In record.rxTotal.Keys
+                Dim visit As Variant
+                For Each visit In record.rxTotal.Item(quarter).Keys
+                    rxCount(getQuarterNum(quarter)) = rxCount(getQuarterNum(quarter)) + _
+                                                      record.rxTotal.Item(quarter).Item(visit)
+                Next visit
+            Next quarter
+            
+            Dim visitCount(1 To 4) As Long
+            
+            Dim service As Variant
+            For Each service In record.visitData.Keys
+                For Each quarter In record.visitData.Item(service).Keys
+                    visitCount(getQuarterNum(quarter)) = _
+                        visitCount(getQuarterNum(quarter)) + _
+                        record.visitData.Item(service).Item(quarter).Count
+                Next quarter
+            Next service
+            
+            Dim i As Long
+            For i = 1 To 4
+                If visitCount(i) > 0 Then
+                    uniqueGuestIDTotal(i) = uniqueGuestIDTotal(i) + 1
+                    uniqueGuestIDHouseholdTotal(i) = uniqueGuestIDHouseholdTotal(i) + _
+                                                     record.householdTotal
+                End If
+                guestIDTotal(i) = guestIDTotal(i) + visitCount(i)
+                householdTotal(i) = householdTotal(i) + (visitCount(i) * record.householdTotal)
+                rxTotal(i) = rxTotal(i) + rxCount(i)
+                
+                ' arrays are not reset on loop iteration!
+                rxCount(i) = 0
+                visitCount(i) = 0
+            Next i
+        End If
+    Next key
+    
+    Dim totalsRng As Range
+    Set totalsRng = SheetUtilities.getTotalsRng
+    
+    For i = 1 To 4
+        totalsRng.Cells.Item(1, i) = uniqueGuestIDTotal(i)
+        totalsRng.Cells.Item(2, i) = uniqueGuestIDHouseholdTotal(i)
+        totalsRng.Cells.Item(3, i) = guestIDTotal(i)
+        totalsRng.Cells.Item(4, i) = householdTotal(i)
+        totalsRng.Cells.Item(5, i) = rxTotal(i)
+    Next i
+    
+    writeAddresses "Needs Autocorrect", needsAutocorrect
+    writeAddresses "Discards", discards
+    writeAddresses "Autocorrected", autocorrected
+    
+    SortAll
+End Sub
+
 Public Sub addRecords()
     ' TODO import MicroTimer from Module 1
     ' Save application status bar to restore it later
@@ -274,77 +351,7 @@ Public Sub addRecords()
 
     Application.StatusBar = "Writing addresses and computing totals"
     
-    SheetUtilities.ClearAll
-    
-    ' All initialized to 0
-    Dim uniqueGuestIDTotal(1 To 4) As Long
-    Dim uniqueGuestIDHouseholdTotal(1 To 4) As Long
-    Dim guestIDTotal(1 To 4) As Long
-    Dim householdTotal(1 To 4) As Long
-    Dim rxTotal(1 To 4) As Double
-    
-    For Each key In addresses.Keys
-        Dim record As RecordTuple
-        Set record = addresses.Item(key)
-        writeAddress "Addresses", addresses.Item(key)
-        
-        If record.InCity = InCityCode.ValidInCity Then
-            Dim rxCount(1 To 4) As Double
-            Dim quarter As Variant
-            For Each quarter In record.rxTotal.Keys
-                Dim visit As Variant
-                For Each visit In record.rxTotal.Item(quarter).Keys
-                    rxCount(getQuarterNum(quarter)) = rxCount(getQuarterNum(quarter)) + _
-                                                      record.rxTotal.Item(quarter).Item(visit)
-                Next visit
-            Next quarter
-            
-            Dim visitCount(1 To 4) As Long
-            
-            Dim service As Variant
-            For Each service In record.visitData.Keys
-                For Each quarter In record.visitData.Item(service).Keys
-                    visitCount(getQuarterNum(quarter)) = _
-                        visitCount(getQuarterNum(quarter)) + _
-                        record.visitData.Item(service).Item(quarter).Count
-                Next quarter
-            Next service
-            
-            For i = 1 To 4
-                If visitCount(i) > 0 Then
-                    uniqueGuestIDTotal(i) = uniqueGuestIDTotal(i) + 1
-                    uniqueGuestIDHouseholdTotal(i) = uniqueGuestIDHouseholdTotal(i) + _
-                                                     record.householdTotal
-                End If
-                guestIDTotal(i) = guestIDTotal(i) + visitCount(i)
-                householdTotal(i) = householdTotal(i) + (visitCount(i) * record.householdTotal)
-                rxTotal(i) = rxTotal(i) + rxCount(i)
-                
-                ' arrays are not reset on loop iteration!
-                rxCount(i) = 0
-                visitCount(i) = 0
-            Next i
-        End If
-    Next key
-    
-    Dim totalsRng As Range
-    Set totalsRng = SheetUtilities.getTotalsRng
-    
-    For i = 1 To 4
-        totalsRng.Cells.Item(1, i) = uniqueGuestIDTotal(i)
-        totalsRng.Cells.Item(2, i) = uniqueGuestIDHouseholdTotal(i)
-        totalsRng.Cells.Item(3, i) = guestIDTotal(i)
-        totalsRng.Cells.Item(4, i) = householdTotal(i)
-        totalsRng.Cells.Item(5, i) = rxTotal(i)
-    Next i
-    
-    writeAddresses "Needs Autocorrect", needsAutocorrect
-    writeAddresses "Discards", discards
-    writeAddresses "Autocorrected", autocorrected
-    
-    SortAll
-    
-    SheetUtilities.getPastedRecordsRng.Clear
+    writeAddressesComputeTotals addresses, needsAutocorrect, discards, autocorrected
 
     Application.StatusBar = appStatus
 End Sub
