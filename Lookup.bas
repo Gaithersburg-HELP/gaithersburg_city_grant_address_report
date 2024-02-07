@@ -37,6 +37,38 @@ Private Function initAddressKey() As Scripting.Dictionary
     Set initAddressKey = address
 End Function
 
+' Executes query and returns JSON dictionary. Dictionary will be Nothing if there is an error
+Private Function sendQuery(ByVal requestMethod As String, ByVal url As String, _
+                           ByVal contentType As String, ByVal payload As String) As Scripting.Dictionary
+    Dim service As Object
+    Set service = New MSXML2.XMLHTTP60
+    
+    Dim queryResult As String
+    
+    With service
+        .Open requestMethod, url, False
+        .setRequestHeader "Content-Type", contentType
+        .send payload
+        
+        Do While .readyState <> 4
+            DoEvents
+        Loop
+        
+        If .Status >= 400 And .Status <= 599 Then
+            queryResult = CStr(.Status) + " - " + .statusText
+            If .responseText <> vbNullString Then
+                queryResult = queryResult + vbCrLf & .responseText
+            End If
+            MsgBox "Error " + queryResult, vbCritical, "Connection"
+            Set sendQuery = Nothing
+        ElseIf .responseText <> vbNullString Then
+            Set sendQuery = JsonConverter.ParseJson(.responseText)
+        Else
+            Set sendQuery = Nothing
+        End If
+    End With
+End Function
+
 ' Executes REST query on Gaithersburg ArcGIS website to see if address is in city or not
 ' Expects Gaithersburg full formatted address
 ' Returns address dictionary of validated fields. All keys will exist but may be set to vbNullString or 0
@@ -50,80 +82,54 @@ Public Function gburgQuery(ByVal fullAddress As String) As Scripting.Dictionary
     Dim formatAddress As String
     formatAddress = Replace(fullAddress, "'", "''")
 
-    Dim service As Object
-    Set service = New MSXML2.XMLHTTP60
+    
     Dim queryString As String
     queryString = "https://maps.gaithersburgmd.gov/arcgis/rest/services/layers/GaithersburgCityAddresses/MapServer/0/query?" & _
         "f=json&" & "returnGeometry=false&" & _
         "outFields=Full_Address,Address_Number,Road_Prefix_Dir,Road_Name,Road_Type,Road_Post_Dir,Unit_Type,Unit_Number,Zip_Code&" & _
         "where=Full_Address%20LIKE%20%27" & _
         WorksheetFunction.EncodeURL(formatAddress) & "%27"
+           
+    Dim jsonResult As Scripting.Dictionary
+    Set jsonResult = sendQuery("GET", queryString, "application/x-www-form-urlencoded", vbNullString)
     
-    Dim queryResult As String
-    With service
-        .Open "GET", queryString, False
-        .setRequestHeader "Content-Type", "application/x-www-form-urlencoded"
-        .send
-        Do While .readyState <> 4
-            DoEvents
-        Loop
+    If (Not (jsonResult Is Nothing)) And jsonResult.Item("features").Count > 0 Then
+        ' Since searching on Full_Address, expect only one feature to be returned
+        Dim gburgAddress As Scripting.Dictionary
+        Set gburgAddress = jsonResult.Item("features").Item(1).Item("attributes")
         
-        If .Status >= 400 And .Status <= 599 Then
-            queryResult = CStr(.Status) + " - " + .statusText
-            If .responseText <> vbNullString Then
-                queryResult = queryResult + vbCrLf & .responseText
-            End If
-            MsgBox "Error " + queryResult, vbCritical, "Connection"
-            Set gburgQuery = validatedAddress
-            Exit Function
+        validatedAddress.Item(AddressKey.StreetNum) = gburgAddress.Item("Address_Number")
+        
+        If gburgAddress.Item("Road_Prefix_Dir") <> vbNullString Then
+            validatedAddress.Item(AddressKey.PrefixedStreetName) = gburgAddress.Item("Road_Prefix_Dir") & " " & _
+                                                                   gburgAddress.Item("Road_Name")
+        Else
+            validatedAddress.Item(AddressKey.PrefixedStreetName) = gburgAddress.Item("Road_Name")
         End If
         
-        ' Rubberduck inspection bug see https://github.com/rubberduck-vba/Rubberduck/issues/6142
-        '@Ignore AssignmentNotUsed
-        queryResult = .responseText
-    End With
-    
-    Dim jsonResult As Scripting.Dictionary
-    
-    If queryResult <> vbNullString Then
-        Set jsonResult = JsonConverter.ParseJson(queryResult)
-        If (Not (jsonResult Is Nothing)) And jsonResult.Item("features").Count > 0 Then
-            ' Since searching on Full_Address, expect only one feature to be returned
-            Dim gburgAddress As Scripting.Dictionary
-            Set gburgAddress = jsonResult.Item("features").Item(1).Item("attributes")
-            
-            validatedAddress.Item(AddressKey.StreetNum) = gburgAddress.Item("Address_Number")
-            
-            If gburgAddress.Item("Road_Prefix_Dir") <> vbNullString Then
-                validatedAddress.Item(AddressKey.PrefixedStreetName) = gburgAddress.Item("Road_Prefix_Dir") & " " & _
-                                                                       gburgAddress.Item("Road_Name")
-            Else
-                validatedAddress.Item(AddressKey.PrefixedStreetName) = gburgAddress.Item("Road_Name")
-            End If
-            
-            validatedAddress.Item(AddressKey.StreetType) = gburgAddress.Item("Road_Type")
-            validatedAddress.Item(AddressKey.Postfix) = gburgAddress.Item("Road_Post_Dir")
-            validatedAddress.Item(AddressKey.UnitType) = gburgAddress.Item("Unit_Type")
-            validatedAddress.Item(AddressKey.UnitNum) = gburgAddress.Item("Unit_Number")
-            validatedAddress.Item(AddressKey.Zip) = gburgAddress.Item("Zip_Code")
-            
-            validatedAddress.Item(AddressKey.StreetAddress) = validatedAddress.Item(AddressKey.StreetNum) & " " & _
-                                                              validatedAddress.Item(AddressKey.PrefixedStreetName) & " " & _
-                                                              validatedAddress.Item(AddressKey.StreetType)
-            If validatedAddress.Item(AddressKey.Postfix) <> vbNullString Then
-                validatedAddress.Item(AddressKey.StreetAddress) = validatedAddress.Item(AddressKey.StreetAddress) & " " & _
-                                                                  validatedAddress.Item(AddressKey.Postfix)
-            End If
-            
-            If validatedAddress.Item(AddressKey.UnitType) <> vbNullString Then
-                validatedAddress.Item(AddressKey.Full) = validatedAddress.Item(AddressKey.StreetAddress) & " " & _
-                                                         validatedAddress.Item(AddressKey.UnitType) & " " & _
-                                                         validatedAddress.Item(AddressKey.UnitNum)
-            Else
-                validatedAddress.Item(AddressKey.Full) = validatedAddress.Item(AddressKey.StreetAddress)
-            End If
+        validatedAddress.Item(AddressKey.StreetType) = gburgAddress.Item("Road_Type")
+        validatedAddress.Item(AddressKey.Postfix) = gburgAddress.Item("Road_Post_Dir")
+        validatedAddress.Item(AddressKey.UnitType) = gburgAddress.Item("Unit_Type")
+        validatedAddress.Item(AddressKey.UnitNum) = gburgAddress.Item("Unit_Number")
+        validatedAddress.Item(AddressKey.Zip) = gburgAddress.Item("Zip_Code")
+        
+        validatedAddress.Item(AddressKey.StreetAddress) = validatedAddress.Item(AddressKey.StreetNum) & " " & _
+                                                          validatedAddress.Item(AddressKey.PrefixedStreetName) & " " & _
+                                                          validatedAddress.Item(AddressKey.StreetType)
+        If validatedAddress.Item(AddressKey.Postfix) <> vbNullString Then
+            validatedAddress.Item(AddressKey.StreetAddress) = validatedAddress.Item(AddressKey.StreetAddress) & " " & _
+                                                              validatedAddress.Item(AddressKey.Postfix)
+        End If
+        
+        If validatedAddress.Item(AddressKey.UnitType) <> vbNullString Then
+            validatedAddress.Item(AddressKey.Full) = validatedAddress.Item(AddressKey.StreetAddress) & " " & _
+                                                     validatedAddress.Item(AddressKey.UnitType) & " " & _
+                                                     validatedAddress.Item(AddressKey.UnitNum)
+        Else
+            validatedAddress.Item(AddressKey.Full) = validatedAddress.Item(AddressKey.StreetAddress)
         End If
     End If
+
     Set gburgQuery = validatedAddress
 End Function
 
@@ -131,8 +137,6 @@ End Function
 ' intersects Gaithersburg boundaries
 Public Function possibleInGburgQuery(ByVal minLongitude As Double, ByVal minLatitude As Double, _
                                      ByVal maxLongitude As Double, ByVal maxLatitude As Double) As Boolean
-    Dim service As Object
-    Set service = New MSXML2.XMLHTTP60
     Dim queryString As String
     queryString = "https://maps.gaithersburgmd.gov/arcgis/rest/services/layers/basicLayers/MapServer/17/query?" & _
         "f=json&" & "returnGeometry=false&" & _
@@ -141,39 +145,10 @@ Public Function possibleInGburgQuery(ByVal minLongitude As Double, ByVal minLati
         "geometryType=esriGeometryEnvelope&" & "inSR=4326&" & "spatialRel=esriSpatialRelIntersects&" & _
         "geometry=" & minLongitude & "%2C" & minLatitude & "%2C" & maxLongitude & "%2C" & maxLatitude
     
-    Dim queryResult As String
-    With service
-        .Open "GET", queryString, False
-        .setRequestHeader "Content-Type", "application/x-www-form-urlencoded"
-        .send
-        Do While .readyState <> 4
-            DoEvents
-        Loop
-        
-        If .Status >= 400 And .Status <= 599 Then
-            queryResult = CStr(.Status) + " - " + .statusText
-            If .responseText <> vbNullString Then
-                queryResult = queryResult + vbCrLf & .responseText
-            End If
-            MsgBox "Error " + queryResult, vbCritical, "Connection"
-            possibleInGburgQuery = False
-            Exit Function
-        End If
-        
-        ' Rubberduck inspection bug see https://github.com/rubberduck-vba/Rubberduck/issues/6142
-        '@Ignore AssignmentNotUsed
-        queryResult = .responseText
-    End With
-    
     Dim jsonResult As Scripting.Dictionary
+    Set jsonResult = sendQuery("GET", queryString, "application/x-www-form-urlencoded", vbNullString)
     
-    If queryResult <> vbNullString Then
-        Set jsonResult = JsonConverter.ParseJson(queryResult)
-        possibleInGburgQuery = (Not (jsonResult Is Nothing)) And jsonResult.Item("features").Count > 0
-    Else
-        MsgBox "Error, unable to check if address is in Gaithersburg"
-        possibleInGburgQuery = False
-    End If
+    Set possibleInGburgQuery = (Not (jsonResult Is Nothing)) And jsonResult.Item("features").Count > 0
 End Function
 
 ' This macro subroutine may be used to double-check
