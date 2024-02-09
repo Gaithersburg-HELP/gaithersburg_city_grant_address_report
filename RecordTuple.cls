@@ -134,9 +134,7 @@ End Property
 ' Expects AddressKey
 Public Sub SetValidAddress(ByVal address As Scripting.Dictionary)
     ValidAddress = address.Item(AddressKey.StreetAddress)
-    If address.Item(AddressKey.UnitType) <> vbNullString Then
-        ValidUnitWithNum = address.Item(AddressKey.UnitType) & " " & address.Item(AddressKey.UnitNum)
-    End If
+    ValidUnitWithNum = address.Item(AddressKey.unitWithNum)
     ValidZipcode = address.Item(AddressKey.Zip)
 End Sub
 
@@ -484,7 +482,7 @@ Private Function SplitUnit(ByVal unitWithNum As String) As String()
     End Select
 End Function
 
-' Returns dictionary of all AddressKey enum
+' Returns dictionary of AddressKey full, streetNum, prefixedstreetname, streettype, postfix, unit type, unit num
 ' - capitalized Street Name with abbr. prefix, cap. abbr. Street Type, cap. abbr. Postfix
 '@Ignore AssignedByValParameter
 Private Function getFormattedSplitAddr(ByVal addr As String) As Scripting.Dictionary

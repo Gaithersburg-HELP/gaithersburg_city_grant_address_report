@@ -11,11 +11,12 @@ Public Enum AddressKey
     Postfix = 4
     UnitType = 5
     UnitNum = 6
-    Zip = 7
-    minLongitude = 8 ' Double
-    maxLongitude = 9 ' Double
-    minLatitude = 10 ' Double
-    maxLatitude = 11 ' Double
+    unitWithNum = 7
+    Zip = 8
+    minLongitude = 9 ' Double
+    maxLongitude = 10 ' Double
+    minLatitude = 11 ' Double
+    maxLatitude = 12 ' Double
 End Enum
 
 Private Function initAddressKey() As Scripting.Dictionary
@@ -29,6 +30,7 @@ Private Function initAddressKey() As Scripting.Dictionary
     address.Add AddressKey.Postfix, vbNullString
     address.Add AddressKey.UnitType, vbNullString
     address.Add AddressKey.UnitNum, vbNullString
+    address.Add AddressKey.unitWithNum, vbNullString
     address.Add AddressKey.Zip, vbNullString
     address.Add AddressKey.minLongitude, 0
     address.Add AddressKey.maxLongitude, 0
@@ -122,9 +124,11 @@ Public Function gburgQuery(ByVal fullAddress As String) As Scripting.Dictionary
         End If
         
         If validatedAddress.Item(AddressKey.UnitType) <> vbNullString Then
+            validatedAddress.Item(AddressKey.unitWithNum) = validatedAddress.Item(AddressKey.UnitType) & " " & _
+                                                            validatedAddress.Item(AddressKey.UnitNum)
             validatedAddress.Item(AddressKey.Full) = validatedAddress.Item(AddressKey.StreetAddress) & " " & _
-                                                     validatedAddress.Item(AddressKey.UnitType) & " " & _
-                                                     validatedAddress.Item(AddressKey.UnitNum)
+                                                     validatedAddress.Item(AddressKey.unitWithNum)
+
         Else
             validatedAddress.Item(AddressKey.Full) = validatedAddress.Item(AddressKey.StreetAddress)
         End If
