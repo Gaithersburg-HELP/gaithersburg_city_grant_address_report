@@ -13,9 +13,10 @@ Option Explicit
 Public Enum InCityCode
     NotCorrectable = -2
     NotYetAutocorrected = -1
-    FailedAutocorrect = 0
-    ValidInCity = 1
-    ValidNotInCity = 2
+    FailedAutocorrectNotInCity = 0
+    FailedAutocorrectInCity = 1
+    ValidInCity = 2
+    ValidNotInCity = 3
 End Enum
 
 Private pInCity As InCityCode
@@ -61,8 +62,10 @@ Public Property Get InCityStr() As String
             InCityStr = "Not correctable"
         Case InCityCode.NotYetAutocorrected
             InCityStr = "Not yet autocorrected"
-        Case InCityCode.FailedAutocorrect
-            InCityStr = "Failed autocorrection"
+        Case InCityCode.FailedAutocorrectNotInCity
+            InCityStr = "Failed autocorrection and geocoded not in city"
+        Case InCityCode.FailedAutocorrectInCity
+            InCityStr = "Possible but failed autocorrection"
         Case InCityCode.ValidInCity
             InCityStr = "Yes"
         Case InCityCode.ValidNotInCity
@@ -81,8 +84,10 @@ Public Sub SetInCity(ByVal code As Variant)
                 pInCity = NotCorrectable
             ElseIf code = "Not yet autocorrected" Then
                 pInCity = NotYetAutocorrected
-            ElseIf code = "Failed autocorrection" Then
-                pInCity = FailedAutocorrect
+            ElseIf code = "Failed autocorrection and geocoded not in city" Then
+                pInCity = FailedAutocorrectNotInCity
+            ElseIf code = "Possible but failed autocorrection" Then
+                pInCity = FailedAutocorrectInCity
             ElseIf code = "Yes" Then
                 pInCity = ValidInCity
             ElseIf code = "No" Then
@@ -107,20 +112,12 @@ Public Property Let ValidAddress(ByVal str As String)
     pValidAddress = str
 End Property
 
-Public Property Get ValidUnitWithNum() As String
-    ValidUnitWithNum = pValidUnitWithNum
+Public Property Get validUnitWithNum() As String
+    validUnitWithNum = pValidUnitWithNum
 End Property
 
-Public Property Let ValidUnitWithNum(ByVal str As String)
+Public Property Let validUnitWithNum(ByVal str As String)
     pValidUnitWithNum = str
-End Property
-
-Public Property Get FullValidAddress() As String
-    If (ValidUnitWithNum <> vbNullString) Then
-        FullValidAddress = ValidAddress & " " & ValidUnitWithNum
-    Else
-        FullValidAddress = ValidAddress
-    End If
 End Property
 
 Public Property Get ValidZipcode() As String
@@ -131,11 +128,11 @@ Public Property Let ValidZipcode(ByVal str As String)
     pValidZipcode = str
 End Property
 
-' Expects AddressKey
+' Expects AddressKey StreetAddress, UnitType, UnitNum, Zip
 Public Sub SetValidAddress(ByVal address As Scripting.Dictionary)
     ValidAddress = address.Item(AddressKey.StreetAddress)
-    ValidUnitWithNum = address.Item(AddressKey.unitWithNum)
-    ValidZipcode = address.Item(AddressKey.Zip)
+    validUnitWithNum = address.Item(AddressKey.unitWithNum)
+    ValidZipcode = address.Item(AddressKey.zip)
 End Sub
 
 Public Property Get RawAddress() As String
@@ -190,11 +187,11 @@ Public Property Let RawZip(ByVal str As String)
     pRawZip = str
 End Property
 
-Public Property Get GuestID() As String
-    GuestID = pGuestID
+Public Property Get guestID() As String
+    guestID = pGuestID
 End Property
 
-Public Property Let GuestID(ByVal str As String)
+Public Property Let guestID(ByVal str As String)
     pGuestID = str
 End Property
 
@@ -241,7 +238,7 @@ Public Property Set visitData(ByVal dict As Scripting.Dictionary)
 End Property
 
 Private Function getQuarterStr(ByVal dateStr As String) As String
-    Select Case Month(dateStr)
+    Select Case month(dateStr)
         Case 7 To 9
             getQuarterStr = "Q1"
         Case 10 To 12
@@ -359,34 +356,6 @@ Public Property Get CleanInitials() As String
                     & UCase$(Left$(CleanLastName, 1))
 End Property
 
-' Trims off first word including space afterwards
-' Returns [trimmed first word, trimmed string (blank if only one word)]
-Private Function LWordTrim(ByVal str As String) As String()
-    Dim firstWord As String
-    Dim spaceIndex As Long
-    spaceIndex = InStr(1, str, " ", vbTextCompare)
-    If (spaceIndex <> 0) Then
-        firstWord = Left$(str, spaceIndex - 1)
-        LWordTrim = Split(firstWord & "|" & Right$(str, Len(str) - spaceIndex), "|")
-    Else
-        LWordTrim = Split(str & "|", "|")
-    End If
-End Function
-
-' Trims off last word including space before
-' Returns [trimmed string, trimmed last word (blank if only one word)]
-Private Function RWordTrim(ByVal str As String) As String()
-    Dim lastWord As String
-    Dim spaceIndex As Long
-    spaceIndex = InStrRev(str, " ", -1, vbTextCompare)
-    If (spaceIndex <> 0) Then
-        lastWord = Right$(str, Len(str) - spaceIndex)
-        RWordTrim = Split(Left$(str, spaceIndex - 1) & "|" & lastWord, "|")
-    Else
-        RWordTrim = Split(str & "|", "|")
-    End If
-End Function
-
 ' Checks street name from start position onwards for an abbreviated direction with spaces around it
 ' If direction is found, returns it, otherwise returns ""
 '@Ignore AssignedByValParameter
@@ -480,6 +449,34 @@ Private Function SplitUnit(ByVal unitWithNum As String) As String()
         Case Else
             SplitUnit = splitArr
     End Select
+End Function
+
+' Trims off first word including space afterwards
+' Returns [trimmed first word, trimmed string (blank if only one word)]
+Private Function LWordTrim(ByVal str As String) As String()
+    Dim firstWord As String
+    Dim spaceIndex As Long
+    spaceIndex = InStr(1, str, " ", vbTextCompare)
+    If (spaceIndex <> 0) Then
+        firstWord = Left$(str, spaceIndex - 1)
+        LWordTrim = Split(firstWord & "|" & Right$(str, Len(str) - spaceIndex), "|")
+    Else
+        LWordTrim = Split(str & "|", "|")
+    End If
+End Function
+
+' Trims off last word including space before
+' Returns [trimmed string, trimmed last word (blank if only one word)]
+Private Function RWordTrim(ByVal str As String) As String()
+    Dim lastWord As String
+    Dim spaceIndex As Long
+    spaceIndex = InStrRev(str, " ", -1, vbTextCompare)
+    If (spaceIndex <> 0) Then
+        lastWord = Right$(str, Len(str) - spaceIndex)
+        RWordTrim = Split(Left$(str, spaceIndex - 1) & "|" & lastWord, "|")
+    Else
+        RWordTrim = Split(str & "|", "|")
+    End If
 End Function
 
 ' Returns dictionary of AddressKey full, streetNum, prefixedstreetname, streettype, postfix, unit type, unit num

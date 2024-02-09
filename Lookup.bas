@@ -12,7 +12,7 @@ Public Enum AddressKey
     UnitType = 5
     UnitNum = 6
     unitWithNum = 7
-    Zip = 8
+    zip = 8
     minLongitude = 9 ' Double
     maxLongitude = 10 ' Double
     minLatitude = 11 ' Double
@@ -31,7 +31,7 @@ Private Function initAddressKey() As Scripting.Dictionary
     address.Add AddressKey.UnitType, vbNullString
     address.Add AddressKey.UnitNum, vbNullString
     address.Add AddressKey.unitWithNum, vbNullString
-    address.Add AddressKey.Zip, vbNullString
+    address.Add AddressKey.zip, vbNullString
     address.Add AddressKey.minLongitude, 0
     address.Add AddressKey.maxLongitude, 0
     address.Add AddressKey.minLatitude, 0
@@ -113,7 +113,7 @@ Public Function gburgQuery(ByVal fullAddress As String) As Scripting.Dictionary
         validatedAddress.Item(AddressKey.Postfix) = gburgAddress.Item("Road_Post_Dir")
         validatedAddress.Item(AddressKey.UnitType) = gburgAddress.Item("Unit_Type")
         validatedAddress.Item(AddressKey.UnitNum) = gburgAddress.Item("Unit_Number")
-        validatedAddress.Item(AddressKey.Zip) = gburgAddress.Item("Zip_Code")
+        validatedAddress.Item(AddressKey.zip) = gburgAddress.Item("Zip_Code")
         
         validatedAddress.Item(AddressKey.StreetAddress) = validatedAddress.Item(AddressKey.StreetNum) & " " & _
                                                           validatedAddress.Item(AddressKey.PrefixedStreetName) & " " & _

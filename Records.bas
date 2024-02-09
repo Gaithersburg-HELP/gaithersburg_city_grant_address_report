@@ -33,7 +33,7 @@ Private Function loadRecordFromRaw(ByVal recordRowFirstCell As Range) As RecordT
     record.AddVisit recordRowFirstCell.Value, recordRowFirstCell.Offset(0, 1).Value
     record.UserVerified = False
 
-    record.GuestID = recordRowFirstCell.Offset(0, 2).Value
+    record.guestID = recordRowFirstCell.Offset(0, 2).Value
     record.FirstName = recordRowFirstCell.Offset(0, 3).Value
     record.LastName = recordRowFirstCell.Offset(0, 4).Value
     record.RawAddress = recordRowFirstCell.Offset(0, 5).Value
@@ -60,14 +60,14 @@ Public Function loadRecordFromSheet(ByVal recordRowFirstCell As Range) As Record
     record.SetInCity recordRowFirstCell.Offset(0, 0).Value
     record.UserVerified = CBool(recordRowFirstCell.Offset(0, 1).Value)
     record.ValidAddress = recordRowFirstCell.Offset(0, 2).Value
-    record.ValidUnitWithNum = recordRowFirstCell.Offset(0, 3).Value
+    record.validUnitWithNum = recordRowFirstCell.Offset(0, 3).Value
     record.ValidZipcode = recordRowFirstCell.Offset(0, 4).Value
     record.RawAddress = recordRowFirstCell.Offset(0, 5).Value
     record.RawUnitWithNum = recordRowFirstCell.Offset(0, 6).Value
     record.RawCity = recordRowFirstCell.Offset(0, 7).Value
     record.RawState = recordRowFirstCell.Offset(0, 8).Value
     record.RawZip = recordRowFirstCell.Offset(0, 9).Value
-    record.GuestID = recordRowFirstCell.Offset(0, 10).Value
+    record.guestID = recordRowFirstCell.Offset(0, 10).Value
     record.FirstName = recordRowFirstCell.Offset(0, 11).Value
     record.LastName = recordRowFirstCell.Offset(0, 12).Value
     record.householdTotal = recordRowFirstCell.Offset(0, 13).Value
@@ -146,14 +146,14 @@ Public Sub writeAddress(ByVal sheetName As String, ByVal record As RecordTuple)
     recordRow.Cells.Item(1, 1).Value = record.InCityStr
     recordRow.Cells.Item(1, 2).Value = record.UserVerified
     recordRow.Cells.Item(1, 3).Value = record.ValidAddress
-    recordRow.Cells.Item(1, 4).Value = record.ValidUnitWithNum
+    recordRow.Cells.Item(1, 4).Value = record.validUnitWithNum
     recordRow.Cells.Item(1, 5).Value = record.ValidZipcode
     recordRow.Cells.Item(1, 6).Value = record.RawAddress
     recordRow.Cells.Item(1, 7).Value = record.RawUnitWithNum
     recordRow.Cells.Item(1, 8).Value = record.RawCity
     recordRow.Cells.Item(1, 9).Value = record.RawState
     recordRow.Cells.Item(1, 10).Value = record.RawZip
-    recordRow.Cells.Item(1, 11).Value = record.GuestID
+    recordRow.Cells.Item(1, 11).Value = record.guestID
     recordRow.Cells.Item(1, 12).Value = record.FirstName
     recordRow.Cells.Item(1, 13).Value = record.LastName
     recordRow.Cells.Item(1, 14).Value = record.householdTotal
