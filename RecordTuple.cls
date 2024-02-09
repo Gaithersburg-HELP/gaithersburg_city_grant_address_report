@@ -130,7 +130,7 @@ End Property
 
 ' Expects AddressKey StreetAddress, UnitType, UnitNum, Zip
 Public Sub SetValidAddress(ByVal address As Scripting.Dictionary)
-    ValidAddress = address.Item(AddressKey.StreetAddress)
+    ValidAddress = address.Item(AddressKey.streetAddress)
     validUnitWithNum = address.Item(AddressKey.unitWithNum)
     ValidZipcode = address.Item(AddressKey.zip)
 End Sub
@@ -407,7 +407,7 @@ End Function
 Private Function SplitUnit(ByVal unitWithNum As String) As String()
     unitWithNum = CleanString(unitWithNum)
     
-    ' See https://public-dhhs.ne.gov/nfocus/HowDoI/howdoi/usps_address_unit_types.htm
+    ' https://pe.usps.com/text/pub28/28apc_003.htm#ep538629
     unitWithNum = Replace(unitWithNum, "Apartment", "Apt")
     unitWithNum = Replace(unitWithNum, "Building", "Bldg")
     unitWithNum = Replace(unitWithNum, "Basement", "Bsmt")
@@ -441,8 +441,15 @@ Private Function SplitUnit(ByVal unitWithNum As String) As String()
     
     Select Case UBound(splitArr)
         Case 0
-            ' If one word, assume Apt
-            SplitUnit = Split("Apt," & unitWithNum, ",")
+            ' several designators such as upper don't have a secondary number
+            ' however, as of 2/8/24 Gaithersburg only has Unit, Bldg, Fl, Ste, Apt
+            ' so not going to worry about those
+            Select Case splitArr(0)
+                Case "Bsmt", "Frnt", "Lbby", "Lowr", "Ofc", "Ph", "Rear", "Side", "Uppr"
+                    SplitUnit = Split(splitArr(0) & ",", ",")
+                Case Else ' assume Apt
+                    SplitUnit = Split("Apt," & unitWithNum, ",")
+            End Select
         Case -1
             ' unitWithNum was ""
             SplitUnit = Split(",", ",")
@@ -462,20 +469,6 @@ Private Function LWordTrim(ByVal str As String) As String()
         LWordTrim = Split(firstWord & "|" & Right$(str, Len(str) - spaceIndex), "|")
     Else
         LWordTrim = Split(str & "|", "|")
-    End If
-End Function
-
-' Trims off last word including space before
-' Returns [trimmed string, trimmed last word (blank if only one word)]
-Private Function RWordTrim(ByVal str As String) As String()
-    Dim lastWord As String
-    Dim spaceIndex As Long
-    spaceIndex = InStrRev(str, " ", -1, vbTextCompare)
-    If (spaceIndex <> 0) Then
-        lastWord = Right$(str, Len(str) - spaceIndex)
-        RWordTrim = Split(Left$(str, spaceIndex - 1) & "|" & lastWord, "|")
-    Else
-        RWordTrim = Split(str & "|", "|")
     End If
 End Function
 
@@ -528,7 +521,7 @@ Private Function getFormattedSplitAddr(ByVal addr As String) As Scripting.Dictio
     Dim splitNumArr() As String
     ' Split Street Number from Street name
     splitNumArr = LWordTrim(addr)
-    splitAddr.Add AddressKey.StreetNum, splitNumArr(0)
+    splitAddr.Add AddressKey.streetNum, splitNumArr(0)
     
     ' Remove periods, hyphens, not in street name
     ' see https://pe.usps.com/text/pub28/28c2_013.htm & https://pe.usps.com/text/dmm100/addressing-mail.htm
@@ -543,9 +536,9 @@ Private Function getFormattedSplitAddr(ByVal addr As String) As Scripting.Dictio
     Dim splitTypeArr() As String
     ' Remove postfix if it exists
     If streetPostfix <> vbNullString Then
-        splitTypeArr = RWordTrim(RWordTrim(splitNumArr(1))(0))
+        splitTypeArr = Lookup.RWordTrim(Lookup.RWordTrim(splitNumArr(1))(0))
     Else
-        splitTypeArr = RWordTrim(splitNumArr(1))
+        splitTypeArr = Lookup.RWordTrim(splitNumArr(1))
     End If
     
     splitAddr.Add AddressKey.PrefixedStreetName, splitTypeArr(0)

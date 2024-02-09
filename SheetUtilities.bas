@@ -177,7 +177,7 @@ End Sub
 
 ' Prints JSON
 '@Ignore ParameterCanBeByVal
-Public Sub PrintJson(ByRef jsonResult As Dictionary)
+Public Sub PrintJson(ByRef jsonResult As Scripting.Dictionary)
     Debug.Print ("{")
     
     Dim i As Long

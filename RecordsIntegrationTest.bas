@@ -82,7 +82,7 @@ Public Sub TestAllAddresses()
 '    addRecords
 '
 '    attemptValidation
-
+'
 '    CompareSheetCSV assert, "Addresses", ActiveWorkbook.path & "\testdata\test3autocorrectaddresses_addressesoutput.csv"
 '    CompareSheetCSV assert, "Interface", ActiveWorkbook.path & "\testdata\test3autocorrectaddresses_totalsoutput.csv", getTotalsRng
 '    CompareSheetCSV assert, "Needs Autocorrect", ActiveWorkbook.path & "\testdata\test3autocorrectaddresses_autocorrectoutput.csv"

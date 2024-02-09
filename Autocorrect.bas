@@ -1,13 +1,27 @@
 Attribute VB_Name = "Autocorrect"
 '@Folder("City_Grant_Address_Report.src")
 Option Explicit
-Private Function getRemainingRequests() As Long
-    'TODO get remaining requests, based on current time compared against refresh date
-    getRemainingRequests = 1000
+
+Public Const requestLimit As Long = 8000
+
+Public Function getRemainingRequests() As Long
+    Dim text As String
+    text = ActiveSheet.Shapes("API Limit").TextFrame.Characters.text
+    Dim refreshMonth As String
+    refreshMonth = Lookup.RWordTrim(text)(1)
+    If month(DateValue(refreshMonth & " 1 2024")) = month(Date) Then
+        ' Limit refreshed this month
+        printRemainingRequests (requestLimit)
+        getRemainingRequests = requestLimit
+    Else
+        getRemainingRequests = CLng(Split(text, " ")(0))
+    End If
 End Function
-Private Sub printRemainingRequests(ByVal num As Long)
-    'TODO print remaining requests and month refresh date
-    ActiveSheet.Shapes("API Limit").TextFrame.Characters.Text = num & " / 8000 left"
+
+Public Sub printRemainingRequests(ByVal num As Long)
+    ActiveSheet.Shapes("API Limit").TextFrame.Characters.text = num & " / " & _
+                                                                requestLimit & " left until " & _
+                                                                MonthName(month(Date) + 1)
 End Sub
 
 '@EntryPoint
@@ -24,43 +38,126 @@ Public Sub confirmAttemptValidation()
 End Sub
 
 Public Sub attemptValidation()
+    Dim appStatus As Variant
+    If Application.StatusBar = False Then appStatus = False Else appStatus = Application.StatusBar
+    
+    Application.StatusBar = "Loading addresses"
+    
     Dim addressAPIKey As String
     addressAPIKey = getAPIKeys().Item(addressValidationKeyname)
     
     Dim addresses As Scripting.Dictionary
-    Set addresses = Records.loadAddresses("Needs Autocorrect")
-    Debug.Print (addresses.Keys().Count & addressAPIKey)
+    Set addresses = Records.loadAddresses("Addresses")
     
-    printRemainingRequests (1)
-    ' TODO check if user has verified, if so then skip autocorrection and validate against Gaithersburg
-    ' If fails Gaithersburg validation, remark as FALSE
+    Dim autocorrected As Scripting.Dictionary
+    Set autocorrected = Records.loadAddresses("Autocorrected")
     
-    ' TODO autocorrecting
-    ' autocorrectAddress(address)
-    ' If autocorrected address is valid
-        ' run against gaithersburg db
-        ' Write to autocorrected addresses with json, highlight diff in yellow
-        ' Add to address dictionary with gaithersburg result
-    ' Else
-        'add to discards dict, write to discards with autocorrect json
-        ' If street name is in Gaithersburg street names
-            ' highlight red
+    Dim addressesToAutocorrect As Scripting.Dictionary
+    Set addressesToAutocorrect = Records.loadAddresses("Needs Autocorrect")
     
-    ' autocorrectAddress
-    ' Returns autocorrected address, address valid json, autocorrect json
-    ' TODO write test for this function
-    ' TODO Submit street name + Gaithersburg city only to place autocomplete
-    ' ? Get list of street names from Gaithersburg, Autocorrect to closest street name
-    ' Autocorrect Av to Ave, W Deer Pk to W Deer Park Rd
-    ' Check postfixes
-    'autocorrectAddress = Array(address, "valid json", "autocorrect json")
+    Dim discards As Scripting.Dictionary
+    Set discards = Records.loadAddresses("Discards")
     
-    'If usps cass valid, intersect polygon
-    ' if in Gaithersburg, highlight for user verification(check 501 S Frederick Ave)
-    ' Using valid address Google, use USPS standardized (test 2 nina ave (CT).
-    ' usps returns odendhal and oneill, add apostrophe. postfix test: 775 kimberly ct e
-    ' - Adding Gaithersburg does work: 15119 frederick rd, gaithersburg, md corrects to Rockville, MD (or possibly Woodbine, MD)
-    ' - go with USPS CASS address comparison, google "replaced" or "spellCorrected" is not always present,
-    ' - 501 frederick ave, gaithersburg, md replaces to 501 S Frederick Ave
-    ' - 501 frederik returns "spellCorrected",
+    If getRemainingRequests() < (UBound(addressesToAutocorrect.Keys) + 1) Then
+        MsgBox "Insufficient requests remaining to autocorrect all addresses, " & _
+               "not all addresses will be autocorrected.", vbOKOnly, "Error"
+    End If
+    
+    Dim usedRequests As Long
+    usedRequests = 0
+    
+    Dim i As Long
+    i = 1
+    
+    Dim recordKey As Variant
+    For Each recordKey In addressesToAutocorrect.Keys
+        Dim recordToAutocorrect As RecordTuple
+        Set recordToAutocorrect = addressesToAutocorrect.Item(recordKey)
+        
+        Dim isDPVConfirmed As Boolean
+        isDPVConfirmed = False
+        
+        Dim receivedValidation As Boolean
+        receivedValidation = False
+        
+        Dim minLongitude As Double
+        Dim maxLongitude As Double
+        Dim minLatitude As Double
+        Dim maxLatitude As Double
+        
+        If recordToAutocorrect.UserVerified = False And _
+           usedRequests < getRemainingRequests() And _
+           recordToAutocorrect.InCity = InCityCode.NotYetAutocorrected Then
+           
+            Dim formattedRawAddress As Scripting.Dictionary
+            Set formattedRawAddress = recordToAutocorrect.GburgFormatRawAddress
+            
+            Dim validatedAddress As Scripting.Dictionary
+            Set validatedAddress = Lookup.googleValidateQuery(formattedRawAddress.Item(AddressKey.Full), _
+                                                              recordToAutocorrect.RawCity, _
+                                                              recordToAutocorrect.RawState, _
+                                                              recordToAutocorrect.RawZip, addressAPIKey)
+            
+            If Not (validatedAddress Is Nothing) Then
+                recordToAutocorrect.SetValidAddress validatedAddress
+                minLongitude = validatedAddress.Item(AddressKey.minLongitude)
+                maxLongitude = validatedAddress.Item(AddressKey.maxLongitude)
+                minLatitude = validatedAddress.Item(AddressKey.minLatitude)
+                maxLatitude = validatedAddress.Item(AddressKey.maxLatitude)
+                
+                receivedValidation = True
+            
+                If validatedAddress.Item(AddressKey.Full) <> vbNullString Then
+                    isDPVConfirmed = True
+                End If
+            End If
+            usedRequests = usedRequests + 1
+        End If
+                
+        Dim gburgAddress As Scripting.Dictionary
+        Set gburgAddress = Lookup.gburgQuery(recordToAutocorrect.GburgFormatValidAddress.Item(AddressKey.Full))
+        
+        If gburgAddress.Item(AddressKey.Full) <> vbNullString Then
+            ' in theory this should be the same as Google's valid address, but gburgQuery could return different zip
+            recordToAutocorrect.SetValidAddress gburgAddress
+            
+            recordToAutocorrect.SetInCity InCityCode.ValidInCity
+            
+            ' TODO? highlight diff in yellow
+            addresses.Add recordToAutocorrect.key, recordToAutocorrect
+            addressesToAutocorrect.Remove recordToAutocorrect.key
+            autocorrected.Add recordToAutocorrect.key, recordToAutocorrect
+            
+        ElseIf isDPVConfirmed Then
+            recordToAutocorrect.SetInCity InCityCode.ValidNotInCity
+            
+            addresses.Add recordToAutocorrect.key, recordToAutocorrect
+            addressesToAutocorrect.Remove recordToAutocorrect.key
+            autocorrected.Add recordToAutocorrect.key, recordToAutocorrect
+        
+        ElseIf receivedValidation Then
+            If Lookup.possibleInGburgQuery(minLongitude, minLatitude, maxLongitude, maxLatitude) Then
+                recordToAutocorrect.SetInCity InCityCode.FailedAutocorrectInCity
+                recordToAutocorrect.UserVerified = False
+            Else
+                recordToAutocorrect.SetInCity InCityCode.FailedAutocorrectNotInCity
+                
+                addressesToAutocorrect.Remove recordToAutocorrect.key
+                discards.Add recordToAutocorrect.key, recordToAutocorrect
+            End If
+        End If
+        
+        Application.StatusBar = "Validating record " & i & " of " & (UBound(addressesToAutocorrect.Keys()) + 1)
+        i = i + 1
+        DoEvents
+    Next recordKey
+    
+    Application.StatusBar = "Writing addresses"
+    
+    Records.writeAddressesComputeTotals addresses, addressesToAutocorrect, discards, autocorrected
+    
+    printRemainingRequests (getRemainingRequests() - usedRequests)
+    
+    Application.StatusBar = appStatus
 End Sub
+
