@@ -74,20 +74,20 @@ Public Sub TestAllAddresses()
     CompareSheetCSV assert, "Discards", ActiveWorkbook.path & "\testdata\test2extraaddresses_discardsoutput.csv"
     CompareSheetCSV assert, "Autocorrected", ActiveWorkbook.path & "\testdata\test2extraaddresses_autocorrectedoutput.csv"
 
-'    Dim testAutocorrectAddressesArr() As String
-'    testAutocorrectAddressesArr = getCSV(ThisWorkbook.path & "\testdata\testautocorrectaddresses.csv")
-'
-'    PasteTestRecords testAutocorrectAddressesArr
-'
-'    addRecords
-'
-'    attemptValidation
-'
-'    CompareSheetCSV assert, "Addresses", ActiveWorkbook.path & "\testdata\test3autocorrectaddresses_addressesoutput.csv"
-'    CompareSheetCSV assert, "Interface", ActiveWorkbook.path & "\testdata\test3autocorrectaddresses_totalsoutput.csv", getTotalsRng
-'    CompareSheetCSV assert, "Needs Autocorrect", ActiveWorkbook.path & "\testdata\test3autocorrectaddresses_autocorrectoutput.csv"
-'    CompareSheetCSV assert, "Discards", ActiveWorkbook.path & "\testdata\test3autocorrectaddresses_discardsoutput.csv"
-'    CompareSheetCSV assert, "Autocorrected", ActiveWorkbook.path & "\testdata\test3autocorrectaddresses_autocorrectedoutput.csv"
+    Dim testAutocorrectAddressesArr() As String
+    testAutocorrectAddressesArr = getCSV(ThisWorkbook.path & "\testdata\test3autocorrectaddresses.csv")
+
+    PasteTestRecords testAutocorrectAddressesArr
+
+    addRecords
+
+    attemptValidation
+
+    CompareSheetCSV assert, "Addresses", ActiveWorkbook.path & "\testdata\test3autocorrectaddresses_addressesoutput.csv"
+    CompareSheetCSV assert, "Interface", ActiveWorkbook.path & "\testdata\test3autocorrectaddresses_totalsoutput.csv", getTotalsRng
+    CompareSheetCSV assert, "Needs Autocorrect", ActiveWorkbook.path & "\testdata\test3autocorrectaddresses_autocorrectoutput.csv"
+    CompareSheetCSV assert, "Discards", ActiveWorkbook.path & "\testdata\test3autocorrectaddresses_discardsoutput.csv"
+    CompareSheetCSV assert, "Autocorrected", ActiveWorkbook.path & "\testdata\test3autocorrectaddresses_autocorrectedoutput.csv"
 
 '    Dim testMergeAutocorrectedAddressesArr() As String
 '    testMergeAutocorrectedAddressesArr = getCSV(ThisWorkbook.path & "\testdata\testmergeautocorrectaddresses.csv")

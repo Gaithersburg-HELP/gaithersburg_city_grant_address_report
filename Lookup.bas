@@ -61,7 +61,8 @@ Private Function sendQuery(ByVal requestMethod As String, ByVal url As String, _
             If .responseText <> vbNullString Then
                 queryResult = queryResult + vbCrLf & .responseText
             End If
-            MsgBox "Error " + queryResult, vbCritical, "Connection"
+            ' Google API quota limit is 429
+            If .Status <> 429 Then Debug.Print "Error " + queryResult, vbCritical, "Connection"
             Set sendQuery = Nothing
         ElseIf .responseText <> vbNullString Then
             ' Debug.Print .responseText
@@ -156,6 +157,7 @@ End Function
 ' Returns address dictionary of AddressKey Full, StreetAddress, UnitWithNum, Zip, min/max lat/long
 ' - All other keys are set to vbNullString
 ' - If all fields validated, AddressKey.Full will not be vbNullString
+' - Returns Nothing if unable to get a response
 '@Ignore AssignedByValParameter
 Public Function googleValidateQuery(ByVal fullAddress As String, ByVal city As String, _
                                     ByVal state As String, ByVal zip As String, _
@@ -183,97 +185,101 @@ Public Function googleValidateQuery(ByVal fullAddress As String, ByVal city As S
     Dim jsonResult As Scripting.Dictionary
     Set jsonResult = sendQuery("POST", url, "application/json", payload)
 
-    If Not (jsonResult Is Nothing) Then
-        On Error GoTo JsonError
-        ' Go with USPS CASS address response first, cannot trust Google components
-        ' E.g. 600 s frederik dr at 100, gburg, md, 20877, usa: Google components keeps "at 100" instead of Ste 100
+    If jsonResult Is Nothing Then
+        Set googleValidateQuery = Nothing
+        Exit Function
+    End If
+    
+    On Error GoTo JsonError
+    ' Go with USPS CASS address response first, cannot trust Google components
+    ' E.g. 600 s frederik dr at 100, gburg, md, 20877, usa: Google components keeps "at 100" instead of Ste 100
+    ' see https://issuetracker.google.com/issues/325302835
 
-        If jsonResult.Item("result").Exists("uspsData") Then
-            Dim uspsFullAddress As String
-            uspsFullAddress = jsonResult.Item("result").Item("uspsData").Item("standardizedAddress").Item("firstAddressLine")
-            
-            ' For DPV confirmation values, https://developers.google.com/maps/documentation/address-validation/handle-us-address
-            ' Short circuiting does not exist in VBA
-            If jsonResult.Item("result").Item("uspsData").Exists("dpvConfirmation") Then
-                If jsonResult.Item("result").Item("uspsData").Item("dpvConfirmation") = "Y" Then
-                    validatedAddress.Item(AddressKey.Full) = uspsFullAddress
-                End If
+    If jsonResult.Item("result").Exists("uspsData") Then
+        Dim uspsFullAddress As String
+        uspsFullAddress = jsonResult.Item("result").Item("uspsData").Item("standardizedAddress").Item("firstAddressLine")
+        
+        ' For DPV confirmation values, https://developers.google.com/maps/documentation/address-validation/handle-us-address
+        ' Short circuiting does not exist in VBA
+        If jsonResult.Item("result").Item("uspsData").Exists("dpvConfirmation") Then
+            If jsonResult.Item("result").Item("uspsData").Item("dpvConfirmation") = "Y" Then
+                validatedAddress.Item(AddressKey.Full) = uspsFullAddress
             End If
-            
-            ' Cannot rely on hasInferredComponents to check if address changed (always true when ZIP extension is not provided)
-            ' Cannot rely on hasReplacedComponents either, only true if e.g. city is replaced
-            ' google "replaced" or "spellCorrected" is not always present
-            '   i.e. "fredrick" doesn't show spellcorrected but "frederik" does
-            
-            validatedAddress.Item(AddressKey.zip) = jsonResult.Item("result").Item("uspsData") _
-                                                              .Item("standardizedAddress").Item("zipCode")
-            
-            ' TODO? If not dpv confirmed, Get list of street names from Gaithersburg, Autocorrect to closest street name
-            
-            Dim streetAddress As String
-            streetAddress = uspsFullAddress
-            
-            ' split on unit type if address input to unit level
-            If jsonResult.Item("result").Item("verdict").Item("inputGranularity") = "SUB_PREMISE" Then
-                ' see https://public-dhhs.ne.gov/nfocus/HowDoI/howdoi/usps_address_unit_types.htm
-                
-                Dim splitRWordArr() As String
-                splitRWordArr = RWordTrim(uspsFullAddress)
-                
-                ' several designators such as upper don't have a secondary number
-                ' however, as of 2/8/24 Gaithersburg only has Unit, Bldg, Fl, Ste, Apt
-                ' so not going to worry about those
-                Select Case splitRWordArr(1)
-                    Case "BSMT", "FRNT", "LBBY", "LOWR", "OFC", "PH", "REAR", "SIDE", "UPPR"
-                        validatedAddress.Item(AddressKey.UnitType) = splitRWordArr(1)
-                        validatedAddress.Item(AddressKey.unitWithNum) = splitRWordArr(1)
-                        streetAddress = splitRWordArr(0)
-                    Case Else
-                        validatedAddress.Item(AddressKey.UnitNum) = splitRWordArr(1)
-                        
-                        Dim splitUnitArr() As String
-                        splitUnitArr = RWordTrim(splitRWordArr(0))
-                        
-                        validatedAddress.Item(AddressKey.UnitType) = splitUnitArr(1)
-                        validatedAddress.Item(AddressKey.unitWithNum) = validatedAddress.Item(AddressKey.UnitType) & _
-                                                                        " " & validatedAddress.Item(AddressKey.UnitNum)
-                        streetAddress = splitUnitArr(0)
-                End Select
-            End If
-            
-            validatedAddress.Item(AddressKey.streetAddress) = streetAddress
-        Else
-            ' sometimes uspsData object is not populated e.g. just "501 Frederick Ave"
-            ' unable to find an example where city and state and zip are given but uspsData does not populate
-            Dim streetNum As String
-            Dim route As String ' prefix + street name + type + postfix
-
-            Dim component As Variant
-            For Each component In jsonResult.Item("result").Item("address").Item("addressComponents")
-                If component.Item("componentType") = "street_number" Then
-                    streetNum = component.Item("componentName").Item("text")
-                ElseIf component.Item("componentType") = "route" Then
-                     route = component.Item("componentName").Item("text")
-                ElseIf component.Item("componentType") = "subpremise" Then
-                    validatedAddress.Item(AddressKey.unitWithNum) = component.Item("componentName").Item("text")
-                ElseIf component.Item("componentType") = "postal_code" Then
-                    validatedAddress.Item(AddressKey.zip) = component.Item("componentName").Item("text")
-                End If
-            Next component
-
-            validatedAddress.Item(AddressKey.streetAddress) = streetNum & " " & route
         End If
+        
+        ' Cannot rely on hasInferredComponents to check if address changed (always true when ZIP extension is not provided)
+        ' Cannot rely on hasReplacedComponents either, only true if e.g. city is replaced
+        ' google "replaced" or "spellCorrected" is not always present
+        '   i.e. "fredrick" doesn't show spellcorrected but "frederik" does
+        
+        validatedAddress.Item(AddressKey.zip) = jsonResult.Item("result").Item("uspsData") _
+                                                          .Item("standardizedAddress").Item("zipCode")
+        
+        ' TODO? If not dpv confirmed, Get list of street names from Gaithersburg, Autocorrect to closest street name
+        
+        Dim streetAddress As String
+        streetAddress = uspsFullAddress
+        
+        ' split on unit type if address input to unit level
+        If jsonResult.Item("result").Item("verdict").Item("inputGranularity") = "SUB_PREMISE" Then
+            ' see https://public-dhhs.ne.gov/nfocus/HowDoI/howdoi/usps_address_unit_types.htm
+            
+            Dim splitRWordArr() As String
+            splitRWordArr = RWordTrim(uspsFullAddress)
+            
+            ' several designators such as upper don't have a secondary number
+            ' however, as of 2/8/24 Gaithersburg only has Unit, Bldg, Fl, Ste, Apt
+            ' so not going to worry about those
+            Select Case splitRWordArr(1)
+                Case "BSMT", "FRNT", "LBBY", "LOWR", "OFC", "PH", "REAR", "SIDE", "UPPR"
+                    validatedAddress.Item(AddressKey.UnitType) = splitRWordArr(1)
+                    validatedAddress.Item(AddressKey.unitWithNum) = splitRWordArr(1)
+                    streetAddress = splitRWordArr(0)
+                Case Else
+                    validatedAddress.Item(AddressKey.UnitNum) = splitRWordArr(1)
+                    
+                    Dim splitUnitArr() As String
+                    splitUnitArr = RWordTrim(splitRWordArr(0))
+                    
+                    validatedAddress.Item(AddressKey.UnitType) = splitUnitArr(1)
+                    validatedAddress.Item(AddressKey.unitWithNum) = validatedAddress.Item(AddressKey.UnitType) & _
+                                                                    " " & validatedAddress.Item(AddressKey.UnitNum)
+                    streetAddress = splitUnitArr(0)
+            End Select
+        End If
+        
+        validatedAddress.Item(AddressKey.streetAddress) = streetAddress
+    Else
+        ' sometimes uspsData object is not populated e.g. just "501 Frederick Ave"
+        ' unable to find an example where city and state and zip are given but uspsData does not populate
+        Dim streetNum As String
+        Dim route As String ' prefix + street name + type + postfix
 
-        validatedAddress.Item(AddressKey.minLongitude) = jsonResult.Item("result").Item("geocode") _
-                                                         .Item("bounds").Item("low").Item("longitude")
-        validatedAddress.Item(AddressKey.maxLongitude) = jsonResult.Item("result").Item("geocode") _
-                                                         .Item("bounds").Item("high").Item("longitude")
-        validatedAddress.Item(AddressKey.minLatitude) = jsonResult.Item("result").Item("geocode") _
-                                                         .Item("bounds").Item("low").Item("latitude")
-        validatedAddress.Item(AddressKey.maxLatitude) = jsonResult.Item("result").Item("geocode") _
-                                                         .Item("bounds").Item("high").Item("latitude")
+        Dim component As Variant
+        For Each component In jsonResult.Item("result").Item("address").Item("addressComponents")
+            If component.Item("componentType") = "street_number" Then
+                streetNum = component.Item("componentName").Item("text")
+            ElseIf component.Item("componentType") = "route" Then
+                 route = component.Item("componentName").Item("text")
+            ElseIf component.Item("componentType") = "subpremise" Then
+                validatedAddress.Item(AddressKey.unitWithNum) = component.Item("componentName").Item("text")
+            ElseIf component.Item("componentType") = "postal_code" Then
+                validatedAddress.Item(AddressKey.zip) = component.Item("componentName").Item("text")
+            End If
+        Next component
+
+        validatedAddress.Item(AddressKey.streetAddress) = streetNum & " " & route
     End If
 
+    validatedAddress.Item(AddressKey.minLongitude) = jsonResult.Item("result").Item("geocode") _
+                                                     .Item("bounds").Item("low").Item("longitude")
+    validatedAddress.Item(AddressKey.maxLongitude) = jsonResult.Item("result").Item("geocode") _
+                                                     .Item("bounds").Item("high").Item("longitude")
+    validatedAddress.Item(AddressKey.minLatitude) = jsonResult.Item("result").Item("geocode") _
+                                                     .Item("bounds").Item("low").Item("latitude")
+    validatedAddress.Item(AddressKey.maxLatitude) = jsonResult.Item("result").Item("geocode") _
+                                                     .Item("bounds").Item("high").Item("latitude")
+    
     Set googleValidateQuery = validatedAddress
     Exit Function
 
@@ -297,7 +303,7 @@ Public Function possibleInGburgQuery(ByVal minLongitude As Double, ByVal minLati
     Dim jsonResult As Scripting.Dictionary
     Set jsonResult = sendQuery("GET", queryString, "application/x-www-form-urlencoded", vbNullString)
     
-    Set possibleInGburgQuery = (Not (jsonResult Is Nothing)) And jsonResult.Item("features").Count > 0
+    possibleInGburgQuery = (Not (jsonResult Is Nothing)) And jsonResult.Item("features").Count > 0
 End Function
 
 ' This macro subroutine may be used to double-check
