@@ -64,7 +64,7 @@ Private Function sendQuery(ByVal requestMethod As String, ByVal url As String, _
             MsgBox "Error " + queryResult, vbCritical, "Connection"
             Set sendQuery = Nothing
         ElseIf .responseText <> vbNullString Then
-            'Debug.Print .responseText
+            ' Debug.Print .responseText
             Set sendQuery = JsonConverter.ParseJson(.responseText)
         Else
             Set sendQuery = Nothing
@@ -171,14 +171,15 @@ Public Function googleValidateQuery(ByVal fullAddress As String, ByVal city As S
     If state = vbNullString Then state = "MD"
     If zip = vbNullString Then zip = "20878"
 
+    ' using enableUspsCass returns inferior results
+    ' see https://issuetracker.google.com/issues/325309557
     Dim payload As String
     payload = "{""address"": {""regionCode"":""US""," & _
-              """locality"": """ & city & """," & _
-              """administrativeArea"": """ & state & """," & _
-              """postalCode"": """ & zip & """," & _
-              """addressLines"": [""" & fullAddress & """]}," & _
-              """enableUspsCass"": true}"
-
+                """locality"": """ & city & """," & _
+                """administrativeArea"": """ & state & """," & _
+                """postalCode"": """ & zip & """," & _
+                """addressLines"": [""" & fullAddress & """]}}"
+                
     Dim jsonResult As Scripting.Dictionary
     Set jsonResult = sendQuery("POST", url, "application/json", payload)
 
