@@ -116,24 +116,21 @@ Public Sub attemptValidation()
         Dim gburgAddress As Scripting.Dictionary
         Set gburgAddress = Lookup.gburgQuery(recordToAutocorrect.GburgFormatValidAddress.Item(AddressKey.Full))
         
-        If gburgAddress.Item(AddressKey.Full) <> vbNullString Then
-            ' in theory this should be the same as Google's valid address, but gburgQuery could return different zip
-            recordToAutocorrect.SetValidAddress gburgAddress
-            
-            recordToAutocorrect.SetInCity InCityCode.ValidInCity
-            
-            ' TODO? highlight diff in yellow
-            addresses.Add recordToAutocorrect.key, recordToAutocorrect
-            addressesToAutocorrect.Remove recordToAutocorrect.key
-            autocorrected.Add recordToAutocorrect.key, recordToAutocorrect
-            
-        ElseIf isDPVConfirmed Then
-            recordToAutocorrect.SetInCity InCityCode.ValidNotInCity
+        If (gburgAddress.Item(AddressKey.Full) <> vbNullString) Or isDPVConfirmed Then
+            If gburgAddress.Item(AddressKey.Full) <> vbNullString Then
+                ' in theory this should be the same as Google's valid address, but gburgQuery could return different zip
+                recordToAutocorrect.SetValidAddress gburgAddress
+                recordToAutocorrect.SetInCity InCityCode.ValidInCity
+            Else 'isDPVConfirmed but not in Gaithersburg
+                recordToAutocorrect.SetInCity InCityCode.ValidNotInCity
+            End If
             
             addresses.Add recordToAutocorrect.key, recordToAutocorrect
             addressesToAutocorrect.Remove recordToAutocorrect.key
-            autocorrected.Add recordToAutocorrect.key, recordToAutocorrect
-        
+            ' TODO rewrite code so that record has flag for which dictionaries it belongs in
+            If recordToAutocorrect.isAutocorrected Then
+                autocorrected.Add recordToAutocorrect.key, recordToAutocorrect
+            End If
         ElseIf receivedValidation Then
             If Lookup.possibleInGburgQuery(minLongitude, minLatitude, maxLongitude, maxLatitude) Then
                 recordToAutocorrect.SetInCity InCityCode.FailedAutocorrectInCity

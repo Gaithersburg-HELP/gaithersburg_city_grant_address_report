@@ -163,6 +163,16 @@ Public Property Get FullRawAddress() As String
     End If
 End Property
 
+Public Property Get isAutocorrected() As Boolean
+    If ((ValidAddress <> vbNullString) And ValidAddress <> RawAddress) Or _
+       ((validUnitWithNum <> vbNullString) And validUnitWithNum <> RawUnitWithNum) Or _
+       ((ValidZipcode <> vbNullString) And ValidZipcode <> RawZip) Then
+        isAutocorrected = True
+    Else
+        isAutocorrected = False
+    End If
+End Property
+
 Public Property Get RawCity() As String
     RawCity = pRawCity
 End Property

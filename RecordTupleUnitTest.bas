@@ -106,4 +106,28 @@ Public Sub TestFormatAddress()
     assert.IsFalse alphabeticRecord.isCorrectableAddress(), "Alphabetic record marked as correctable"
 End Sub
 
+'@TestMethod
+Public Sub TestIsAutocorrected()
+    Dim record As RecordTuple
+    Set record = New RecordTuple
+    record.RawZip = "20878"
+    record.RawAddress = "123 Test"
+    record.RawUnitWithNum = "Apt 23"
+    assert.IsFalse record.isAutocorrected
+    
+    record.ValidZipcode = "20878"
+    record.ValidAddress = "123 Test"
+    record.validUnitWithNum = "Apt 23"
+    assert.IsFalse record.isAutocorrected
+    
+    record.validUnitWithNum = "Ste 23"
+    assert.IsTrue record.isAutocorrected
 
+    record.validUnitWithNum = "Apt 23"
+    record.ValidZipcode = "20877"
+    assert.IsTrue record.isAutocorrected
+
+    record.ValidZipcode = "20878"
+    record.ValidAddress = "124 test"
+    assert.IsTrue record.isAutocorrected
+End Sub

@@ -338,7 +338,9 @@ Public Sub addRecords()
             ' Valid address
             recordToValidate.SetInCity InCityCode.ValidInCity
             addresses.Add recordToValidate.key, recordToValidate
-            ' NOTE Choosing not to add changed zipcodes to autocorrected, unlikely to have same address in two different zip codes
+            ' NOTE choosing not to add to autocorrected since raw address was enough to match
+            ' autocorrected is used to save Google lookups, Gaithersburg lookups are free
+            ' However, Gaithersburg lookup can change zipcode, format of address, addition of Apt, etc.
         Else
             recordToValidate.SetInCity InCityCode.NotYetAutocorrected
             needsAutocorrect.Add recordToValidate.key, recordToValidate

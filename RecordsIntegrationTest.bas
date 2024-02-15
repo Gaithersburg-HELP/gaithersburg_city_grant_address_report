@@ -94,7 +94,7 @@ Public Sub TestAllAddresses()
 '    PasteTestRecords testAutocorrectAddressesArr
 '
 '    addRecords
-
+'
 '    CompareSheetCSV assert, "Autocorrected", ActiveWorkbook.path & "\testdata\test3autocorrectaddresses_autocorrectedoutput.csv"
 '
 '    generateFinalReport

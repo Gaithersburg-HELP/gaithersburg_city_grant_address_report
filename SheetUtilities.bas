@@ -120,9 +120,9 @@ Public Sub CompareSheetCSV(ByVal assert As Object, ByVal sheetName As String, By
     Dim i As Long
     For i = LBound(correctArr, 1) To UBound(correctArr, 1)
         If i <= UBound(testArr) Then
-            assert.IsTrue StrComp(correctArr(i), testArr(i)) = 0, "Difference at " & sheetName & " row " & i & ": " & correctArr(i) & "|" & testArr(i)
+            assert.IsTrue StrComp(correctArr(i), testArr(i)) = 0, "Diff. at " & sheetName & " row " & i & " vs correct file: " & csvPath
         Else
-            assert.Fail "Difference at " & sheetName & " row " & i & ": " & correctArr(i)
+            assert.Fail "Diff. at " & sheetName & " row " & i & "vs correct file: " & csvPath
         End If
     Next i
 End Sub
