@@ -98,18 +98,32 @@ Public Sub TestAllAddresses()
     CompareSheetCSV Assert, "Autocorrected", ActiveWorkbook.path & "\testdata\test3autocorrectaddresses_autocorrectedoutput.csv"
 
     Assert.IsTrue Autocorrect.getRemainingRequests = 7980
-'    Dim testMergeAutocorrectedAddressesArr() As String
-'    testMergeAutocorrectedAddressesArr = getCSV(ThisWorkbook.path & "\testdata\testmergeautocorrectaddresses.csv")
-'    PasteTestRecords testAutocorrectAddressesArr
-'
-'    addRecords
-'
-'    CompareSheetCSV assert, "Autocorrected", ActiveWorkbook.path & "\testdata\test3autocorrectaddresses_autocorrectedoutput.csv"
-'
+
+
+    Dim testMergeAutocorrectedAddressesArr() As String
+    testMergeAutocorrectedAddressesArr = getCSV(ThisWorkbook.path & "\testdata\test4mergeaddresses.csv")
+    PasteTestRecords testMergeAutocorrectedAddressesArr
+
+    addRecords
+
+    CompareSheetCSV Assert, "Addresses", ActiveWorkbook.path & "\testdata\test4mergeaddresses_addressesoutput.csv"
+    CompareSheetCSV Assert, "Interface", ActiveWorkbook.path & "\testdata\test4mergeaddresses_totalsoutput.csv", getTotalsRng
+    CompareSheetCSV Assert, "Discards", ActiveWorkbook.path & "\testdata\test4mergeaddresses_discardsoutput.csv"
+    CompareSheetCSV Assert, "Autocorrected", ActiveWorkbook.path & "\testdata\test4mergeaddresses_autocorrectedoutput.csv"
+
+    ' TODO fake user processing of autocorrect sheet:
+    ' - discard from address
+    ' - discard from needs autocorrect
+    ' - restore discard to needs autocorrect
+    ' - multiple select discard, multiple select restore
+
 '    generateFinalReport
 '
 '    CompareSheetCSV assert, "Final Report", ActiveWorkbook.path & "\testdata\test3autocorrectaddresses_finalreportoutput.csv"
     
+    ' TODO test delete service column, generate final report
+    
+    ' TODO test delete all visit data
     Exit Sub
 TestFail:
     Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
