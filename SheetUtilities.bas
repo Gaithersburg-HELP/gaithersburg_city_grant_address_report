@@ -110,7 +110,7 @@ Public Function sheetToCSVArray(ByVal sheetName As String, Optional ByVal rng As
     Kill (MyFileName)
 End Function
 
-Public Sub CompareSheetCSV(ByVal assert As Object, ByVal sheetName As String, ByVal csvPath As String, Optional ByVal rng As Range)
+Public Sub CompareSheetCSV(ByVal Assert As Object, ByVal sheetName As String, ByVal csvPath As String, Optional ByVal rng As Range)
     Dim testArr() As String
     testArr = sheetToCSVArray(sheetName, rng)
     
@@ -120,9 +120,9 @@ Public Sub CompareSheetCSV(ByVal assert As Object, ByVal sheetName As String, By
     Dim i As Long
     For i = LBound(correctArr, 1) To UBound(correctArr, 1)
         If i <= UBound(testArr) Then
-            assert.IsTrue StrComp(correctArr(i), testArr(i)) = 0, "Diff. at " & sheetName & " row " & i & " vs correct file: " & csvPath
+            Assert.IsTrue StrComp(correctArr(i), testArr(i)) = 0, "Diff. at " & sheetName & " row " & i & " vs correct file: " & csvPath
         Else
-            assert.Fail "Diff. at " & sheetName & " row " & i & "vs correct file: " & csvPath
+            Assert.Fail "Diff. at " & sheetName & " row " & i & "vs correct file: " & csvPath
         End If
     Next i
 End Sub
@@ -155,7 +155,7 @@ Public Sub SortAll()
         key1:=ActiveWorkbook.Sheets.[_Default]("Autocorrected").Range("C2"), Order1:=xlAscending, Header:=xlNo
 End Sub
 
-' Prints Collection, checks if Collection contains JSON
+' Prints Collection
 '@Ignore ParameterCanBeByVal
 Public Sub PrintCollection(ByRef collectionResult As Collection)
     Dim i As Long

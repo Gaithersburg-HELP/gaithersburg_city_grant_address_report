@@ -79,6 +79,8 @@ Public Sub SetInCity(ByVal code As Variant)
     Select Case VarType(code)
         Case vbLong
             pInCity = code
+            ' if attempted revalidation but failed, set userverified
+            If code = InCityCode.FailedAutocorrectInCity Then UserVerified = False
         Case vbString
             If code = "Not correctable" Then
                 pInCity = NotCorrectable
@@ -478,7 +480,7 @@ Private Function LWordTrim(ByVal str As String) As String()
     End If
 End Function
 
-' Returns dictionary of AddressKey full, streetNum, prefixedstreetname, streettype, postfix, unit type, unit num
+' Returns dictionary of AddressKey full, streetNum, prefixedstreetname, streettype, postfix, unit type, unit num, streetaddress
 ' - capitalized Street Name with abbr. prefix, cap. abbr. Street Type, cap. abbr. Postfix
 '@Ignore AssignedByValParameter
 Private Function getFormattedSplitAddr(ByVal addr As String) As Scripting.Dictionary
@@ -536,6 +538,7 @@ Private Function getFormattedSplitAddr(ByVal addr As String) As Scripting.Dictio
     
     Dim fullAddress As String
     fullAddress = splitNumArr(0) & " " & splitNumArr(1)
+    splitAddr.Add AddressKey.streetAddress, fullAddress
     
     Dim streetPostfix As String
     streetPostfix = GetDirection(Len(addr) - 3, addr)

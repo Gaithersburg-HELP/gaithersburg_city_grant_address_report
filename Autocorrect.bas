@@ -119,14 +119,13 @@ Public Sub attemptValidation()
         Dim gburgAddress As Scripting.Dictionary
         Set gburgAddress = Lookup.gburgQuery(recordToAutocorrect.GburgFormatValidAddress.Item(AddressKey.Full))
         
-        If (gburgAddress.Item(AddressKey.Full) <> vbNullString) Or isDPVConfirmed Then
-            If gburgAddress.Item(AddressKey.Full) <> vbNullString Then
-                ' in theory this should be the same as Google's valid address, but gburgQuery could return different zip
-                recordToAutocorrect.SetValidAddress gburgAddress
-                recordToAutocorrect.SetInCity InCityCode.ValidInCity
-            Else 'isDPVConfirmed but not in Gaithersburg
-                recordToAutocorrect.SetInCity InCityCode.ValidNotInCity
-            End If
+        If (gburgAddress.Item(AddressKey.Full) <> vbNullString) Then
+            ' NOTE addresses such as 600 S Frederick Ave which are in Gaithersburg database but
+            ' NOT DPV deliverable will still be marked as valid
+            
+            ' in theory this should be the same as Google's valid address, but gburgQuery could return different zip
+            recordToAutocorrect.SetValidAddress gburgAddress
+            recordToAutocorrect.SetInCity InCityCode.ValidInCity
             
             addresses.Add recordToAutocorrect.key, recordToAutocorrect
             addressesToAutocorrect.Remove recordToAutocorrect.key
@@ -134,15 +133,37 @@ Public Sub attemptValidation()
             If recordToAutocorrect.isAutocorrected Then
                 autocorrected.Add recordToAutocorrect.key, recordToAutocorrect
             End If
+        ElseIf isDPVConfirmed Then
+            ' Gaithersburg database does not match USPS database on multiple addresses such as:
+            ' - 110-150 Chevy Chase St Unit 102 > should be Apt 102
+            ' - 25 Chestnut St Unit A > should be Ste A
+            ' so double check by searching without unit
+            Set gburgAddress = Lookup.gburgQuery(recordToAutocorrect.GburgFormatValidAddress.Item(AddressKey.streetAddress))
+            If gburgAddress.Item(AddressKey.Full) <> vbNullString Then
+                recordToAutocorrect.SetValidAddress gburgAddress
+                recordToAutocorrect.SetInCity InCityCode.FailedAutocorrectInCity
+            Else
+                recordToAutocorrect.SetInCity InCityCode.ValidNotInCity
+            
+                addresses.Add recordToAutocorrect.key, recordToAutocorrect
+                addressesToAutocorrect.Remove recordToAutocorrect.key
+                ' TODO rewrite code so that record has flag for which dictionaries it belongs in
+                If recordToAutocorrect.isAutocorrected Then
+                    autocorrected.Add recordToAutocorrect.key, recordToAutocorrect
+                End If
+            End If
         ElseIf receivedValidation Then
             If Lookup.possibleInGburgQuery(minLongitude, minLatitude, maxLongitude, maxLatitude) Then
                 recordToAutocorrect.SetInCity InCityCode.FailedAutocorrectInCity
-                recordToAutocorrect.UserVerified = False
             Else
                 recordToAutocorrect.SetInCity InCityCode.FailedAutocorrectNotInCity
                 
                 addressesToAutocorrect.Remove recordToAutocorrect.key
                 discards.Add recordToAutocorrect.key, recordToAutocorrect
+                ' TODO rewrite code so that record has flag for which dictionaries it belongs in
+                If recordToAutocorrect.isAutocorrected Then
+                    autocorrected.Add recordToAutocorrect.key, recordToAutocorrect
+                End If
             End If
         End If
         

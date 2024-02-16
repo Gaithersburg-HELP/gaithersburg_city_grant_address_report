@@ -303,6 +303,7 @@ Public Sub addRecords()
             Set existingRecord = needsAutocorrect.Item(recordToAdd.key)
             existingRecord.MergeRecord recordToAdd
         ElseIf discards.Exists(recordToAdd.key) Then
+            ' BUG if previously discarded user ID but address was updated, this will be discarded anyway
             Set existingRecord = discards.Item(recordToAdd.key)
             existingRecord.MergeRecord recordToAdd
         ElseIf recordsToValidate.Exists(recordToAdd.key) Then
