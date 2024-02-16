@@ -23,19 +23,6 @@ Public Sub printRemainingRequests(ByVal num As Long)
         num & " / " & requestLimit & " left until " & MonthName(month(Date) + 1)
 End Sub
 
-'@EntryPoint
-Public Sub confirmAttemptValidation()
-    Dim confirmResponse As VbMsgBoxResult
-    confirmResponse = MsgBox("Are you sure you wish to attempt validation? You have " & _
-                              CStr(getRemainingRequests()) & " remaining.", _
-                              vbYesNo + vbQuestion, "Confirmation")
-    If confirmResponse = vbNo Then
-        Exit Sub
-    End If
-    
-    attemptValidation
-End Sub
-
 Public Sub attemptValidation()
     Dim appStatus As Variant
     If Application.StatusBar = False Then appStatus = False Else appStatus = Application.StatusBar

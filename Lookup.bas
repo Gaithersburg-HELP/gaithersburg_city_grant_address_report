@@ -334,37 +334,3 @@ Public Function possibleInGburgQuery(ByVal minLongitude As Double, ByVal minLati
     possibleInGburgQuery = (Not (jsonResult Is Nothing)) And jsonResult.Item("features").Count > 0
 End Function
 
-' This macro subroutine may be used to double-check
-' street addresses by lookup on the Gaithersburg city address search page in browser window.
-'@EntryPoint
-Public Sub LookupInCity()
-    Dim currentRowFirstCell As Range
-    Set currentRowFirstCell = ActiveWorkbook.ActiveSheet.Cells.Item(ActiveCell.row, 1)
-    
-    Dim record As RecordTuple
-    Set record = Records.loadRecordFromSheet(currentRowFirstCell)
-    
-    Dim AddrLookupURL As String
-    AddrLookupURL = "https://maps.gaithersburgmd.gov/AddressSearch/index.html?address="
-    AddrLookupURL = AddrLookupURL & record.GburgFormatRawAddress.Item(AddressKey.streetAddress)
-    AddrLookupURL = Replace(AddrLookupURL, " ", "+")
-    
-    ActiveWorkbook.FollowHyperlink address:=AddrLookupURL
-End Sub
-
-'@EntryPoint
-Public Sub OpenAddressValidationWebsite()
-    ActiveWorkbook.FollowHyperlink address:="https://developers.google.com/maps/documentation/address-validation/demo"
-End Sub
-
-'@EntryPoint
-Public Sub OpenUSPSZipcodeWebsite()
-    ActiveWorkbook.FollowHyperlink address:="https://tools.usps.com/zip-code-lookup.htm?byaddress"
-End Sub
-
-'@EntryPoint
-Public Sub OpenGoogleMapsWebsite()
-    ActiveWorkbook.FollowHyperlink address:="https://www.google.com/maps"
-End Sub
-
-
