@@ -51,7 +51,7 @@ Public Sub confirmGenerateFinalReport()
 End Sub
 
 '@EntryPoint
-Public Sub DeleteAllVisitData()
+Public Sub confirmDeleteAllVisitData()
     Dim confirmResponse As VbMsgBoxResult
     confirmResponse = MsgBox("Are you sure you wish to delete all visit data?", vbYesNo + vbQuestion, "Confirmation")
     If confirmResponse = vbNo Then
@@ -62,7 +62,7 @@ Public Sub DeleteAllVisitData()
 End Sub
 
 '@EntryPoint
-Public Sub DeleteService()
+Public Sub confirmDeleteService()
     Dim confirmResponse As VbMsgBoxResult
     confirmResponse = MsgBox("Are you sure you wish to delete the selected service?", vbYesNo + vbQuestion, "Confirmation")
     If confirmResponse = vbNo Then
