@@ -555,7 +555,7 @@ Private Function getFormattedSplitAddr(ByVal addr As String) As Scripting.Dictio
     splitUnitArr = SplitUnit(RawUnitWithNum)
     
     splitAddr.Add AddressKey.UnitType, splitUnitArr(0)
-    splitAddr.Add AddressKey.UnitNum, splitUnitArr(1)
+    splitAddr.Add AddressKey.unitNum, splitUnitArr(1)
     
     If splitUnitArr(0) <> vbNullString Then
         splitAddr.Add AddressKey.Full, fullAddress & " " & splitUnitArr(0) & " " & splitUnitArr(1)

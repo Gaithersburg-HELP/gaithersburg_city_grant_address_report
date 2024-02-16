@@ -68,6 +68,9 @@ Public Sub attemptValidation()
     Dim i As Long
     i = 1
     
+    Dim recordProgressLimit As Long
+    recordProgressLimit = UBound(addressesToAutocorrect.Keys()) + 1
+    
     Dim recordKey As Variant
     For Each recordKey In addressesToAutocorrect.Keys
         Dim recordToAutocorrect As RecordTuple
@@ -143,7 +146,7 @@ Public Sub attemptValidation()
             End If
         End If
         
-        Application.StatusBar = "Validating record " & i & " of " & (UBound(addressesToAutocorrect.Keys()) + 1)
+        Application.StatusBar = "Validating record " & i & " of " & recordProgressLimit
         i = i + 1
         DoEvents
     Next recordKey

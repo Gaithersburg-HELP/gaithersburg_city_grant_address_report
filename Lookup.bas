@@ -10,7 +10,7 @@ Public Enum AddressKey
     StreetType = 3
     Postfix = 4
     UnitType = 5
-    UnitNum = 6
+    unitNum = 6
     unitWithNum = 7
     zip = 8
     minLongitude = 9 ' Double
@@ -29,7 +29,7 @@ Private Function initAddressKey() As Scripting.Dictionary
     address.Add AddressKey.StreetType, vbNullString
     address.Add AddressKey.Postfix, vbNullString
     address.Add AddressKey.UnitType, vbNullString
-    address.Add AddressKey.UnitNum, vbNullString
+    address.Add AddressKey.unitNum, vbNullString
     address.Add AddressKey.unitWithNum, vbNullString
     address.Add AddressKey.zip, vbNullString
     address.Add AddressKey.minLongitude, 0
@@ -115,7 +115,7 @@ Public Function gburgQuery(ByVal fullAddress As String) As Scripting.Dictionary
         validatedAddress.Item(AddressKey.StreetType) = gburgAddress.Item("Road_Type")
         validatedAddress.Item(AddressKey.Postfix) = gburgAddress.Item("Road_Post_Dir")
         validatedAddress.Item(AddressKey.UnitType) = gburgAddress.Item("Unit_Type")
-        validatedAddress.Item(AddressKey.UnitNum) = gburgAddress.Item("Unit_Number")
+        validatedAddress.Item(AddressKey.unitNum) = gburgAddress.Item("Unit_Number")
         validatedAddress.Item(AddressKey.zip) = gburgAddress.Item("Zip_Code")
         
         validatedAddress.Item(AddressKey.streetAddress) = validatedAddress.Item(AddressKey.streetNum) & " " & _
@@ -128,7 +128,7 @@ Public Function gburgQuery(ByVal fullAddress As String) As Scripting.Dictionary
         
         If validatedAddress.Item(AddressKey.UnitType) <> vbNullString Then
             validatedAddress.Item(AddressKey.unitWithNum) = validatedAddress.Item(AddressKey.UnitType) & " " & _
-                                                            validatedAddress.Item(AddressKey.UnitNum)
+                                                            validatedAddress.Item(AddressKey.unitNum)
             validatedAddress.Item(AddressKey.Full) = validatedAddress.Item(AddressKey.streetAddress) & " " & _
                                                      validatedAddress.Item(AddressKey.unitWithNum)
         Else
@@ -199,12 +199,32 @@ Public Function googleValidateQuery(ByVal fullAddress As String, ByVal city As S
         Dim uspsFullAddress As String
         uspsFullAddress = jsonResult.Item("result").Item("uspsData").Item("standardizedAddress").Item("firstAddressLine")
         
+        Dim validPrimary As Boolean
+        validPrimary = False
+        Dim validSecondary As Boolean
+        validSecondary = False
+        ' USPS will sometimes return secondary even if unable to verify
+        Dim secondaryReturned As Boolean
+        secondaryReturned = False
+        
         ' For DPV confirmation values, https://developers.google.com/maps/documentation/address-validation/handle-us-address
         ' Short circuiting does not exist in VBA
         If jsonResult.Item("result").Item("uspsData").Exists("dpvConfirmation") Then
-            If jsonResult.Item("result").Item("uspsData").Item("dpvConfirmation") = "Y" Then
-                validatedAddress.Item(AddressKey.Full) = uspsFullAddress
-            End If
+            Select Case jsonResult.Item("result").Item("uspsData").Item("dpvConfirmation")
+                Case "Y"
+                    validatedAddress.Item(AddressKey.Full) = uspsFullAddress
+                    validPrimary = True
+                    
+                    If jsonResult.Item("result").Item("verdict").Item("validationGranularity") = "SUB_PREMISE" Then
+                        validSecondary = True
+                        secondaryReturned = True
+                    End If
+                Case "S"
+                    validPrimary = True
+                    secondaryReturned = True
+                Case "D"
+                    validPrimary = True
+            End Select
         End If
         
         ' Cannot rely on hasInferredComponents to check if address changed (always true when ZIP extension is not provided)
@@ -218,10 +238,11 @@ Public Function googleValidateQuery(ByVal fullAddress As String, ByVal city As S
         ' TODO? If not dpv confirmed, Get list of street names from Gaithersburg, Autocorrect to closest street name
         
         Dim streetAddress As String
-        streetAddress = uspsFullAddress
+        streetAddress = vbNullString
         
-        ' split on unit type if address input to unit level
-        If jsonResult.Item("result").Item("verdict").Item("inputGranularity") = "SUB_PREMISE" Then
+        If validPrimary Then streetAddress = uspsFullAddress
+        
+        If secondaryReturned Then
             ' see https://public-dhhs.ne.gov/nfocus/HowDoI/howdoi/usps_address_unit_types.htm
             
             Dim splitRWordArr() As String
@@ -232,18 +253,25 @@ Public Function googleValidateQuery(ByVal fullAddress As String, ByVal city As S
             ' so not going to worry about those
             Select Case splitRWordArr(1)
                 Case "BSMT", "FRNT", "LBBY", "LOWR", "OFC", "PH", "REAR", "SIDE", "UPPR"
-                    validatedAddress.Item(AddressKey.UnitType) = splitRWordArr(1)
-                    validatedAddress.Item(AddressKey.unitWithNum) = splitRWordArr(1)
+                    If validSecondary Then
+                        validatedAddress.Item(AddressKey.UnitType) = splitRWordArr(1)
+                        validatedAddress.Item(AddressKey.unitWithNum) = splitRWordArr(1)
+                    End If
                     streetAddress = splitRWordArr(0)
                 Case Else
-                    validatedAddress.Item(AddressKey.UnitNum) = splitRWordArr(1)
-                    
                     Dim splitUnitArr() As String
                     splitUnitArr = RWordTrim(splitRWordArr(0))
                     
-                    validatedAddress.Item(AddressKey.UnitType) = splitUnitArr(1)
-                    validatedAddress.Item(AddressKey.unitWithNum) = validatedAddress.Item(AddressKey.UnitType) & _
-                                                                    " " & validatedAddress.Item(AddressKey.UnitNum)
+                    ' in theory shouldn't need to double check if USPS returned secondary
+                    ' Case "APT", "BLDG", "BSMT", "DEPT", "FL", "FRNT", "HNGR", "KEY", "LBBY", "LOT", "LOWR", "OFC", _
+                    '      "PH", "PIER", "REAR", "RM", "SIDE", "SLIP", "SPC", "STE", "STOP", "TRLR", "UNIT", "UPPR"
+                    If validSecondary Then
+                        validatedAddress.Item(AddressKey.UnitType) = splitUnitArr(1)
+                        validatedAddress.Item(AddressKey.unitNum) = splitRWordArr(1)
+                        validatedAddress.Item(AddressKey.unitWithNum) = validatedAddress.Item(AddressKey.UnitType) & _
+                                                                        " " & validatedAddress.Item(AddressKey.unitNum)
+                    End If
+                    
                     streetAddress = splitUnitArr(0)
             End Select
         End If
