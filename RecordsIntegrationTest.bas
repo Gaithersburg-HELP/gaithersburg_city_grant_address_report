@@ -7,17 +7,20 @@ Option Explicit
 Option Private Module
 
 Private Assert As Object
+Private Fakes As Object
 
 '@ModuleInitialize
 Private Sub ModuleInitialize()
     'this method runs once per module.
     Set Assert = CreateObject("Rubberduck.AssertClass")
+    Set Fakes = CreateObject("Rubberduck.FakesProvider")
 End Sub
 
 '@ModuleCleanup
 Private Sub ModuleCleanup()
     'this method runs once per module.
     Set Assert = Nothing
+    Set Fakes = Nothing
 End Sub
 
 '@TestInitialize
@@ -111,19 +114,35 @@ Public Sub TestAllAddresses()
     CompareSheetCSV Assert, "Discards", ActiveWorkbook.path & "\testdata\test4mergeaddresses_discardsoutput.csv"
     CompareSheetCSV Assert, "Autocorrected", ActiveWorkbook.path & "\testdata\test4mergeaddresses_autocorrectedoutput.csv"
 
-    ' TODO fake user processing of autocorrect sheet:
-    ' - discard from address
-    ' - discard from needs autocorrect
-    ' - restore discard to needs autocorrect
-    ' - multiple select discard, multiple select restore
+    Fakes.MsgBox.Returns vbYes
+    
+    InterfaceButtons.confirmDiscardAll
+    ' TODO select and restore multiple discards
+    InterfaceButtons.confirmRestoreSelectedDiscard
+    ' TODO select and discard multiple discards
+    InterfaceButtons.confirmDiscardSelected
+    ' TODO select and move
+    InterfaceButtons.confirmMoveAutocorrect
+    
+    CompareSheetCSV Assert, "Addresses", ActiveWorkbook.path & "\testdata\test5usereditsaddresses_addressesoutput.csv"
+    CompareSheetCSV Assert, "Interface", ActiveWorkbook.path & "\testdata\test5usereditsaddresses_totalsoutput.csv", getTotalsRng
+    CompareSheetCSV Assert, "Needs Autocorrect", ActiveWorkbook.path & "\testdata\test5usereditsaddresses_autocorrectoutput.csv"
+    CompareSheetCSV Assert, "Discards", ActiveWorkbook.path & "\testdata\test5usereditsaddresses_discardsoutput.csv"
+    CompareSheetCSV Assert, "Autocorrected", ActiveWorkbook.path & "\testdata\test5usereditsaddresses_autocorrectedoutput.csv"
+    
+    ' TODO edit certain addresses and revalidate
+    
+    InterfaceButtons.confirmAttemptValidation
+    InterfaceButtons.confirmGenerateFinalReport
 
-'    generateFinalReport
-'
-'    CompareSheetCSV assert, "Final Report", ActiveWorkbook.path & "\testdata\test3autocorrectaddresses_finalreportoutput.csv"
+    CompareSheetCSV Assert, "Final Report", ActiveWorkbook.path & "\testdata\test5usereditsaddresses_finalreportoutput.csv"
     
     ' TODO test delete service column, generate final report
+    InterfaceButtons.confirmDeleteService
+    InterfaceButtons.confirmGenerateFinalReport
     
     ' TODO test delete all visit data
+    InterfaceButtons.confirmDeleteAllVisitData
     Exit Sub
 TestFail:
     Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description

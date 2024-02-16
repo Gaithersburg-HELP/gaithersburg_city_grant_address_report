@@ -31,17 +31,17 @@ Public Sub generateFinalReport()
     'getBlankRow
     ' ActiveWorkbook.Sheets.[_Default]("Final Report").Range("A2:O2").Select
     'ActiveSheet.Range(Selection, Selection.End(xlDown)).Select
-    ActiveSheet.Sort.SortFields.Clear
-    With ActiveSheet.Sort
-        .SortFields.Clear
-        .SortFields.Add key:=Selection.Columns(3), Order:=xlAscending
-        .SortFields.Add key:=Selection.Columns(2), Order:=xlAscending
-        .SortFields.Add key:=Selection.Columns(4), Order:=xlAscending
-        .SortFields.Add key:=Selection.Columns(6), Order:=xlAscending
-        .Header = xlNo
-        .SetRange Selection
-        .Apply
-    End With
+'    ActiveSheet.Sort.SortFields.Clear
+'    With ActiveSheet.Sort
+'        .SortFields.Clear
+'        .SortFields.Add key:=Selection.Columns(3), Order:=xlAscending
+'        .SortFields.Add key:=Selection.Columns(2), Order:=xlAscending
+'        .SortFields.Add key:=Selection.Columns(4), Order:=xlAscending
+'        .SortFields.Add key:=Selection.Columns(6), Order:=xlAscending
+'        .Header = xlNo
+'        .SetRange Selection
+'        .Apply
+'    End With
     
     ActiveSheet.Range("A2").Select
 End Sub
