@@ -36,7 +36,7 @@ Public Sub confirmAttemptValidation()
         Exit Sub
     End If
     
-    Autocorrect.attemptValidation
+    autocorrect.attemptValidation
 End Sub
 
 '@EntryPoint
@@ -80,7 +80,16 @@ Public Sub confirmDiscardAll()
         Exit Sub
     End If
     
-    'TODO discard all remaining
+    Dim autocorrect As Scripting.Dictionary
+    Set autocorrect = Records.loadAddresses("Needs Autocorrect")
+    
+    Dim key As Variant
+    For Each key In autocorrect.Keys()
+        Records.writeAddress "Discards", autocorrect.Item(key)
+    Next key
+    
+    SheetUtilities.ClearSheet "Needs Autocorrect"
+    SheetUtilities.SortSheet "Discards"
 End Sub
 
 '@EntryPoint
