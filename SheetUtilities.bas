@@ -1,6 +1,17 @@
 Attribute VB_Name = "SheetUtilities"
 '@Folder("City_Grant_Address_Report.src")
 Option Explicit
+
+Public Const firstServiceColumn As Long = 16
+
+Public Function serviceFirstCell() As String
+    serviceFirstCell = ActiveSheet.Range("A1").offset(0, firstServiceColumn - 1).address
+End Function
+
+Public Function rxFirstCell() As String
+    rxFirstCell = ActiveSheet.Range("A2").offset(0, firstServiceColumn - 2).address
+End Function
+
 ' Returns blank row after all data, assuming Column A is filled in last row
 Public Function getBlankRow(ByVal sheetName As String) As Range
     Dim sheet As Worksheet
@@ -15,13 +26,13 @@ Public Function getRng(ByVal sheetName As String, ByVal firstCell As String, ByV
     Set sheet = ActiveWorkbook.Worksheets.[_Default](sheetName)
         
     Dim lastColNum As Long
-    lastColNum = sheet.Range(lastCol).Column
+    lastColNum = sheet.Range(lastCol).column
     
     Dim lastRow As Long
     lastRow = sheet.Range(firstCell).row
     
     Dim i As Long
-    i = sheet.Range(firstCell).Column
+    i = sheet.Range(firstCell).column
     Do While i <= lastColNum
         Dim currentLastRow As Long
         currentLastRow = sheet.Cells.Item(sheet.Rows.Count, i).End(xlUp).row
@@ -44,14 +55,15 @@ Public Function getFinalReportRng() As Range
     Set getFinalReportRng = getRng("Final Report", "A2", "M2")
 End Function
 
-Private Function getServiceHeaderLastCell(ByVal sheetName As String, ByVal cellToLeftOfHeaders As String) As String
+Private Function getServiceHeaderLastCell(ByVal sheetName As String) As String
     getServiceHeaderLastCell = ActiveWorkbook.Worksheets.[_Default](sheetName) _
-                                      .Range(cellToLeftOfHeaders).End(xlToRight).address
+                                      .Range("A1").offset(0, firstServiceColumn - 2) _
+                                      .End(xlToRight).address
 End Function
 
 Public Function getServiceHeaderRng(ByVal sheetName As String) As Range
     Set getServiceHeaderRng = ActiveWorkbook.Worksheets.[_Default](sheetName) _
-                                    .Range("P1:" & getServiceHeaderLastCell(sheetName, "O1"))
+                                    .Range(serviceFirstCell, getServiceHeaderLastCell(sheetName))
 End Function
 
 ' Returns zero based service array
@@ -70,15 +82,13 @@ Public Function loadServiceNames(ByVal sheetName As String) As String()
 End Function
 
 Public Function getAddressRng(ByVal sheetName As String) As Range
-    Set getAddressRng = Application.Union(getRng(sheetName, "A2", "O2"), _
-                                          getRng(sheetName, "P2", _
-                                                 getServiceHeaderLastCell(sheetName, "O1")))
+    Set getAddressRng = getRng(sheetName, "A2", getServiceHeaderLastCell(sheetName))
 End Function
 
 Public Function getAddressVisitDataRng(ByVal sheetName As String) As Range
-    Set getAddressVisitDataRng = Application.Union(getRng(sheetName, "O2", "O2"), _
-                                                   getRng(sheetName, "P1", _
-                                                          getServiceHeaderLastCell(sheetName, "O1")))
+    Set getAddressVisitDataRng = Application.Union(getRng(sheetName, rxFirstCell, rxFirstCell), _
+                                                   getRng(sheetName, serviceFirstCell, _
+                                                          getServiceHeaderLastCell(sheetName)))
 End Function
 
 Public Function sheetToCSVArray(ByVal sheetName As String, Optional ByVal rng As Range = Nothing) As String()
