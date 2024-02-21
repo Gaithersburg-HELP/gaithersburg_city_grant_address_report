@@ -6,7 +6,7 @@ Option Explicit
 Private Function isInvalidSelection() As Boolean
     Dim row As Variant
     For Each row In selection.Rows
-        If row < 2 Then
+        If row.row < 2 Then
             MsgBox "Invalid Selection"
             isInvalidSelection = True
             Exit Function
@@ -162,9 +162,18 @@ End Sub
 
 '@EntryPoint
 Public Sub toggleUserVerified()
-    ' TODO toggle User Verified
     If isInvalidSelection Then
+        Exit Sub
     End If
+    
+    Dim row As Variant
+    For Each row In selection.Rows
+        If ActiveSheet.Cells(row.row, 2).Value Then
+            ActiveSheet.Cells(row.row, 2).Value = False
+        Else
+            ActiveSheet.Cells(row.row, 2).Value = True
+        End If
+    Next row
 End Sub
 
 ' This macro subroutine may be used to double-check
