@@ -115,6 +115,11 @@ Public Sub confirmMoveAutocorrect()
     ' TODO move to autocorrect
 End Sub
 
+'@EntryPoint
+Public Sub toggleUserVerified()
+    ' TODO toggle User Verified
+End Sub
+
 ' This macro subroutine may be used to double-check
 ' street addresses by lookup on the Gaithersburg city address search page in browser window.
 '@EntryPoint
