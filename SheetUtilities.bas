@@ -33,11 +33,11 @@ Public Function getRng(ByVal sheetName As String, ByVal firstCell As String, ByV
 End Function
 
 Public Function getPastedRecordsRng() As Range
-    Set getPastedRecordsRng = getRng("Interface", "A21", "L21")
+    Set getPastedRecordsRng = getRng("Interface", "A23", "L23")
 End Function
 
 Public Function getTotalsRng() As Range
-    Set getTotalsRng = getRng("Interface", "N2", "Q2")
+    Set getTotalsRng = ActiveWorkbook.Worksheets.[_Default]("Interface").Range("N2:Q6")
 End Function
 
 Public Function getFinalReportRng() As Range
