@@ -36,9 +36,7 @@ Private Sub TestCleanup()
 End Sub
 
 Private Sub PasteTestRecords(ByRef addressArr() As String)
-    ActiveWorkbook.Worksheets.[_Default]("Interface").Activate
-    
-    ActiveSheet.Range("A9").Select
+    getPastedRecordsRng.Cells(1, 1).Select
     
     Dim i As Long
     Dim fileArrLine() As String
@@ -46,11 +44,11 @@ Private Sub PasteTestRecords(ByRef addressArr() As String)
         If addressArr(i) <> vbNullString Then
             fileArrLine = Split(addressArr(i), ",")
             Dim j As Long
-            For j = 0 To 11
+            For j = 0 To UBound(fileArrLine)
                 ActiveCell.Value = fileArrLine(j)
                 ActiveCell.Offset(0, 1).Select
             Next j
-            ActiveCell.Offset(1, -12).Select
+            ActiveSheet.Cells(ActiveCell.Row + 1, 1).Select
         End If
     Next i
 End Sub
@@ -123,6 +121,9 @@ Public Sub TestAllAddresses()
     InterfaceButtons.confirmDiscardSelected
     ' TODO select and move
     InterfaceButtons.confirmMoveAutocorrect
+    ' TODO toggle user verified
+    InterfaceButtons.toggleUserVerified
+    
     
     CompareSheetCSV Assert, "Addresses", ActiveWorkbook.path & "\testdata\test5usereditsaddresses_addressesoutput.csv"
     CompareSheetCSV Assert, "Interface", ActiveWorkbook.path & "\testdata\test5usereditsaddresses_totalsoutput.csv", getTotalsRng

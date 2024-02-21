@@ -6,7 +6,7 @@ Public Function getBlankRow(ByVal sheetName As String) As Range
     Dim sheet As Worksheet
     Set sheet = ActiveWorkbook.Worksheets.[_Default](sheetName)
     
-    Set getBlankRow = sheet.Rows.Item(sheet.Rows.Item(sheet.Rows.Count).End(xlUp).row + 1)
+    Set getBlankRow = sheet.Rows.Item(sheet.Rows.Item(sheet.Rows.Count).End(xlUp).Row + 1)
 End Function
 
 ' Returns all data below (all cells between firstCell and lastCol) including blanks and firstCell
@@ -18,13 +18,13 @@ Public Function getRng(ByVal sheetName As String, ByVal firstCell As String, ByV
     lastColNum = sheet.Range(lastCol).Column
     
     Dim lastRow As Long
-    lastRow = sheet.Range(firstCell).row
+    lastRow = sheet.Range(firstCell).Row
     
     Dim i As Long
     i = sheet.Range(firstCell).Column
     Do While i <= lastColNum
         Dim currentLastRow As Long
-        currentLastRow = sheet.Cells.Item(sheet.Rows.Count, i).End(xlUp).row
+        currentLastRow = sheet.Cells.Item(sheet.Rows.Count, i).End(xlUp).Row
         If (currentLastRow > lastRow) Then lastRow = currentLastRow
         i = i + 1
     Loop
@@ -33,7 +33,7 @@ Public Function getRng(ByVal sheetName As String, ByVal firstCell As String, ByV
 End Function
 
 Public Function getPastedRecordsRng() As Range
-    Set getPastedRecordsRng = getRng("Interface", "A9", "L9")
+    Set getPastedRecordsRng = getRng("Interface", "A21", "L21")
 End Function
 
 Public Function getTotalsRng() As Range

@@ -95,7 +95,7 @@ Public Function loadAddresses(ByVal sheetName As String) As Scripting.Dictionary
     
     Dim i As Long
     i = 2
-    Do While i < getBlankRow(sheetName).row
+    Do While i < getBlankRow(sheetName).Row
         Dim recordRowFirstCell As Range
         Set recordRowFirstCell = sheet.Rows.Item(i).Cells.Item(1, 1)
         
@@ -274,8 +274,8 @@ Public Sub addRecords()
     Set recordsToValidate = New Scripting.Dictionary
     
     Dim i As Long
-    i = 9
-    Do While i < getBlankRow("Interface").row
+    i = getPastedRecordsRng.Row
+    Do While i < getBlankRow("Interface").Row
         Dim recordToAdd As RecordTuple
         Set recordToAdd = loadRecordFromRaw(ActiveWorkbook.Sheets.[_Default]("Interface").Range("A" & i))
         
@@ -311,7 +311,7 @@ Public Sub addRecords()
             End If
         End If
         
-        Application.StatusBar = "Adding record " & (i - 8) & " of " & (getBlankRow("Interface").row - 8)
+        Application.StatusBar = "Adding record " & (i - 8) & " of " & (getBlankRow("Interface").Row - 8)
         ' yield execution so Excel remains responsive and user can hit Esc
         DoEvents
         i = i + 1

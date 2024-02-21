@@ -125,7 +125,7 @@ End Sub
 '@EntryPoint
 Public Sub LookupInCity()
     Dim currentRowFirstCell As Range
-    Set currentRowFirstCell = ActiveWorkbook.ActiveSheet.Cells.Item(ActiveCell.row, 1)
+    Set currentRowFirstCell = ActiveWorkbook.ActiveSheet.Cells.Item(ActiveCell.Row, 1)
     
     Dim record As RecordTuple
     Set record = Records.loadRecordFromSheet(currentRowFirstCell)
