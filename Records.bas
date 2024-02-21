@@ -324,11 +324,11 @@ Public Sub addRecords()
         Dim recordToValidate As RecordTuple
         Set recordToValidate = recordsToValidate.Item(key)
         Dim gburgAddress As Scripting.Dictionary
-        Set gburgAddress = Lookup.gburgQuery(recordToValidate.GburgFormatRawAddress.Item(AddressKey.Full))
+        Set gburgAddress = Lookup.gburgQuery(recordToValidate.GburgFormatRawAddress.Item(addressKey.Full))
         
         recordToValidate.SetValidAddress gburgAddress
         
-        If gburgAddress.Item(AddressKey.Full) <> vbNullString Then
+        If gburgAddress.Item(addressKey.Full) <> vbNullString Then
             ' Valid address
             recordToValidate.SetInCity InCityCode.ValidInCity
             addresses.Add recordToValidate.key, recordToValidate

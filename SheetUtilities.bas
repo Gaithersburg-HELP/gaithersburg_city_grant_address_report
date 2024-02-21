@@ -144,15 +144,18 @@ Public Sub ClearAll()
     Next
 End Sub
 
+Public Sub SortSheet(sheetName As String, addressKey As String)
+    getAddressRng(sheetName).Sort _
+        key1:=ActiveWorkbook.Sheets.[_Default](sheetName).Range("B2"), _
+        key2:=ActiveWorkbook.Sheets.[_Default](sheetName).Range(addressKey), _
+        Order1:=xlDescending, Order2:=xlAscending, Header:=xlNo
+End Sub
+
 Public Sub SortAll()
-    getAddressRng("Addresses").Sort _
-        key1:=ActiveWorkbook.Sheets.[_Default]("Addresses").Range("C2"), Order1:=xlAscending, Header:=xlNo
-    getAddressRng("Needs Autocorrect").Sort _
-        key1:=ActiveWorkbook.Sheets.[_Default]("Needs Autocorrect").Range("F2"), Order1:=xlAscending, Header:=xlNo
-    getAddressRng("Discards").Sort _
-        key1:=ActiveWorkbook.Sheets.[_Default]("Discards").Range("F2"), Order1:=xlAscending, Header:=xlNo
-    getAddressRng("Autocorrected").Sort _
-        key1:=ActiveWorkbook.Sheets.[_Default]("Autocorrected").Range("C2"), Order1:=xlAscending, Header:=xlNo
+    SortSheet "Addresses", "C2"
+    SortSheet "Needs Autocorrect", "F2"
+    SortSheet "Discards", "F2"
+    SortSheet "Autocorrected", "C2"
 End Sub
 
 ' Prints Collection

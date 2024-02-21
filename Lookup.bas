@@ -2,7 +2,7 @@ Attribute VB_Name = "Lookup"
 '@Folder("City_Grant_Address_Report.src")
 Option Explicit
 
-Public Enum AddressKey
+Public Enum addressKey
     streetAddress = -1 ' StreetNum + PrefixedStreetName + StreetType + Postfix
     Full = 0 ' StreetAddress + UnitType + UnitNum
     streetNum = 1
@@ -22,20 +22,20 @@ End Enum
 Private Function initAddressKey() As Scripting.Dictionary
     Dim address As Scripting.Dictionary
     Set address = New Scripting.Dictionary
-    address.Add AddressKey.streetAddress, vbNullString
-    address.Add AddressKey.Full, vbNullString
-    address.Add AddressKey.streetNum, vbNullString
-    address.Add AddressKey.PrefixedStreetName, vbNullString
-    address.Add AddressKey.StreetType, vbNullString
-    address.Add AddressKey.Postfix, vbNullString
-    address.Add AddressKey.UnitType, vbNullString
-    address.Add AddressKey.unitNum, vbNullString
-    address.Add AddressKey.unitWithNum, vbNullString
-    address.Add AddressKey.zip, vbNullString
-    address.Add AddressKey.minLongitude, 0
-    address.Add AddressKey.maxLongitude, 0
-    address.Add AddressKey.minLatitude, 0
-    address.Add AddressKey.maxLatitude, 0
+    address.Add addressKey.streetAddress, vbNullString
+    address.Add addressKey.Full, vbNullString
+    address.Add addressKey.streetNum, vbNullString
+    address.Add addressKey.PrefixedStreetName, vbNullString
+    address.Add addressKey.StreetType, vbNullString
+    address.Add addressKey.Postfix, vbNullString
+    address.Add addressKey.UnitType, vbNullString
+    address.Add addressKey.unitNum, vbNullString
+    address.Add addressKey.unitWithNum, vbNullString
+    address.Add addressKey.zip, vbNullString
+    address.Add addressKey.minLongitude, 0
+    address.Add addressKey.maxLongitude, 0
+    address.Add addressKey.minLatitude, 0
+    address.Add addressKey.maxLatitude, 0
     Set initAddressKey = address
 End Function
 
@@ -103,36 +103,36 @@ Public Function gburgQuery(ByVal fullAddress As String) As Scripting.Dictionary
         Dim gburgAddress As Scripting.Dictionary
         Set gburgAddress = jsonResult.Item("features").Item(1).Item("attributes")
         
-        validatedAddress.Item(AddressKey.streetNum) = gburgAddress.Item("Address_Number")
+        validatedAddress.Item(addressKey.streetNum) = gburgAddress.Item("Address_Number")
         
         If gburgAddress.Item("Road_Prefix_Dir") <> vbNullString Then
-            validatedAddress.Item(AddressKey.PrefixedStreetName) = gburgAddress.Item("Road_Prefix_Dir") & " " & _
+            validatedAddress.Item(addressKey.PrefixedStreetName) = gburgAddress.Item("Road_Prefix_Dir") & " " & _
                                                                    gburgAddress.Item("Road_Name")
         Else
-            validatedAddress.Item(AddressKey.PrefixedStreetName) = gburgAddress.Item("Road_Name")
+            validatedAddress.Item(addressKey.PrefixedStreetName) = gburgAddress.Item("Road_Name")
         End If
         
-        validatedAddress.Item(AddressKey.StreetType) = gburgAddress.Item("Road_Type")
-        validatedAddress.Item(AddressKey.Postfix) = gburgAddress.Item("Road_Post_Dir")
-        validatedAddress.Item(AddressKey.UnitType) = gburgAddress.Item("Unit_Type")
-        validatedAddress.Item(AddressKey.unitNum) = gburgAddress.Item("Unit_Number")
-        validatedAddress.Item(AddressKey.zip) = gburgAddress.Item("Zip_Code")
+        validatedAddress.Item(addressKey.StreetType) = gburgAddress.Item("Road_Type")
+        validatedAddress.Item(addressKey.Postfix) = gburgAddress.Item("Road_Post_Dir")
+        validatedAddress.Item(addressKey.UnitType) = gburgAddress.Item("Unit_Type")
+        validatedAddress.Item(addressKey.unitNum) = gburgAddress.Item("Unit_Number")
+        validatedAddress.Item(addressKey.zip) = gburgAddress.Item("Zip_Code")
         
-        validatedAddress.Item(AddressKey.streetAddress) = validatedAddress.Item(AddressKey.streetNum) & " " & _
-                                                          validatedAddress.Item(AddressKey.PrefixedStreetName) & " " & _
-                                                          validatedAddress.Item(AddressKey.StreetType)
-        If validatedAddress.Item(AddressKey.Postfix) <> vbNullString Then
-            validatedAddress.Item(AddressKey.streetAddress) = validatedAddress.Item(AddressKey.streetAddress) & " " & _
-                                                              validatedAddress.Item(AddressKey.Postfix)
+        validatedAddress.Item(addressKey.streetAddress) = validatedAddress.Item(addressKey.streetNum) & " " & _
+                                                          validatedAddress.Item(addressKey.PrefixedStreetName) & " " & _
+                                                          validatedAddress.Item(addressKey.StreetType)
+        If validatedAddress.Item(addressKey.Postfix) <> vbNullString Then
+            validatedAddress.Item(addressKey.streetAddress) = validatedAddress.Item(addressKey.streetAddress) & " " & _
+                                                              validatedAddress.Item(addressKey.Postfix)
         End If
         
-        If validatedAddress.Item(AddressKey.UnitType) <> vbNullString Then
-            validatedAddress.Item(AddressKey.unitWithNum) = validatedAddress.Item(AddressKey.UnitType) & " " & _
-                                                            validatedAddress.Item(AddressKey.unitNum)
-            validatedAddress.Item(AddressKey.Full) = validatedAddress.Item(AddressKey.streetAddress) & " " & _
-                                                     validatedAddress.Item(AddressKey.unitWithNum)
+        If validatedAddress.Item(addressKey.UnitType) <> vbNullString Then
+            validatedAddress.Item(addressKey.unitWithNum) = validatedAddress.Item(addressKey.UnitType) & " " & _
+                                                            validatedAddress.Item(addressKey.unitNum)
+            validatedAddress.Item(addressKey.Full) = validatedAddress.Item(addressKey.streetAddress) & " " & _
+                                                     validatedAddress.Item(addressKey.unitWithNum)
         Else
-            validatedAddress.Item(AddressKey.Full) = validatedAddress.Item(AddressKey.streetAddress)
+            validatedAddress.Item(addressKey.Full) = validatedAddress.Item(addressKey.streetAddress)
         End If
     End If
 
@@ -212,7 +212,7 @@ Public Function googleValidateQuery(ByVal fullAddress As String, ByVal city As S
         If jsonResult.Item("result").Item("uspsData").Exists("dpvConfirmation") Then
             Select Case jsonResult.Item("result").Item("uspsData").Item("dpvConfirmation")
                 Case "Y"
-                    validatedAddress.Item(AddressKey.Full) = uspsFullAddress
+                    validatedAddress.Item(addressKey.Full) = uspsFullAddress
                     validPrimary = True
                     
                     If jsonResult.Item("result").Item("verdict").Item("validationGranularity") = "SUB_PREMISE" Then
@@ -232,7 +232,7 @@ Public Function googleValidateQuery(ByVal fullAddress As String, ByVal city As S
         ' google "replaced" or "spellCorrected" is not always present
         '   i.e. "fredrick" doesn't show spellcorrected but "frederik" does
         
-        validatedAddress.Item(AddressKey.zip) = jsonResult.Item("result").Item("uspsData") _
+        validatedAddress.Item(addressKey.zip) = jsonResult.Item("result").Item("uspsData") _
                                                           .Item("standardizedAddress").Item("zipCode")
         
         ' TODO? If not dpv confirmed, Get list of street names from Gaithersburg, Autocorrect to closest street name
@@ -254,8 +254,8 @@ Public Function googleValidateQuery(ByVal fullAddress As String, ByVal city As S
             Select Case splitRWordArr(1)
                 Case "BSMT", "FRNT", "LBBY", "LOWR", "OFC", "PH", "REAR", "SIDE", "UPPR"
                     If validSecondary Then
-                        validatedAddress.Item(AddressKey.UnitType) = splitRWordArr(1)
-                        validatedAddress.Item(AddressKey.unitWithNum) = splitRWordArr(1)
+                        validatedAddress.Item(addressKey.UnitType) = splitRWordArr(1)
+                        validatedAddress.Item(addressKey.unitWithNum) = splitRWordArr(1)
                     End If
                     streetAddress = splitRWordArr(0)
                 Case Else
@@ -266,17 +266,17 @@ Public Function googleValidateQuery(ByVal fullAddress As String, ByVal city As S
                     ' Case "APT", "BLDG", "BSMT", "DEPT", "FL", "FRNT", "HNGR", "KEY", "LBBY", "LOT", "LOWR", "OFC", _
                     '      "PH", "PIER", "REAR", "RM", "SIDE", "SLIP", "SPC", "STE", "STOP", "TRLR", "UNIT", "UPPR"
                     If validSecondary Then
-                        validatedAddress.Item(AddressKey.UnitType) = splitUnitArr(1)
-                        validatedAddress.Item(AddressKey.unitNum) = splitRWordArr(1)
-                        validatedAddress.Item(AddressKey.unitWithNum) = validatedAddress.Item(AddressKey.UnitType) & _
-                                                                        " " & validatedAddress.Item(AddressKey.unitNum)
+                        validatedAddress.Item(addressKey.UnitType) = splitUnitArr(1)
+                        validatedAddress.Item(addressKey.unitNum) = splitRWordArr(1)
+                        validatedAddress.Item(addressKey.unitWithNum) = validatedAddress.Item(addressKey.UnitType) & _
+                                                                        " " & validatedAddress.Item(addressKey.unitNum)
                     End If
                     
                     streetAddress = splitUnitArr(0)
             End Select
         End If
         
-        validatedAddress.Item(AddressKey.streetAddress) = streetAddress
+        validatedAddress.Item(addressKey.streetAddress) = streetAddress
     Else
         ' sometimes uspsData object is not populated e.g. just "501 Frederick Ave"
         ' unable to find an example where city and state and zip are given but uspsData does not populate
@@ -290,22 +290,22 @@ Public Function googleValidateQuery(ByVal fullAddress As String, ByVal city As S
             ElseIf component.Item("componentType") = "route" Then
                  route = component.Item("componentName").Item("text")
             ElseIf component.Item("componentType") = "subpremise" Then
-                validatedAddress.Item(AddressKey.unitWithNum) = component.Item("componentName").Item("text")
+                validatedAddress.Item(addressKey.unitWithNum) = component.Item("componentName").Item("text")
             ElseIf component.Item("componentType") = "postal_code" Then
-                validatedAddress.Item(AddressKey.zip) = component.Item("componentName").Item("text")
+                validatedAddress.Item(addressKey.zip) = component.Item("componentName").Item("text")
             End If
         Next component
 
-        validatedAddress.Item(AddressKey.streetAddress) = streetNum & " " & route
+        validatedAddress.Item(addressKey.streetAddress) = streetNum & " " & route
     End If
 
-    validatedAddress.Item(AddressKey.minLongitude) = jsonResult.Item("result").Item("geocode") _
+    validatedAddress.Item(addressKey.minLongitude) = jsonResult.Item("result").Item("geocode") _
                                                      .Item("bounds").Item("low").Item("longitude")
-    validatedAddress.Item(AddressKey.maxLongitude) = jsonResult.Item("result").Item("geocode") _
+    validatedAddress.Item(addressKey.maxLongitude) = jsonResult.Item("result").Item("geocode") _
                                                      .Item("bounds").Item("high").Item("longitude")
-    validatedAddress.Item(AddressKey.minLatitude) = jsonResult.Item("result").Item("geocode") _
+    validatedAddress.Item(addressKey.minLatitude) = jsonResult.Item("result").Item("geocode") _
                                                      .Item("bounds").Item("low").Item("latitude")
-    validatedAddress.Item(AddressKey.maxLatitude) = jsonResult.Item("result").Item("geocode") _
+    validatedAddress.Item(addressKey.maxLatitude) = jsonResult.Item("result").Item("geocode") _
                                                      .Item("bounds").Item("high").Item("latitude")
     
     Set googleValidateQuery = validatedAddress

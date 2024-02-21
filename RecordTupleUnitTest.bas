@@ -74,13 +74,13 @@ Public Sub TestFormatAddress()
     Dim gburgFormat As Scripting.Dictionary
     Set gburgFormat = record.GburgFormatRawAddress
     
-    Assert.IsTrue gburgFormat.Item(AddressKey.Full) = "501a S Frederick Ave E Ste 1", "Full address incorrect"
-    Assert.IsTrue gburgFormat.Item(AddressKey.Postfix) = "E", "Postfix incorrect"
-    Assert.IsTrue gburgFormat.Item(AddressKey.PrefixedStreetName) = "S Frederick", "Street name incorrect"
-    Assert.IsTrue gburgFormat.Item(AddressKey.streetNum) = "501a", "Street no. incorrect"
-    Assert.IsTrue gburgFormat.Item(AddressKey.StreetType) = "Ave", "Street type incorrect"
-    Assert.IsTrue gburgFormat.Item(AddressKey.unitNum) = "1", "Unit no. incorrect"
-    Assert.IsTrue gburgFormat.Item(AddressKey.UnitType) = "Ste", "Unit type incorrect"
+    Assert.IsTrue gburgFormat.Item(addressKey.Full) = "501a S Frederick Ave E Ste 1", "Full address incorrect"
+    Assert.IsTrue gburgFormat.Item(addressKey.Postfix) = "E", "Postfix incorrect"
+    Assert.IsTrue gburgFormat.Item(addressKey.PrefixedStreetName) = "S Frederick", "Street name incorrect"
+    Assert.IsTrue gburgFormat.Item(addressKey.streetNum) = "501a", "Street no. incorrect"
+    Assert.IsTrue gburgFormat.Item(addressKey.StreetType) = "Ave", "Street type incorrect"
+    Assert.IsTrue gburgFormat.Item(addressKey.unitNum) = "1", "Unit no. incorrect"
+    Assert.IsTrue gburgFormat.Item(addressKey.UnitType) = "Ste", "Unit type incorrect"
     
     Dim recordNoPostfix As RecordTuple
     Set recordNoPostfix = New RecordTuple
@@ -88,10 +88,10 @@ Public Sub TestFormatAddress()
     recordNoPostfix.RawAddress = "2 Nina Ave"
     Set gburgFormat = recordNoPostfix.GburgFormatRawAddress
     
-    Assert.IsTrue gburgFormat.Item(AddressKey.Postfix) = vbNullString, "Postfix incorrect"
-    Assert.IsTrue gburgFormat.Item(AddressKey.PrefixedStreetName) = "Nina", "Street name incorrect"
-    Assert.IsTrue gburgFormat.Item(AddressKey.unitNum) = vbNullString, "Unit no. incorrect"
-    Assert.IsTrue gburgFormat.Item(AddressKey.UnitType) = vbNullString, "Unit type incorrect"
+    Assert.IsTrue gburgFormat.Item(addressKey.Postfix) = vbNullString, "Postfix incorrect"
+    Assert.IsTrue gburgFormat.Item(addressKey.PrefixedStreetName) = "Nina", "Street name incorrect"
+    Assert.IsTrue gburgFormat.Item(addressKey.unitNum) = vbNullString, "Unit no. incorrect"
+    Assert.IsTrue gburgFormat.Item(addressKey.UnitType) = vbNullString, "Unit type incorrect"
     
     Dim numericRecord As RecordTuple
     Set numericRecord = New RecordTuple

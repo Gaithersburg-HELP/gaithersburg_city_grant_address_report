@@ -82,21 +82,21 @@ Public Sub attemptValidation()
             Set formattedRawAddress = recordToAutocorrect.GburgFormatRawAddress
             
             Dim validatedAddress As Scripting.Dictionary
-            Set validatedAddress = Lookup.googleValidateQuery(formattedRawAddress.Item(AddressKey.Full), _
+            Set validatedAddress = Lookup.googleValidateQuery(formattedRawAddress.Item(addressKey.Full), _
                                                               recordToAutocorrect.RawCity, _
                                                               recordToAutocorrect.RawState, _
                                                               recordToAutocorrect.RawZip, addressAPIKey)
             
             If Not (validatedAddress Is Nothing) Then
                 recordToAutocorrect.SetValidAddress validatedAddress
-                minLongitude = validatedAddress.Item(AddressKey.minLongitude)
-                maxLongitude = validatedAddress.Item(AddressKey.maxLongitude)
-                minLatitude = validatedAddress.Item(AddressKey.minLatitude)
-                maxLatitude = validatedAddress.Item(AddressKey.maxLatitude)
+                minLongitude = validatedAddress.Item(addressKey.minLongitude)
+                maxLongitude = validatedAddress.Item(addressKey.maxLongitude)
+                minLatitude = validatedAddress.Item(addressKey.minLatitude)
+                maxLatitude = validatedAddress.Item(addressKey.maxLatitude)
                 
                 receivedValidation = True
             
-                If validatedAddress.Item(AddressKey.Full) <> vbNullString Then
+                If validatedAddress.Item(addressKey.Full) <> vbNullString Then
                     isDPVConfirmed = True
                 End If
             End If
@@ -104,9 +104,9 @@ Public Sub attemptValidation()
         End If
                 
         Dim gburgAddress As Scripting.Dictionary
-        Set gburgAddress = Lookup.gburgQuery(recordToAutocorrect.GburgFormatValidAddress.Item(AddressKey.Full))
+        Set gburgAddress = Lookup.gburgQuery(recordToAutocorrect.GburgFormatValidAddress.Item(addressKey.Full))
         
-        If (gburgAddress.Item(AddressKey.Full) <> vbNullString) Then
+        If (gburgAddress.Item(addressKey.Full) <> vbNullString) Then
             ' NOTE addresses such as 600 S Frederick Ave which are in Gaithersburg database but
             ' NOT DPV deliverable will still be marked as valid
             
@@ -125,8 +125,8 @@ Public Sub attemptValidation()
             ' - 110-150 Chevy Chase St Unit 102 > should be Apt 102
             ' - 25 Chestnut St Unit A > should be Ste A
             ' so double check by searching without unit
-            Set gburgAddress = Lookup.gburgQuery(recordToAutocorrect.GburgFormatValidAddress.Item(AddressKey.streetAddress))
-            If gburgAddress.Item(AddressKey.Full) <> vbNullString Then
+            Set gburgAddress = Lookup.gburgQuery(recordToAutocorrect.GburgFormatValidAddress.Item(addressKey.streetAddress))
+            If gburgAddress.Item(addressKey.Full) <> vbNullString Then
                 recordToAutocorrect.SetValidAddress gburgAddress
                 recordToAutocorrect.SetInCity InCityCode.FailedAutocorrectInCity
             Else

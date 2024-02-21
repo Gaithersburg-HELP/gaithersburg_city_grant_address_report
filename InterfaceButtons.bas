@@ -132,7 +132,7 @@ Public Sub LookupInCity()
     
     Dim AddrLookupURL As String
     AddrLookupURL = "https://maps.gaithersburgmd.gov/AddressSearch/index.html?address="
-    AddrLookupURL = AddrLookupURL & record.GburgFormatRawAddress.Item(AddressKey.streetAddress)
+    AddrLookupURL = AddrLookupURL & record.GburgFormatRawAddress.Item(addressKey.streetAddress)
     AddrLookupURL = Replace(AddrLookupURL, " ", "+")
     
     ActiveWorkbook.FollowHyperlink address:=AddrLookupURL

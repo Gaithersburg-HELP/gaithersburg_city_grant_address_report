@@ -132,9 +132,9 @@ End Property
 
 ' Expects AddressKey StreetAddress, UnitType, UnitNum, Zip
 Public Sub SetValidAddress(ByVal address As Scripting.Dictionary)
-    ValidAddress = address.Item(AddressKey.streetAddress)
-    validUnitWithNum = address.Item(AddressKey.unitWithNum)
-    ValidZipcode = address.Item(AddressKey.zip)
+    ValidAddress = address.Item(addressKey.streetAddress)
+    validUnitWithNum = address.Item(addressKey.unitWithNum)
+    ValidZipcode = address.Item(addressKey.zip)
 End Sub
 
 Public Property Get RawAddress() As String
@@ -529,7 +529,7 @@ Private Function getFormattedSplitAddr(ByVal addr As String) As Scripting.Dictio
     Dim splitNumArr() As String
     ' Split Street Number from Street name
     splitNumArr = LWordTrim(addr)
-    splitAddr.Add AddressKey.streetNum, splitNumArr(0)
+    splitAddr.Add addressKey.streetNum, splitNumArr(0)
     
     ' Remove periods, hyphens, not in street name
     ' see https://pe.usps.com/text/pub28/28c2_013.htm & https://pe.usps.com/text/dmm100/addressing-mail.htm
@@ -538,7 +538,7 @@ Private Function getFormattedSplitAddr(ByVal addr As String) As Scripting.Dictio
     
     Dim fullAddress As String
     fullAddress = splitNumArr(0) & " " & splitNumArr(1)
-    splitAddr.Add AddressKey.streetAddress, fullAddress
+    splitAddr.Add addressKey.streetAddress, fullAddress
     
     Dim streetPostfix As String
     streetPostfix = GetDirection(Len(addr) - 3, addr)
@@ -550,20 +550,20 @@ Private Function getFormattedSplitAddr(ByVal addr As String) As Scripting.Dictio
         splitTypeArr = Lookup.RWordTrim(splitNumArr(1))
     End If
     
-    splitAddr.Add AddressKey.PrefixedStreetName, splitTypeArr(0)
-    splitAddr.Add AddressKey.StreetType, splitTypeArr(1)
-    splitAddr.Add AddressKey.Postfix, streetPostfix
+    splitAddr.Add addressKey.PrefixedStreetName, splitTypeArr(0)
+    splitAddr.Add addressKey.StreetType, splitTypeArr(1)
+    splitAddr.Add addressKey.Postfix, streetPostfix
     
     Dim splitUnitArr() As String
     splitUnitArr = SplitUnit(RawUnitWithNum)
     
-    splitAddr.Add AddressKey.UnitType, splitUnitArr(0)
-    splitAddr.Add AddressKey.unitNum, splitUnitArr(1)
+    splitAddr.Add addressKey.UnitType, splitUnitArr(0)
+    splitAddr.Add addressKey.unitNum, splitUnitArr(1)
     
     If splitUnitArr(0) <> vbNullString Then
-        splitAddr.Add AddressKey.Full, fullAddress & " " & splitUnitArr(0) & " " & splitUnitArr(1)
+        splitAddr.Add addressKey.Full, fullAddress & " " & splitUnitArr(0) & " " & splitUnitArr(1)
     Else
-        splitAddr.Add AddressKey.Full, fullAddress
+        splitAddr.Add addressKey.Full, fullAddress
     End If
     
     Set getFormattedSplitAddr = splitAddr
