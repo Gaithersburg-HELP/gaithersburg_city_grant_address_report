@@ -109,6 +109,8 @@ End Sub
 Public Sub confirmDeleteService()
     Dim columns As Collection
     Set columns = getUniqueSelection(False, SheetUtilities.firstServiceColumn)
+    If columns Is Nothing Then Exit Sub
+    
     
     Dim confirmResponse As VbMsgBoxResult
     confirmResponse = MsgBox("Are you sure you wish to delete the selected service(s)?", vbYesNo + vbQuestion, "Confirmation")
@@ -199,13 +201,14 @@ End Sub
 
 '@EntryPoint
 Public Sub toggleUserVerified()
-    If isInvalidSelection Then
-        Exit Sub
-    End If
+    Dim rows As Collection
+    Set rows = getUniqueSelection(True, 2)
+    
+    If rows Is Nothing Then Exit Sub
     
     Dim row As Variant
-    For Each row In selection.rows
-        ActiveSheet.Cells(row.row, 2).value = Not ActiveSheet.Cells(row.row, 2)
+    For Each row In rows
+        ActiveSheet.Cells(row, 2).value = Not ActiveSheet.Cells(row, 2)
     Next row
 End Sub
 
