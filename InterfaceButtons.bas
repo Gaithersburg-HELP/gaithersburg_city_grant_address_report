@@ -3,6 +3,19 @@ Option Explicit
 
 '@Folder("City_Grant_Address_Report.src")
 
+Private Function isInvalidSelection() As Boolean
+    Dim row As Variant
+    For Each row In selection.Rows
+        If row < 2 Then
+            MsgBox "Invalid Selection"
+            isInvalidSelection = True
+            Exit Function
+        End If
+    Next row
+    
+    isInvalidSelection = False
+End Function
+
 '@EntryPoint
 Public Sub PasteRecords()
     ActiveWorkbook.Worksheets.[_Default]("Interface").Activate
@@ -97,8 +110,7 @@ End Sub
 
 '@EntryPoint
 Public Sub confirmDiscardSelected()
-    If selection.row < 2 Then
-        MsgBox ("Invalid selection for discard")
+    If isInvalidSelection Then
         Exit Sub
     Else
         Dim confirmResponse As VbMsgBoxResult
@@ -151,6 +163,8 @@ End Sub
 '@EntryPoint
 Public Sub toggleUserVerified()
     ' TODO toggle User Verified
+    If isInvalidSelection Then
+    End If
 End Sub
 
 ' This macro subroutine may be used to double-check
