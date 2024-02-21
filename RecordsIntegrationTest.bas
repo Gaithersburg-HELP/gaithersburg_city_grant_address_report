@@ -47,9 +47,9 @@ Private Sub PasteTestRecords(ByRef addressArr() As String)
             Dim j As Long
             For j = 0 To 12 ' TODO when adding adult/child. Not UBound because of test notes
                 ActiveCell.Value = fileArrLine(j)
-                ActiveCell.Offset(0, 1).Select
+                ActiveCell.offset(0, 1).Select
             Next j
-            ActiveSheet.Cells(ActiveCell.Row + 1, 1).Select
+            ActiveSheet.Cells(ActiveCell.row + 1, 1).Select
         End If
     Next i
 End Sub

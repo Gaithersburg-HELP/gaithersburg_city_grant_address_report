@@ -9,7 +9,7 @@ Public Sub PasteRecords()
     Application.ScreenUpdating = False
     
     getBlankRow("Interface").Cells.Item(1, 1).Select
-    ActiveCell.Offset(1, 0).Range("A1").Select
+    ActiveCell.offset(1, 0).Range("A1").Select
     ActiveCell.PasteSpecial (xlPasteValues)
 
     Application.ScreenUpdating = True
@@ -94,13 +94,34 @@ End Sub
 
 '@EntryPoint
 Public Sub confirmDiscardSelected()
-    Dim confirmResponse As VbMsgBoxResult
-    confirmResponse = MsgBox("Are you sure you wish to discard the selected record?", vbYesNo + vbQuestion, "Confirmation")
-    If confirmResponse = vbNo Then
+    If selection.row < 2 Then
+        MsgBox ("Invalid selection for discard")
         Exit Sub
+    Else
+        Dim confirmResponse As VbMsgBoxResult
+        confirmResponse = MsgBox("Are you sure you wish to discard the selected record?", vbYesNo + vbQuestion, "Confirmation")
+        If confirmResponse = vbNo Then
+            Exit Sub
+        End If
     End If
     
-    'TODO discard selected
+    Dim rowsToDelete As Range
+    Dim row As Variant
+    For Each row In selection.Rows
+        Dim record As RecordTuple
+        Set record = Records.loadRecordFromSheet(ActiveSheet.Range("A" & row.row))
+        Records.writeAddress "Discards", record
+        If rowsToDelete Is Nothing Then
+            Set rowsToDelete = row
+        Else
+            Set rowsToDelete = Union(row, rowsToDelete)
+        End If
+    Next row
+    
+    rowsToDelete.EntireRow.Delete
+    
+    ActiveSheet.Cells(1, 1).Select
+    SheetUtilities.SortSheet "Discards"
 End Sub
 
 '@EntryPoint
@@ -134,7 +155,7 @@ End Sub
 '@EntryPoint
 Public Sub LookupInCity()
     Dim currentRowFirstCell As Range
-    Set currentRowFirstCell = ActiveWorkbook.ActiveSheet.Cells.Item(ActiveCell.Row, 1)
+    Set currentRowFirstCell = ActiveWorkbook.ActiveSheet.Cells.Item(ActiveCell.row, 1)
     
     Dim record As RecordTuple
     Set record = Records.loadRecordFromSheet(currentRowFirstCell)
@@ -161,4 +182,5 @@ End Sub
 Public Sub OpenGoogleMapsWebsite()
     ActiveWorkbook.FollowHyperlink address:="https://www.google.com/maps"
 End Sub
+
 
