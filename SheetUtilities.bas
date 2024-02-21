@@ -144,7 +144,15 @@ Public Sub ClearAll()
     Next
 End Sub
 
-Public Sub SortSheet(sheetName As String, addressKey As String)
+Public Sub SortSheet(ByVal sheetName As String)
+    Dim addressKey As String
+    Select Case sheetName
+        Case "Addresses", "Autocorrected"
+            addressKey = "C2"
+        Case "Needs Autocorrect", "Discards"
+            addressKey = "F2"
+    End Select
+    
     getAddressRng(sheetName).Sort _
         key1:=ActiveWorkbook.Sheets.[_Default](sheetName).Range("B2"), _
         key2:=ActiveWorkbook.Sheets.[_Default](sheetName).Range(addressKey), _
@@ -152,10 +160,10 @@ Public Sub SortSheet(sheetName As String, addressKey As String)
 End Sub
 
 Public Sub SortAll()
-    SortSheet "Addresses", "C2"
-    SortSheet "Needs Autocorrect", "F2"
-    SortSheet "Discards", "F2"
-    SortSheet "Autocorrected", "C2"
+    SortSheet "Addresses"
+    SortSheet "Needs Autocorrect"
+    SortSheet "Discards"
+    SortSheet "Autocorrected"
 End Sub
 
 ' Prints Collection

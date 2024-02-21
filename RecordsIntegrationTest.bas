@@ -26,18 +26,18 @@ End Sub
 '@TestInitialize
 Private Sub TestInitialize()
     ClearAll
-    Autocorrect.printRemainingRequests 8000
+    autocorrect.printRemainingRequests 8000
 End Sub
 
 '@TestCleanup
 Private Sub TestCleanup()
     ClearAll
-    Autocorrect.printRemainingRequests 8000
+    autocorrect.printRemainingRequests 8000
 End Sub
 
 Private Sub PasteTestRecords(ByRef addressArr() As String)
     ActiveWorkbook.Worksheets.[_Default]("Interface").Select
-    getPastedRecordsRng.Cells(1, 1).Select
+    getPastedRecordsRng.Cells.Item(1, 1).Select
     
     Dim i As Long
     Dim fileArrLine() As String
@@ -99,7 +99,7 @@ Public Sub TestAllAddresses()
     CompareSheetCSV Assert, "Discards", ActiveWorkbook.path & "\testdata\test3autocorrectaddresses_discardsoutput.csv"
     CompareSheetCSV Assert, "Autocorrected", ActiveWorkbook.path & "\testdata\test3autocorrectaddresses_autocorrectedoutput.csv"
 
-    Assert.IsTrue Autocorrect.getRemainingRequests = 7980
+    Assert.IsTrue autocorrect.getRemainingRequests = 7980
 
 
     Dim testMergeAutocorrectedAddressesArr() As String
