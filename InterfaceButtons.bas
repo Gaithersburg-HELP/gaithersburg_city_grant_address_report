@@ -3,17 +3,45 @@ Option Explicit
 
 '@Folder("City_Grant_Address_Report.src")
 
-Private Function isInvalidSelection() As Boolean
-    Dim row As Variant
-    For Each row In selection.Rows
-        If row.row < 2 Then
-            MsgBox "Invalid Selection"
-            isInvalidSelection = True
-            Exit Function
-        End If
-    Next row
+' Returns Nothing if error occurred
+Private Function getUniqueSelection(returnRows As Boolean, min As Long) As Collection
+    Dim uniques As Collection
+    Set uniques = New Collection
     
-    isInvalidSelection = False
+    Dim dict As Scripting.Dictionary
+    Set dict = New Scripting.Dictionary
+    
+    Dim selections As Range
+    If returnRows Then
+        Set selections = selection.rows
+    Else
+        Set selections = selection.columns
+    End If
+    
+    Dim value As Variant
+    For Each value In selections
+        If returnRows Then
+            If value.row < min Then
+                MsgBox "Invalid Selection"
+                Set getUniqueSelection = Nothing
+                Exit Function
+            End If
+            dict(value.row) = Empty
+        Else
+            If value.column < min Then
+                MsgBox "Invalid Selection"
+                Set getUniqueSelection = Nothing
+                Exit Function
+            End If
+            dict(value.column) = Empty
+        End If
+    Next value
+    
+    For Each value In dict.Keys()
+        uniques.Add value
+    Next value
+    
+    Set getUniqueSelection = uniques
 End Function
 
 '@EntryPoint
@@ -79,13 +107,18 @@ End Sub
 
 '@EntryPoint
 Public Sub confirmDeleteService()
+    Dim columns As Collection
+    Set columns = getUniqueSelection(False, SheetUtilities.firstServiceColumn)
+    
     Dim confirmResponse As VbMsgBoxResult
-    confirmResponse = MsgBox("Are you sure you wish to delete the selected service?", vbYesNo + vbQuestion, "Confirmation")
+    confirmResponse = MsgBox("Are you sure you wish to delete the selected service(s)?", vbYesNo + vbQuestion, "Confirmation")
     If confirmResponse = vbNo Then
         Exit Sub
     End If
-
-    'TODO delete selected service
+    
+    Dim column As Variant
+    For Each column In columns
+    Next column
 End Sub
 
 '@EntryPoint
@@ -110,11 +143,13 @@ End Sub
 
 '@EntryPoint
 Public Sub confirmDiscardSelected()
-    If isInvalidSelection Then
+    Dim rows As Collection
+    Set rows = getUniqueSelection(True, 2)
+    If rows Is Nothing Then
         Exit Sub
     Else
         Dim confirmResponse As VbMsgBoxResult
-        confirmResponse = MsgBox("Are you sure you wish to discard the selected record?", vbYesNo + vbQuestion, "Confirmation")
+        confirmResponse = MsgBox("Are you sure you wish to discard the selected record(s)?", vbYesNo + vbQuestion, "Confirmation")
         If confirmResponse = vbNo Then
             Exit Sub
         End If
@@ -122,14 +157,16 @@ Public Sub confirmDiscardSelected()
     
     Dim rowsToDelete As Range
     Dim row As Variant
-    For Each row In selection.Rows
+    For Each row In rows
+        Dim currentRowRng As Range
+        Set currentRowRng = ActiveSheet.Range("A" & row)
         Dim record As RecordTuple
-        Set record = Records.loadRecordFromSheet(ActiveSheet.Range("A" & row.row))
+        Set record = Records.loadRecordFromSheet(currentRowRng)
         Records.writeAddress "Discards", record
         If rowsToDelete Is Nothing Then
-            Set rowsToDelete = row
+            Set rowsToDelete = currentRowRng
         Else
-            Set rowsToDelete = Union(row, rowsToDelete)
+            Set rowsToDelete = Union(currentRowRng, rowsToDelete)
         End If
     Next row
     
@@ -142,7 +179,7 @@ End Sub
 '@EntryPoint
 Public Sub confirmRestoreSelectedDiscard()
     Dim confirmResponse As VbMsgBoxResult
-    confirmResponse = MsgBox("Are you sure you wish to move the selected discard record to Needs Autocorrect?", vbYesNo + vbQuestion, "Confirmation")
+    confirmResponse = MsgBox("Are you sure you wish to move the selected discard record(s) to Needs Autocorrect?", vbYesNo + vbQuestion, "Confirmation")
     If confirmResponse = vbNo Then
         Exit Sub
     End If
@@ -153,7 +190,7 @@ End Sub
 '@EntryPoint
 Public Sub confirmMoveAutocorrect()
     Dim confirmResponse As VbMsgBoxResult
-    confirmResponse = MsgBox("Are you sure you wish to move the selected record to Needs Autocorrect?", vbYesNo + vbQuestion, "Confirmation")
+    confirmResponse = MsgBox("Are you sure you wish to move the selected record(s) to Needs Autocorrect?", vbYesNo + vbQuestion, "Confirmation")
     If confirmResponse = vbNo Then
         Exit Sub
     End If
@@ -167,12 +204,8 @@ Public Sub toggleUserVerified()
     End If
     
     Dim row As Variant
-    For Each row In selection.Rows
-        If ActiveSheet.Cells(row.row, 2).Value Then
-            ActiveSheet.Cells(row.row, 2).Value = False
-        Else
-            ActiveSheet.Cells(row.row, 2).Value = True
-        End If
+    For Each row In selection.rows
+        ActiveSheet.Cells(row.row, 2).value = Not ActiveSheet.Cells(row.row, 2)
     Next row
 End Sub
 

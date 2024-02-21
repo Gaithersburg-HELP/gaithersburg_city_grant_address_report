@@ -10,8 +10,8 @@ Public Sub generateFinalReport()
     For Each address In addresses.Keys()
         Dim record As RecordTuple
         Set record = addresses.Item(address)
-        ActiveWorkbook.Sheets.[_Default]("Final Report").Cells(2, 1).Value = record.CleanInitials
-        ActiveWorkbook.Sheets.[_Default]("Final Report").Cells(2, 2).Value = record.GburgFormatValidAddress.Item(addressKey.PrefixedStreetName)
+        ActiveWorkbook.Sheets.[_Default]("Final Report").Cells(2, 1).value = record.CleanInitials
+        ActiveWorkbook.Sheets.[_Default]("Final Report").Cells(2, 2).value = record.GburgFormatValidAddress.Item(addressKey.PrefixedStreetName)
     Next address
     
     ' TODO Load addresses
