@@ -59,6 +59,9 @@ Public Sub confirmDeleteAllVisitData()
     End If
     
     SheetUtilities.getAddressVisitDataRng("Addresses").Clear
+    SheetUtilities.getAddressVisitDataRng("Needs Autocorrect").Clear
+    SheetUtilities.getAddressVisitDataRng("Discards").Clear
+    SheetUtilities.getAddressVisitDataRng("Autocorrected").Clear
 End Sub
 
 '@EntryPoint
