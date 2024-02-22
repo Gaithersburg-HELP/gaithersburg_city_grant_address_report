@@ -137,6 +137,34 @@ Public Sub CompareSheetCSV(ByVal Assert As Object, ByVal sheetName As String, By
     Next i
 End Sub
 
+Public Sub ClearEmptyServices(ByVal sheetName As String)
+    Dim servicesRng As Range
+    Set servicesRng = getServiceHeaderRng(sheetName)
+    
+    Dim max As Long
+    max = ActiveWorkbook.Worksheets.[_Default](sheetName).rows.Count
+    
+    Dim columnsToDelete As Range
+    
+    Dim i As Long
+    i = 1
+    Do While i <= servicesRng.Count
+        If servicesRng.Cells.Item(max, i).End(xlUp).row = 1 Then
+            Dim column As Range
+            Set column = ActiveWorkbook.Worksheets.[_Default](sheetName).columns( _
+                            i + SheetUtilities.firstServiceColumn - 1)
+            If columnsToDelete Is Nothing Then
+                Set columnsToDelete = column
+            Else
+                Set columnsToDelete = Application.Union(column, columnsToDelete)
+            End If
+        End If
+        i = i + 1
+    Loop
+    
+    columnsToDelete.EntireColumn.Delete
+End Sub
+
 Public Sub ClearSheet(ByVal sheetName As String)
     getAddressRng(sheetName).Clear
     getAddressVisitDataRng(sheetName).Clear
