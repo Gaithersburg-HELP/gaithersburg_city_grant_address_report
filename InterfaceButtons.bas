@@ -117,9 +117,31 @@ Public Sub confirmDeleteService()
     If confirmResponse = vbNo Then
         Exit Sub
     End If
+        
+    Dim addressServices() As String
+    addressServices = SheetUtilities.loadServiceNames("Addresses")
     
+    Dim autocorrectedServices() As String
+    autocorrectedServices = SheetUtilities.loadServiceNames("Autocorrected")
+        
     Dim column As Variant
     For Each column In columns
+        ActiveWorkbook.Worksheets.[_Default]("Addresses") _
+            .columns(column).EntireColumn.Delete
+        
+        Dim service As String
+        service = addressServices(column - SheetUtilities.firstServiceColumn)
+        
+        Dim i As Long
+        i = 0
+        Do While i <= UBound(autocorrectedServices)
+            If service = autocorrectedServices(i) Then
+                ActiveWorkbook.Worksheets.[_Default]("Autocorrected") _
+                    .columns(i + SheetUtilities.firstServiceColumn).EntireColumn.Delete
+                Exit For
+            End If
+            i = i + 1
+        Loop
     Next column
 End Sub
 
