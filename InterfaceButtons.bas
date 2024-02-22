@@ -123,11 +123,19 @@ Public Sub confirmDeleteService()
     
     Dim autocorrectedServices() As String
     autocorrectedServices = SheetUtilities.loadServiceNames("Autocorrected")
-        
+    
+    Dim addressColsToDelete As Range
+    Dim autocorrectedColsToDelete As Range
+    
     Dim column As Variant
     For Each column In columns
-        ActiveWorkbook.Worksheets.[_Default]("Addresses") _
-            .columns(column).EntireColumn.Delete
+        If addressColsToDelete Is Nothing Then
+            Set addressColsToDelete = _
+                ActiveWorkbook.Worksheets.[_Default]("Addresses").columns(column)
+        Else
+            Set addressColsToDelete = Union(addressColsToDelete, _
+                ActiveWorkbook.Worksheets.[_Default]("Addresses").columns(column))
+        End If
         
         Dim service As String
         service = addressServices(column - SheetUtilities.firstServiceColumn)
@@ -136,13 +144,26 @@ Public Sub confirmDeleteService()
         i = 0
         Do While i <= UBound(autocorrectedServices)
             If service = autocorrectedServices(i) Then
-                ActiveWorkbook.Worksheets.[_Default]("Autocorrected") _
-                    .columns(i + SheetUtilities.firstServiceColumn).EntireColumn.Delete
-                Exit For
+                If autocorrectedColsToDelete Is Nothing Then
+                    Set autocorrectedColsToDelete = _
+                        ActiveWorkbook.Worksheets.[_Default]("Autocorrected") _
+                        .columns(i + SheetUtilities.firstServiceColumn)
+                Else
+                    Set autocorrectedColsToDelete = Union(autocorrectedColsToDelete, _
+                            ActiveWorkbook.Worksheets.[_Default]("Autocorrected") _
+                            .columns(i + SheetUtilities.firstServiceColumn))
+                End If
+                Exit Do
             End If
             i = i + 1
         Loop
     Next column
+    
+    addressColsToDelete.EntireColumn.Delete
+    
+    If Not autocorrectedColsToDelete Is Nothing Then
+        autocorrectedColsToDelete.EntireColumn.Delete
+    End If
 End Sub
 
 '@EntryPoint
