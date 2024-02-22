@@ -76,7 +76,7 @@ Public Sub TestFormatAddress()
     
     Assert.IsTrue gburgFormat.Item(addressKey.Full) = "501a S Frederick Ave E Ste 1", "Full address incorrect"
     Assert.IsTrue gburgFormat.Item(addressKey.Postfix) = "E", "Postfix incorrect"
-    Assert.IsTrue gburgFormat.Item(addressKey.PrefixedStreetName) = "S Frederick", "Street name incorrect"
+    Assert.IsTrue gburgFormat.Item(addressKey.PrefixedStreetname) = "S Frederick", "Street name incorrect"
     Assert.IsTrue gburgFormat.Item(addressKey.streetNum) = "501a", "Street no. incorrect"
     Assert.IsTrue gburgFormat.Item(addressKey.StreetType) = "Ave", "Street type incorrect"
     Assert.IsTrue gburgFormat.Item(addressKey.unitNum) = "1", "Unit no. incorrect"
@@ -89,7 +89,7 @@ Public Sub TestFormatAddress()
     Set gburgFormat = recordNoPostfix.GburgFormatRawAddress
     
     Assert.IsTrue gburgFormat.Item(addressKey.Postfix) = vbNullString, "Postfix incorrect"
-    Assert.IsTrue gburgFormat.Item(addressKey.PrefixedStreetName) = "Nina", "Street name incorrect"
+    Assert.IsTrue gburgFormat.Item(addressKey.PrefixedStreetname) = "Nina", "Street name incorrect"
     Assert.IsTrue gburgFormat.Item(addressKey.unitNum) = vbNullString, "Unit no. incorrect"
     Assert.IsTrue gburgFormat.Item(addressKey.UnitType) = vbNullString, "Unit type incorrect"
     

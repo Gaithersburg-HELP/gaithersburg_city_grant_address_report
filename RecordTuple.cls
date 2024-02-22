@@ -157,14 +157,6 @@ Public Property Let RawUnitWithNum(ByVal str As String)
     pRawUnitWithNum = str
 End Property
 
-Public Property Get FullRawAddress() As String
-    If (RawUnitWithNum <> vbNullString) Then
-        FullRawAddress = RawAddress & " " & RawUnitWithNum
-    Else
-        FullRawAddress = RawAddress
-    End If
-End Property
-
 Public Property Get isAutocorrected() As Boolean
     isAutocorrected = ((validAddress <> vbNullString) And validAddress <> RawAddress) Or _
                       ((validUnitWithNum <> vbNullString) And validUnitWithNum <> RawUnitWithNum) Or _
@@ -508,8 +500,20 @@ End Function
 ' Returns dictionary of AddressKey full, streetNum, prefixedstreetname, streettype, postfix, unit type, unit num, streetaddress
 ' - capitalized Street Name with abbr. prefix, cap. abbr. Street Type, cap. abbr. Postfix
 '@Ignore AssignedByValParameter
-Private Function getFormattedSplitAddr(ByVal addr As String) As Scripting.Dictionary
+Private Function getFormattedSplitAddr(ByVal returnRaw As Boolean) As Scripting.Dictionary
+    Dim addr As String
+    Dim unitWithNum As String
+
+    If returnRaw Then
+        addr = RawAddress
+        unitWithNum = RawUnitWithNum
+    Else
+        addr = validAddress
+        unitWithNum = validUnitWithNum
+    End If
+    
     addr = CleanString(addr)
+    unitWithNum = CleanString(unitWithNum)
     
     ' BUG these will not show up in autocorrected
     ' - Gaithersburg has O'Neill and Odend'hal, but Soxbox exports as Oneill (and Oneil misspelling) and Odendhal
@@ -575,12 +579,12 @@ Private Function getFormattedSplitAddr(ByVal addr As String) As Scripting.Dictio
         splitTypeArr = Lookup.RWordTrim(splitNumArr(1))
     End If
     
-    splitAddr.Add addressKey.PrefixedStreetName, splitTypeArr(0)
+    splitAddr.Add addressKey.PrefixedStreetname, splitTypeArr(0)
     splitAddr.Add addressKey.StreetType, splitTypeArr(1)
     splitAddr.Add addressKey.Postfix, streetPostfix
     
     Dim splitUnitArr() As String
-    splitUnitArr = SplitUnit(RawUnitWithNum)
+    splitUnitArr = SplitUnit(unitWithNum)
     
     splitAddr.Add addressKey.UnitType, splitUnitArr(0)
     splitAddr.Add addressKey.unitNum, splitUnitArr(1)
@@ -596,14 +600,14 @@ End Function
 
 Public Property Get GburgFormatRawAddress() As Scripting.Dictionary
     If pGburgFormatRawAddress Is Nothing Then
-        Set pGburgFormatRawAddress = getFormattedSplitAddr(RawAddress)
+        Set pGburgFormatRawAddress = getFormattedSplitAddr(True)
     End If
     Set GburgFormatRawAddress = pGburgFormatRawAddress
 End Property
 
 Public Property Get GburgFormatValidAddress() As Scripting.Dictionary
     If pGburgFormatValidAddress Is Nothing Then
-        Set pGburgFormatValidAddress = getFormattedSplitAddr(validAddress)
+        Set pGburgFormatValidAddress = getFormattedSplitAddr(False)
     End If
     Set GburgFormatValidAddress = pGburgFormatValidAddress
 End Property

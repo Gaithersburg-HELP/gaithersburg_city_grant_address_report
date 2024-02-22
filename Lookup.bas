@@ -6,7 +6,7 @@ Public Enum addressKey
     streetAddress = -1 ' StreetNum + PrefixedStreetName + StreetType + Postfix
     Full = 0 ' StreetAddress + UnitType + UnitNum
     streetNum = 1
-    PrefixedStreetName = 2 ' No postfix
+    PrefixedStreetname = 2 ' No postfix
     StreetType = 3
     Postfix = 4
     UnitType = 5
@@ -25,7 +25,7 @@ Private Function initAddressKey() As Scripting.Dictionary
     address.Add addressKey.streetAddress, vbNullString
     address.Add addressKey.Full, vbNullString
     address.Add addressKey.streetNum, vbNullString
-    address.Add addressKey.PrefixedStreetName, vbNullString
+    address.Add addressKey.PrefixedStreetname, vbNullString
     address.Add addressKey.StreetType, vbNullString
     address.Add addressKey.Postfix, vbNullString
     address.Add addressKey.UnitType, vbNullString
@@ -106,10 +106,10 @@ Public Function gburgQuery(ByVal fullAddress As String) As Scripting.Dictionary
         validatedAddress.Item(addressKey.streetNum) = gburgAddress.Item("Address_Number")
         
         If gburgAddress.Item("Road_Prefix_Dir") <> vbNullString Then
-            validatedAddress.Item(addressKey.PrefixedStreetName) = gburgAddress.Item("Road_Prefix_Dir") & " " & _
+            validatedAddress.Item(addressKey.PrefixedStreetname) = gburgAddress.Item("Road_Prefix_Dir") & " " & _
                                                                    gburgAddress.Item("Road_Name")
         Else
-            validatedAddress.Item(addressKey.PrefixedStreetName) = gburgAddress.Item("Road_Name")
+            validatedAddress.Item(addressKey.PrefixedStreetname) = gburgAddress.Item("Road_Name")
         End If
         
         validatedAddress.Item(addressKey.StreetType) = gburgAddress.Item("Road_Type")
@@ -119,7 +119,7 @@ Public Function gburgQuery(ByVal fullAddress As String) As Scripting.Dictionary
         validatedAddress.Item(addressKey.zip) = gburgAddress.Item("Zip_Code")
         
         validatedAddress.Item(addressKey.streetAddress) = validatedAddress.Item(addressKey.streetNum) & " " & _
-                                                          validatedAddress.Item(addressKey.PrefixedStreetName) & " " & _
+                                                          validatedAddress.Item(addressKey.PrefixedStreetname) & " " & _
                                                           validatedAddress.Item(addressKey.StreetType)
         If validatedAddress.Item(addressKey.Postfix) <> vbNullString Then
             validatedAddress.Item(addressKey.streetAddress) = validatedAddress.Item(addressKey.streetAddress) & " " & _
