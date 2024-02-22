@@ -162,7 +162,7 @@ Public Sub ClearEmptyServices(ByVal sheetName As String)
         i = i + 1
     Loop
     
-    columnsToDelete.EntireColumn.Delete
+    If Not columnsToDelete Is Nothing Then columnsToDelete.EntireColumn.Delete
 End Sub
 
 Public Sub ClearSheet(ByVal sheetName As String)

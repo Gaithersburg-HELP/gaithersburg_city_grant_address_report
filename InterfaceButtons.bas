@@ -12,10 +12,11 @@ Private Function getUniqueSelection(ByVal returnRows As Boolean, ByVal min As Lo
     Set dict = New Scripting.Dictionary
     
     Dim selections As Range
+    ' xlCellTypeVisible in case a filter is applied
     If returnRows Then
-        Set selections = selection.rows
+        Set selections = selection.SpecialCells(xlCellTypeVisible).rows
     Else
-        Set selections = selection.columns
+        Set selections = selection.SpecialCells(xlCellTypeVisible).columns
     End If
     
     Dim value As Variant
@@ -186,28 +187,36 @@ Public Sub confirmDiscardAll()
     SheetUtilities.SortSheet "Discards"
 End Sub
 
-'@EntryPoint
-Public Sub confirmDiscardSelected()
+Private Function moveSelectedRows(ByVal sourceSheet As String, ByVal destSheet As String) As Collection
     Dim rows As Collection
     Set rows = getUniqueSelection(True, 2)
     If rows Is Nothing Then
-        Exit Sub
-    Else
-        Dim confirmResponse As VbMsgBoxResult
-        confirmResponse = MsgBox("Are you sure you wish to discard the selected record(s)?", vbYesNo + vbQuestion, "Confirmation")
-        If confirmResponse = vbNo Then
-            Exit Sub
-        End If
+        Set moveSelectedRows = Nothing
+        Exit Function
     End If
+    
+    Dim confirmResponse As VbMsgBoxResult
+    confirmResponse = MsgBox("Are you sure you wish to move the selected record(s) from " & _
+                             sourceSheet & " to " & destSheet & "?", vbYesNo + vbQuestion, "Confirmation")
+    If confirmResponse = vbNo Then
+        Set moveSelectedRows = Nothing
+        Exit Function
+    End If
+    
+    Dim movedRecords As Collection
+    Set movedRecords = New Collection
     
     Dim rowsToDelete As Range
     Dim row As Variant
     For Each row In rows
         Dim currentRowRng As Range
-        Set currentRowRng = ActiveSheet.Range("A" & row)
+        Set currentRowRng = ActiveWorkbook.Worksheets.[_Default](sourceSheet).Range("A" & row)
         Dim record As RecordTuple
         Set record = Records.loadRecordFromSheet(currentRowRng)
-        Records.writeAddress "Discards", record
+        
+        Records.writeAddress destSheet, record
+        movedRecords.Add record
+        
         If rowsToDelete Is Nothing Then
             Set rowsToDelete = currentRowRng
         Else
@@ -216,30 +225,44 @@ Public Sub confirmDiscardSelected()
     Next row
     
     rowsToDelete.EntireRow.Delete
+    SheetUtilities.ClearEmptyServices sourceSheet
     
     ActiveSheet.Cells(1, 1).Select
-    SheetUtilities.SortSheet "Discards"
+    SheetUtilities.SortSheet destSheet
+    
+    Set moveSelectedRows = movedRecords
+End Function
+
+'@EntryPoint
+Public Sub confirmDiscardSelected()
+    moveSelectedRows "Needs Autocorrect", "Discards"
 End Sub
 
 '@EntryPoint
 Public Sub confirmRestoreSelectedDiscard()
-    Dim confirmResponse As VbMsgBoxResult
-    confirmResponse = MsgBox("Are you sure you wish to move the selected discard record(s) to Needs Autocorrect?", vbYesNo + vbQuestion, "Confirmation")
-    If confirmResponse = vbNo Then
-        Exit Sub
-    End If
-    
-    'TODO restore selected
+    moveSelectedRows "Discards", "Needs Autocorrect"
 End Sub
 
 '@EntryPoint
 Public Sub confirmMoveAutocorrect()
-    Dim confirmResponse As VbMsgBoxResult
-    confirmResponse = MsgBox("Are you sure you wish to move the selected record(s) to Needs Autocorrect?", vbYesNo + vbQuestion, "Confirmation")
-    If confirmResponse = vbNo Then
-        Exit Sub
-    End If
-    ' TODO move to autocorrect
+    Dim movedRecords As Collection
+    Set movedRecords = moveSelectedRows("Addresses", "Needs Autocorrect")
+    
+    Dim autocorrected As Scripting.Dictionary
+    Set autocorrected = Records.loadAddresses("Autocorrected")
+    
+    Dim changedAutocorrected As Boolean
+    changedAutocorrected = False
+    
+    Dim record As Variant
+    For Each record In movedRecords
+        If autocorrected.Exists(record.key) Then
+            changedAutocorrected = True
+            autocorrected.Remove record.key
+        End If
+    Next record
+    
+    If changedAutocorrected Then Records.writeAddresses "Autocorrected", autocorrected
 End Sub
 
 '@EntryPoint
