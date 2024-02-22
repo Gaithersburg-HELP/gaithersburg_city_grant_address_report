@@ -173,12 +173,12 @@ Public Sub writeAddresses(ByVal sheetName As String, ByVal addresses As Scriptin
     Next key
 End Sub
 
-Public Sub writeAddressesComputeTotals(ByVal addresses As Scripting.Dictionary, _
-                                       ByVal needsAutocorrect As Scripting.Dictionary, _
-                                       ByVal discards As Scripting.Dictionary, _
-                                       ByVal autocorrected As Scripting.Dictionary)
-    SheetUtilities.ClearAll
+Public Sub computeTotals()
+    SheetUtilities.getTotalsRng.Clear
     
+    Dim addresses As Scripting.Dictionary
+    Set addresses = Records.loadAddresses("Addresses")
+
     ' All initialized to 0
     Dim uniqueGuestIDTotal(1 To 4) As Long
     Dim uniqueGuestIDHouseholdTotal(1 To 4) As Long
@@ -190,7 +190,6 @@ Public Sub writeAddressesComputeTotals(ByVal addresses As Scripting.Dictionary, 
     For Each key In addresses.Keys
         Dim record As RecordTuple
         Set record = addresses.Item(key)
-        writeAddress "Addresses", addresses.Item(key)
         
         If record.InCity = InCityCode.ValidInCity Then
             Dim rxCount(1 To 4) As Double
@@ -242,12 +241,22 @@ Public Sub writeAddressesComputeTotals(ByVal addresses As Scripting.Dictionary, 
         totalsRng.Cells.Item(4, i) = householdTotal(i)
         totalsRng.Cells.Item(5, i) = rxTotal(i)
     Next i
-    
+End Sub
+
+Public Sub writeAddressesComputeTotals(ByVal addresses As Scripting.Dictionary, _
+                                       ByVal needsAutocorrect As Scripting.Dictionary, _
+                                       ByVal discards As Scripting.Dictionary, _
+                                       ByVal autocorrected As Scripting.Dictionary)
+    SheetUtilities.ClearAll
+       
+    writeAddresses "Addresses", addresses
     writeAddresses "Needs Autocorrect", needsAutocorrect
     writeAddresses "Discards", discards
     writeAddresses "Autocorrected", autocorrected
     
     SortAll
+    
+    computeTotals
 End Sub
 
 Public Sub addRecords()
