@@ -207,12 +207,12 @@ Public Sub confirmDiscardAll()
     SheetUtilities.SortSheet "Discards"
 End Sub
 
-Private Function moveSelectedRows(ByVal sourceSheet As String, ByVal destSheet As String) As Collection
+Private Sub moveSelectedRows(ByVal sourceSheet As String, ByVal destSheet As String, _
+                             ByVal removeFromAutocorrected As Boolean)
     Dim rows As Collection
     Set rows = getUniqueSelection(True, 2)
     If rows Is Nothing Then
-        Set moveSelectedRows = Nothing
-        Exit Function
+        Exit Sub
     End If
     
     SheetUtilities.DisableAllFilters
@@ -222,8 +222,7 @@ Private Function moveSelectedRows(ByVal sourceSheet As String, ByVal destSheet A
     confirmResponse = MsgBox("Are you sure you wish to move the selected record(s) from " & _
                              sourceSheet & " to " & destSheet & "?", vbYesNo + vbQuestion, "Confirmation")
     If confirmResponse = vbNo Then
-        Set moveSelectedRows = Nothing
-        Exit Function
+        Exit Sub
     End If
     
     Dim movedRecords As Collection
@@ -253,28 +252,7 @@ Private Function moveSelectedRows(ByVal sourceSheet As String, ByVal destSheet A
     ActiveSheet.Cells(1, 1).Select
     SheetUtilities.SortSheet destSheet
     
-    Set moveSelectedRows = movedRecords
-End Function
-
-'@EntryPoint
-Public Sub confirmDiscardSelected()
-    '@Ignore FunctionReturnValueDiscarded
-    moveSelectedRows "Needs Autocorrect", "Discards"
-End Sub
-
-'@EntryPoint
-Public Sub confirmRestoreSelectedDiscard()
-    '@Ignore FunctionReturnValueDiscarded
-    moveSelectedRows "Discards", "Needs Autocorrect"
-End Sub
-
-'@EntryPoint
-Public Sub confirmMoveAutocorrect()
-    Dim movedRecords As Collection
-    Set movedRecords = moveSelectedRows("Addresses", "Needs Autocorrect")
-    
-    If movedRecords Is Nothing Then Exit Sub
-    
+    If (Not removeFromAutocorrected) Then Exit Sub
     
     Dim autocorrected As Scripting.Dictionary
     Set autocorrected = Records.loadAddresses("Autocorrected")
@@ -282,15 +260,30 @@ Public Sub confirmMoveAutocorrect()
     Dim changedAutocorrected As Boolean
     changedAutocorrected = False
     
-    Dim record As Variant
-    For Each record In movedRecords
-        If autocorrected.Exists(record.key) Then
+    Dim movedRecord As Variant
+    For Each movedRecord In movedRecords
+        If autocorrected.Exists(movedRecord.key) Then
             changedAutocorrected = True
-            autocorrected.Remove record.key
+            autocorrected.Remove movedRecord.key
         End If
-    Next record
+    Next movedRecord
     
     If changedAutocorrected Then Records.writeAddresses "Autocorrected", autocorrected
+End Sub
+
+'@EntryPoint
+Public Sub confirmDiscardSelected()
+    moveSelectedRows "Needs Autocorrect", "Discards", False
+End Sub
+
+'@EntryPoint
+Public Sub confirmRestoreSelectedDiscard()
+    moveSelectedRows "Discards", "Needs Autocorrect", True
+End Sub
+
+'@EntryPoint
+Public Sub confirmMoveAutocorrect()
+    moveSelectedRows "Addresses", "Needs Autocorrect", True
 End Sub
 
 '@EntryPoint
