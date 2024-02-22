@@ -112,13 +112,22 @@ Public Sub attemptValidation()
             
             ' in theory this should be the same as Google's valid address, but gburgQuery could return different zip
             recordToAutocorrect.SetValidAddress gburgAddress
-            recordToAutocorrect.SetInCity InCityCode.ValidInCity
             
-            addresses.Add recordToAutocorrect.key, recordToAutocorrect
-            addressesToAutocorrect.Remove recordToAutocorrect.key
-            ' TODO rewrite code so that record has flag for which dictionaries it belongs in
-            If recordToAutocorrect.isAutocorrected Then
-                autocorrected.Add recordToAutocorrect.key, recordToAutocorrect
+            ' Addresses with unit will always match even if raw unit is incorrect
+            ' because Gaithersburg has the same address without unit in their database
+            ' Check for this and fail autocorrection if dropped raw unit
+            If recordToAutocorrect.validUnitWithNum = vbNullString And _
+               recordToAutocorrect.RawUnitWithNum <> vbNullString Then
+                recordToAutocorrect.SetInCity InCityCode.FailedAutocorrectInCity
+            Else
+                recordToAutocorrect.SetInCity InCityCode.ValidInCity
+                
+                addresses.Add recordToAutocorrect.key, recordToAutocorrect
+                addressesToAutocorrect.Remove recordToAutocorrect.key
+                ' TODO rewrite code so that record has flag for which dictionaries it belongs in
+                If recordToAutocorrect.isAutocorrected Then
+                    autocorrected.Add recordToAutocorrect.key, recordToAutocorrect
+                End If
             End If
         ElseIf isDPVConfirmed Then
             ' Gaithersburg database does not match USPS database on multiple addresses such as:
