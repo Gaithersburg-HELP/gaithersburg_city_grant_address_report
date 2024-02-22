@@ -172,6 +172,7 @@ Public Sub ClearSheet(ByVal sheetName As String)
 End Sub
 
 Public Sub ClearAll()
+    ' TODO clear county totals
     getPastedRecordsRng.Clear
     getTotalsRng.value = 0
     getFinalReportRng.Clear
