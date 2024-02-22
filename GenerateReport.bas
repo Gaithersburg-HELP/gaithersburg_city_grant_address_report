@@ -1,7 +1,29 @@
 Attribute VB_Name = "GenerateReport"
+'@Folder("City_Grant_Address_Report.src")
 Option Explicit
 
-'@Folder("City_Grant_Address_Report.src")
+Private Sub writeFinalReportRecord(ByVal record As RecordTuple)
+    Dim row As Range
+    Set row = SheetUtilities.getBlankRow("Final Report")
+    
+    row.Cells.Item(1, 1) = "GBH"
+    row.Cells.Item(1, 2) = record.GburgFormatValidAddress.Item(addressKey.streetNum)
+    row.Cells.Item(1, 3) = record.GburgFormatValidAddress.Item(addressKey.PrefixedStreetName)
+    row.Cells.Item(1, 4) = record.GburgFormatValidAddress.Item(addressKey.StreetType)
+    row.Cells.Item(1, 5) = record.GburgFormatValidAddress.Item(addressKey.UnitType)
+    row.Cells.Item(1, 6) = record.GburgFormatValidAddress.Item(addressKey.unitNum)
+    row.Cells.Item(1, 7) = "Gaithersburg"
+    row.Cells.Item(1, 8) = "MD"
+    row.Cells.Item(1, 9) = record.CleanInitials
+    
+    Dim quarters() As Boolean
+    quarters = record.quarters
+    If quarters(1) Then row.Cells.Item(1, 10) = "x"
+    If quarters(2) Then row.Cells.Item(1, 11) = "x"
+    If quarters(3) Then row.Cells.Item(1, 12) = "x"
+    If quarters(4) Then row.Cells.Item(1, 13) = "x"
+End Sub
+
 Public Sub generateFinalReport()
     Dim addresses As Scripting.Dictionary
     Set addresses = Records.loadAddresses("Addresses")
@@ -10,38 +32,11 @@ Public Sub generateFinalReport()
     For Each address In addresses.Keys()
         Dim record As RecordTuple
         Set record = addresses.Item(address)
-        ActiveWorkbook.Sheets.[_Default]("Final Report").Cells(2, 1).value = record.CleanInitials
-        ActiveWorkbook.Sheets.[_Default]("Final Report").Cells(2, 2).value = record.GburgFormatValidAddress.Item(addressKey.PrefixedStreetName)
+        
+        If record.InCity = ValidInCity Then writeFinalReportRecord record
     Next address
     
-    ' TODO Load addresses
-    ' Filter by valid in city addresses
-    ' Get Gburg Format address: Odend'hal, O'neill
-    ' City should be Gaithersburg
-    ' State should be UCase(State)
-    
-    ' Loop through all addresses, print by offset
-    ' Add "x" for quarters
-    ' Worksheets("Final Report").Range("A2").Offset(ReportRowOffset, 10).Value = "x"
-    
-    ' Switch to the output worksheet and sort by Street Name,
-    ' Street Number, Street Type and Apt Number
-    
-    
-    'getBlankRow
-    ' ActiveWorkbook.Sheets.[_Default]("Final Report").Range("A2:O2").Select
-    'ActiveSheet.Range(Selection, Selection.End(xlDown)).Select
-'    ActiveSheet.Sort.SortFields.Clear
-'    With ActiveSheet.Sort
-'        .SortFields.Clear
-'        .SortFields.Add key:=Selection.Columns(3), Order:=xlAscending
-'        .SortFields.Add key:=Selection.Columns(2), Order:=xlAscending
-'        .SortFields.Add key:=Selection.Columns(4), Order:=xlAscending
-'        .SortFields.Add key:=Selection.Columns(6), Order:=xlAscending
-'        .Header = xlNo
-'        .SetRange Selection
-'        .Apply
-'    End With
+    SheetUtilities.SortSheet "Final Report"
     
     ActiveSheet.Range("A2").Select
 End Sub

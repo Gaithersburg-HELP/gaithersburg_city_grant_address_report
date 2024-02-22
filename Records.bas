@@ -44,7 +44,7 @@ Public Function loadRecordFromSheet(ByVal recordRowFirstCell As Range) As Record
     Set record = New RecordTuple
     
     Dim services() As String
-    services = loadServiceNames(recordRowFirstCell.Worksheet.name)
+    services = loadServiceNames(recordRowFirstCell.Worksheet.Name)
     
     record.SetInCity recordRowFirstCell.offset(0, 0).value
     record.UserVerified = CBool(recordRowFirstCell.offset(0, 1).value)

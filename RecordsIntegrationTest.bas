@@ -157,7 +157,11 @@ Public Sub TestAllAddresses()
     InterfaceButtons.confirmAttemptValidation
     InterfaceButtons.confirmGenerateFinalReport
 
-    CompareSheetCSV Assert, "Final Report", ActiveWorkbook.path & "\testdata\test5usereditsaddresses_finalreportoutput.csv"
+    ' TODO TEST Odend'hal, O'neill
+    CompareSheetCSV Assert, "Addresses", ActiveWorkbook.path & "\testdata\test6validateduseredits_addressesoutput.csv"
+    CompareSheetCSV Assert, "Interface", ActiveWorkbook.path & "\testdata\test6validateduseredits_totalsoutput.csv", getTotalsRng
+    CompareSheetCSV Assert, "Autocorrected", ActiveWorkbook.path & "\testdata\test6validateduseredits_autocorrectedoutput.csv"
+    CompareSheetCSV Assert, "Final Report", ActiveWorkbook.path & "\testdata\test6validateduseredits_finalreportoutput.csv"
 '
 '    ' TODO test delete service column, generate final report
 '    InterfaceButtons.confirmDeleteService

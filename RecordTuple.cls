@@ -346,7 +346,7 @@ Private Sub MergeVisitData(ByVal visitDataToMerge As Scripting.Dictionary)
 End Sub
 
 ' Returns 1-based array of whether record has quarter or not
-Public Property Get Quarters() As Boolean()
+Public Property Get quarters() As Boolean()
     Dim quarterArr(1 To 4) As Boolean
     
     Dim service As Variant
@@ -366,7 +366,7 @@ Public Property Get Quarters() As Boolean()
         Next quarter
     Next service
 
-    Quarters = quarterArr
+    quarters = quarterArr
 End Property
 
 

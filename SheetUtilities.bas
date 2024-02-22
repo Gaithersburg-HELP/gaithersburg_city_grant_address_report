@@ -179,7 +179,7 @@ Public Sub ClearAll()
     
     Dim i As Long
     For i = 3 To ActiveWorkbook.Sheets.Count
-        ClearSheet ActiveWorkbook.Sheets.[_Default](i).name
+        ClearSheet ActiveWorkbook.Sheets.[_Default](i).Name
     Next
 End Sub
 
@@ -193,19 +193,36 @@ End Sub
 Public Sub SortSheet(ByVal sheetName As String)
     Dim addressKey As String
     Select Case sheetName
-        Case "Addresses", "Autocorrected"
-            addressKey = "C2"
-        Case "Needs Autocorrect", "Discards"
-            addressKey = "F2"
+    Case "Addresses", "Autocorrected", "Final Report"
+        addressKey = "C2"
+    Case "Needs Autocorrect", "Discards"
+        addressKey = "F2"
     End Select
     
-    getAddressRng(sheetName).Sort _
+    If sheetName = "Final Report" Then
+        ActiveWorkbook.Sheets.[_Default]("Final Report").Select
+        ActiveWorkbook.Sheets.[_Default]("Final Report").Range("A2:O2").Select
+        ActiveSheet.Range(selection, selection.End(xlDown)).Select
+        
+        With ActiveSheet.Sort
+            .SortFields.Clear
+            .SortFields.Add key:=selection.columns(3), Order:=xlAscending
+            .SortFields.Add key:=selection.columns(2), Order:=xlAscending
+            .SortFields.Add key:=selection.columns(4), Order:=xlAscending
+            .SortFields.Add key:=selection.columns(6), Order:=xlAscending
+            .Header = xlNo
+            .SetRange selection
+            .Apply
+        End With
+    Else
+        getAddressRng(sheetName).Sort _
         key1:=ActiveWorkbook.Sheets.[_Default](sheetName).Range("B2"), _
         key2:=ActiveWorkbook.Sheets.[_Default](sheetName).Range(addressKey), _
         Order1:=xlDescending, Order2:=xlAscending, Header:=xlNo
+    End If
 End Sub
 
-Public Sub SortAll()
+Public Sub SortAll() ' TODO refactor? except for Final Report
     SortSheet "Addresses"
     SortSheet "Needs Autocorrect"
     SortSheet "Discards"
