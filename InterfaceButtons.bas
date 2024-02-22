@@ -114,7 +114,8 @@ Public Sub confirmDeleteAllVisitData()
     
     SheetUtilities.DisableAllFilters
     
-    
+    SheetUtilities.getTotalsRng.Clear
+    ' TODO clear county totals also
     SheetUtilities.getAddressVisitDataRng("Addresses").Clear
     SheetUtilities.getAddressVisitDataRng("Needs Autocorrect").Clear
     SheetUtilities.getAddressVisitDataRng("Discards").Clear
@@ -182,6 +183,8 @@ Public Sub confirmDeleteService()
     If Not autocorrectedColsToDelete Is Nothing Then
         autocorrectedColsToDelete.EntireColumn.Delete
     End If
+    
+    Records.computeTotals
 End Sub
 
 '@EntryPoint
@@ -284,6 +287,7 @@ End Sub
 '@EntryPoint
 Public Sub confirmMoveAutocorrect()
     moveSelectedRows "Addresses", "Needs Autocorrect", True
+    Records.computeTotals
 End Sub
 
 '@EntryPoint
@@ -295,14 +299,17 @@ Public Sub toggleUserVerified()
     
     Dim row As Variant
     For Each row In rows
-        ActiveSheet.Cells(row, 2).value = Not ActiveSheet.Cells(row, 2)
+        ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Cells(row, 2).value = _
+            Not ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Cells(row, 2).value
     Next row
 End Sub
 
 ' This macro subroutine may be used to double-check
 ' street addresses by lookup on the Gaithersburg city address search page in browser window.
 '@EntryPoint
+'@ExcelHotkey L
 Public Sub LookupInCity()
+Attribute LookupInCity.VB_ProcData.VB_Invoke_Func = "L\n14"
     Dim currentRowFirstCell As Range
     Set currentRowFirstCell = ActiveWorkbook.ActiveSheet.Cells.Item(ActiveCell.row, 1)
     
@@ -331,5 +338,3 @@ End Sub
 Public Sub OpenGoogleMapsWebsite()
     ActiveWorkbook.FollowHyperlink address:="https://www.google.com/maps"
 End Sub
-
-
