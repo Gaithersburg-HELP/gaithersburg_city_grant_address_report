@@ -48,7 +48,7 @@ Public Function loadRecordFromSheet(ByVal recordRowFirstCell As Range) As Record
     
     record.SetInCity recordRowFirstCell.offset(0, 0).value
     record.UserVerified = CBool(recordRowFirstCell.offset(0, 1).value)
-    record.ValidAddress = recordRowFirstCell.offset(0, 2).value
+    record.validAddress = recordRowFirstCell.offset(0, 2).value
     record.validUnitWithNum = recordRowFirstCell.offset(0, 3).value
     record.ValidZipcode = recordRowFirstCell.offset(0, 4).value
     record.RawAddress = recordRowFirstCell.offset(0, 5).value
@@ -134,7 +134,7 @@ Public Sub writeAddress(ByVal sheetName As String, ByVal record As RecordTuple)
     
     recordRow.Cells.Item(1, 1).value = record.InCityStr
     recordRow.Cells.Item(1, 2).value = record.UserVerified
-    recordRow.Cells.Item(1, 3).value = record.ValidAddress
+    recordRow.Cells.Item(1, 3).value = record.validAddress
     recordRow.Cells.Item(1, 4).value = record.validUnitWithNum
     recordRow.Cells.Item(1, 5).value = record.ValidZipcode
     recordRow.Cells.Item(1, 6).value = record.RawAddress

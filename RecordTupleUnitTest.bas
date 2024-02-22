@@ -116,7 +116,7 @@ Public Sub TestIsAutocorrected()
     Assert.IsFalse record.isAutocorrected
     
     record.ValidZipcode = "20878"
-    record.ValidAddress = "123 Test"
+    record.validAddress = "123 Test"
     record.validUnitWithNum = "Apt 23"
     Assert.IsFalse record.isAutocorrected
     
@@ -128,6 +128,6 @@ Public Sub TestIsAutocorrected()
     Assert.IsTrue record.isAutocorrected
 
     record.ValidZipcode = "20878"
-    record.ValidAddress = "124 test"
+    record.validAddress = "124 test"
     Assert.IsTrue record.isAutocorrected
 End Sub

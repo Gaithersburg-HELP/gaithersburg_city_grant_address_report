@@ -106,11 +106,11 @@ Public Property Let UserVerified(ByVal bool As Boolean)
     pUserVerified = bool
 End Property
 
-Public Property Get ValidAddress() As String
-    ValidAddress = pValidAddress
+Public Property Get validAddress() As String
+    validAddress = pValidAddress
 End Property
 
-Public Property Let ValidAddress(ByVal str As String)
+Public Property Let validAddress(ByVal str As String)
     pValidAddress = str
 End Property
 
@@ -132,7 +132,7 @@ End Property
 
 ' Expects AddressKey StreetAddress, UnitType, UnitNum, Zip
 Public Sub SetValidAddress(ByVal address As Scripting.Dictionary)
-    ValidAddress = address.Item(addressKey.streetAddress)
+    validAddress = address.Item(addressKey.streetAddress)
     validUnitWithNum = address.Item(addressKey.unitWithNum)
     ValidZipcode = address.Item(addressKey.zip)
 End Sub
@@ -166,7 +166,7 @@ Public Property Get FullRawAddress() As String
 End Property
 
 Public Property Get isAutocorrected() As Boolean
-    isAutocorrected = ((ValidAddress <> vbNullString) And ValidAddress <> RawAddress) Or _
+    isAutocorrected = ((validAddress <> vbNullString) And validAddress <> RawAddress) Or _
                       ((validUnitWithNum <> vbNullString) And validUnitWithNum <> RawUnitWithNum) Or _
                       ((ValidZipcode <> vbNullString) And ValidZipcode <> RawZip)
 End Property
@@ -344,6 +344,31 @@ Private Sub MergeVisitData(ByVal visitDataToMerge As Scripting.Dictionary)
         End If
     Next service
 End Sub
+
+' Returns 1-based array of whether record has quarter or not
+Public Property Get Quarters() As Boolean()
+    Dim quarterArr(1 To 4) As Boolean
+    
+    Dim service As Variant
+    For Each service In visitData
+        Dim quarter As Variant
+        For Each quarter In visitData.Item(service)
+            Select Case quarter
+                Case "Q1"
+                    quarterArr(1) = True
+                Case "Q2"
+                    quarterArr(2) = True
+                Case "Q3"
+                    quarterArr(3) = True
+                Case "Q4"
+                    quarterArr(4) = True
+            End Select
+        Next quarter
+    Next service
+
+    Quarters = quarterArr
+End Property
+
 
 Public Property Get CleanFirstName() As String
     CleanFirstName = StrConv(FirstName, vbProperCase)
@@ -578,7 +603,7 @@ End Property
 
 Public Property Get GburgFormatValidAddress() As Scripting.Dictionary
     If pGburgFormatValidAddress Is Nothing Then
-        Set pGburgFormatValidAddress = getFormattedSplitAddr(ValidAddress)
+        Set pGburgFormatValidAddress = getFormattedSplitAddr(validAddress)
     End If
     Set GburgFormatValidAddress = pGburgFormatValidAddress
 End Property
