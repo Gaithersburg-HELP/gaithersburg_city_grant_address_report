@@ -154,18 +154,16 @@ Public Sub TestAllAddresses()
     CompareSheetCSV Assert, "Discards", ActiveWorkbook.path & "\testdata\test5usereditsaddresses_discardsoutput.csv"
     CompareSheetCSV Assert, "Autocorrected", ActiveWorkbook.path & "\testdata\test5usereditsaddresses_autocorrectedoutput.csv"
 
-'    ' TODO edit certain addresses and revalidate
-'
-'    InterfaceButtons.confirmAttemptValidation
-'    InterfaceButtons.confirmGenerateFinalReport
-'
-'    CompareSheetCSV Assert, "Final Report", ActiveWorkbook.path & "\testdata\test5usereditsaddresses_finalreportoutput.csv"
+    InterfaceButtons.confirmAttemptValidation
+    InterfaceButtons.confirmGenerateFinalReport
+
+    CompareSheetCSV Assert, "Final Report", ActiveWorkbook.path & "\testdata\test5usereditsaddresses_finalreportoutput.csv"
 '
 '    ' TODO test delete service column, generate final report
 '    InterfaceButtons.confirmDeleteService
 '    InterfaceButtons.confirmGenerateFinalReport
 '
-'    ' TODO test delete all visit data
+'    ' TODO move one record to needs autocorrect, test delete all visit data
 '    InterfaceButtons.confirmDeleteAllVisitData
     Exit Sub
 TestFail:
