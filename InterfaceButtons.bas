@@ -4,7 +4,7 @@ Option Explicit
 '@Folder("City_Grant_Address_Report.src")
 
 ' Returns Nothing if error occurred
-Private Function getUniqueSelection(returnRows As Boolean, min As Long) As Collection
+Private Function getUniqueSelection(ByVal returnRows As Boolean, ByVal min As Long) As Collection
     Dim uniques As Collection
     Set uniques = New Collection
     
@@ -26,14 +26,14 @@ Private Function getUniqueSelection(returnRows As Boolean, min As Long) As Colle
                 Set getUniqueSelection = Nothing
                 Exit Function
             End If
-            dict(value.row) = Empty
+            dict.Item(value.row) = Empty
         Else
             If value.column < min Then
                 MsgBox "Invalid Selection"
                 Set getUniqueSelection = Nothing
                 Exit Function
             End If
-            dict(value.column) = Empty
+            dict.Item(value.column) = Empty
         End If
     Next value
     
