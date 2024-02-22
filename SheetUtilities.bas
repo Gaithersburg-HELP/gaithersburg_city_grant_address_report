@@ -182,6 +182,13 @@ Public Sub ClearAll()
     Next
 End Sub
 
+Public Sub DisableAllFilters()
+    Dim i As Long
+    For i = 1 To ActiveWorkbook.Sheets.Count
+        ActiveWorkbook.Sheets.[_Default](i).AutoFilterMode = False
+    Next
+End Sub
+
 Public Sub SortSheet(ByVal sheetName As String)
     Dim addressKey As String
     Select Case sheetName

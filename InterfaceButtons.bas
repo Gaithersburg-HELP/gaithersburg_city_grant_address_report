@@ -47,6 +47,9 @@ End Function
 
 '@EntryPoint
 Public Sub PasteRecords()
+    SheetUtilities.DisableAllFilters
+    
+    
     ActiveWorkbook.Worksheets.[_Default]("Interface").Activate
     Application.ScreenUpdating = False
     
@@ -65,6 +68,9 @@ Public Sub confirmAddRecords()
         Exit Sub
     End If
     
+    SheetUtilities.DisableAllFilters
+    
+    
     Records.addRecords
 End Sub
 
@@ -78,6 +84,9 @@ Public Sub confirmAttemptValidation()
         Exit Sub
     End If
     
+    SheetUtilities.DisableAllFilters
+    
+    
     autocorrect.attemptValidation
 End Sub
 
@@ -89,6 +98,9 @@ Public Sub confirmGenerateFinalReport()
         Exit Sub
     End If
     
+    SheetUtilities.DisableAllFilters
+    
+    
     GenerateReport.generateFinalReport
 End Sub
 
@@ -99,6 +111,9 @@ Public Sub confirmDeleteAllVisitData()
     If confirmResponse = vbNo Then
         Exit Sub
     End If
+    
+    SheetUtilities.DisableAllFilters
+    
     
     SheetUtilities.getAddressVisitDataRng("Addresses").Clear
     SheetUtilities.getAddressVisitDataRng("Needs Autocorrect").Clear
@@ -112,13 +127,15 @@ Public Sub confirmDeleteService()
     Set columns = getUniqueSelection(False, SheetUtilities.firstServiceColumn)
     If columns Is Nothing Then Exit Sub
     
-    
     Dim confirmResponse As VbMsgBoxResult
     confirmResponse = MsgBox("Are you sure you wish to delete the selected service(s)?", vbYesNo + vbQuestion, "Confirmation")
     If confirmResponse = vbNo Then
         Exit Sub
     End If
+    
+    SheetUtilities.DisableAllFilters
         
+    
     Dim addressServices() As String
     addressServices = SheetUtilities.loadServiceNames("Addresses")
     
@@ -175,6 +192,9 @@ Public Sub confirmDiscardAll()
         Exit Sub
     End If
     
+    SheetUtilities.DisableAllFilters
+    
+    
     Dim autocorrect As Scripting.Dictionary
     Set autocorrect = Records.loadAddresses("Needs Autocorrect")
     
@@ -194,6 +214,9 @@ Private Function moveSelectedRows(ByVal sourceSheet As String, ByVal destSheet A
         Set moveSelectedRows = Nothing
         Exit Function
     End If
+    
+    SheetUtilities.DisableAllFilters
+    
     
     Dim confirmResponse As VbMsgBoxResult
     confirmResponse = MsgBox("Are you sure you wish to move the selected record(s) from " & _
@@ -235,11 +258,13 @@ End Function
 
 '@EntryPoint
 Public Sub confirmDiscardSelected()
+    '@Ignore FunctionReturnValueDiscarded
     moveSelectedRows "Needs Autocorrect", "Discards"
 End Sub
 
 '@EntryPoint
 Public Sub confirmRestoreSelectedDiscard()
+    '@Ignore FunctionReturnValueDiscarded
     moveSelectedRows "Discards", "Needs Autocorrect"
 End Sub
 
@@ -247,6 +272,9 @@ End Sub
 Public Sub confirmMoveAutocorrect()
     Dim movedRecords As Collection
     Set movedRecords = moveSelectedRows("Addresses", "Needs Autocorrect")
+    
+    If movedRecords Is Nothing Then Exit Sub
+    
     
     Dim autocorrected As Scripting.Dictionary
     Set autocorrected = Records.loadAddresses("Autocorrected")
