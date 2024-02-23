@@ -74,7 +74,18 @@ Public Sub attemptValidation()
         Dim minLatitude As Double
         Dim maxLatitude As Double
         
-        If recordToAutocorrect.UserVerified = False And _
+        Dim bypassUserVerifiedCheck As Boolean
+        bypassUserVerifiedCheck = False
+        
+        ' check if user moved ValidNotInCity record to Needs Autocorrect and wants to reverify
+        If recordToAutocorrect.UserVerified = True And _
+           recordToAutocorrect.InCity = ValidNotInCity Then
+            recordToAutocorrect.SetInCity InCityCode.NotYetAutocorrected
+            bypassUserVerifiedCheck = True
+        End If
+        
+        
+        If ((recordToAutocorrect.UserVerified = False) Or (bypassUserVerifiedCheck)) And _
            usedRequests < getRemainingRequests() And _
            recordToAutocorrect.InCity = InCityCode.NotYetAutocorrected Then
            
