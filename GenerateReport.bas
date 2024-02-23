@@ -25,6 +25,8 @@ Private Sub writeFinalReportRecord(ByVal record As RecordTuple)
 End Sub
 
 Public Sub generateFinalReport()
+    SheetUtilities.getFinalReportRng.Clear
+    
     Dim addresses As Scripting.Dictionary
     Set addresses = Records.loadAddresses("Addresses")
     

@@ -117,6 +117,7 @@ Public Sub confirmDeleteAllVisitData()
     
     SheetUtilities.getTotalsRng.Clear
     ' TODO clear county totals also
+    SheetUtilities.getFinalReportRng.Clear
     SheetUtilities.getAddressVisitDataRng("Addresses").Clear
     SheetUtilities.getAddressVisitDataRng("Needs Autocorrect").Clear
     SheetUtilities.getAddressVisitDataRng("Discards").Clear
@@ -185,6 +186,7 @@ Public Sub confirmDeleteService()
         autocorrectedColsToDelete.EntireColumn.Delete
     End If
     
+    SheetUtilities.getFinalReportRng.Clear
     Records.computeTotals
 End Sub
 
@@ -288,6 +290,7 @@ End Sub
 '@EntryPoint
 Public Sub confirmMoveAutocorrect()
     moveSelectedRows "Addresses", "Needs Autocorrect", True
+    SheetUtilities.getFinalReportRng.Clear
     Records.computeTotals
 End Sub
 
