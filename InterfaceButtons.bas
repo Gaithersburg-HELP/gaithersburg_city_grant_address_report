@@ -308,6 +308,95 @@ Public Sub toggleUserVerified()
     Next row
 End Sub
 
+Public Sub CopyAndOpenCountyTotalsSite()
+    ' TODO get current selection row
+    
+    Dim code As Variant
+    code = "var connection = window.indexedDB.open('survey123');"
+    code = code & "connection.onsuccess = (e) => {"
+    code = code & " var database = e.target.result;"
+    code = code & " var tx = database.transaction('data', 'readwrite');"
+    code = code & " var objectStore = tx.objectStore(['data']);"
+    code = code & " var index = objectStore.index('itemId');"
+
+    code = code & " var request = index.openCursor();"
+    code = code & " request.onsuccess = () => {;"
+    code = code & "     var cursor = request.result;"
+    code = code & "     var fieldJson = cursor.value;"
+    
+    ' TODO insert totals here
+    code = code & "     fieldJson['value']['hh_dup'] = '1';"
+    code = code & "     fieldJson['value']['hh_undup'] = '2';"
+    code = code & "     fieldJson['value']['individual_dup'] = '3';"
+    code = code & "     fieldJson['value']['individual_undup'] = '4';"
+    code = code & "     fieldJson['value']['children_ages_0_18'] = '5';"
+    code = code & "     fieldJson['value']['adults_ages_18'] = '6';"
+    
+    ' 20861
+    code = code & "     fieldJson['value']['field_7'] = '7';"
+    code = code & "     fieldJson['value']['field_8'] = '8';"
+    code = code & "     fieldJson['value']['field_9'] = '9';"
+    code = code & "     fieldJson['value']['field_14'] = '10';"
+    code = code & "     fieldJson['value']['field_11'] = '11';"
+    code = code & "     fieldJson['value']['field_15'] = '12';"
+    code = code & "     fieldJson['value']['field_16'] = '13';"
+    code = code & "     fieldJson['value']['field_17'] = '14';"
+    code = code & "     fieldJson['value']['field_18'] = '15';"
+    code = code & "     fieldJson['value']['field_19'] = '16';"
+    code = code & "     fieldJson['value']['field_20'] = '17';"
+    code = code & "     fieldJson['value']['field_21'] = '18';"
+    code = code & "     fieldJson['value']['field_22'] = '19';"
+    code = code & "     fieldJson['value']['field_23'] = '20';"
+    code = code & "     fieldJson['value']['field_24'] = '21';"
+    code = code & "     fieldJson['value']['field_25'] = '22';"
+    code = code & "     fieldJson['value']['field_26'] = '23';"
+    code = code & "     fieldJson['value']['field_27'] = '24';"
+    code = code & "     fieldJson['value']['field_28'] = '25';"
+    code = code & "     fieldJson['value']['field_29'] = '26';"
+    code = code & "     fieldJson['value']['field_30'] = '27';"
+    code = code & "     fieldJson['value']['field_31'] = '28';"
+    code = code & "     fieldJson['value']['field_32'] = '29';"
+    code = code & "     fieldJson['value']['field_37'] = '30';"
+    code = code & "     fieldJson['value']['field_35'] = '31';"
+    code = code & "     fieldJson['value']['field_36'] = '32';"
+    code = code & "     fieldJson['value']['field_34'] = '33';"
+    code = code & "     fieldJson['value']['field_38'] = '34';"
+    code = code & "     fieldJson['value']['field_39'] = '35';"
+    code = code & "     fieldJson['value']['field_40'] = '36';"
+    code = code & "     fieldJson['value']['field_41'] = '37';"
+    code = code & "     fieldJson['value']['field_42'] = '38';"
+    code = code & "     fieldJson['value']['field_43'] = '39';"
+    code = code & "     fieldJson['value']['field_44'] = '40';"
+    code = code & "     fieldJson['value']['field_45'] = '41';"
+    code = code & "     fieldJson['value']['field_46'] = '42';"
+    code = code & "     fieldJson['value']['field_47'] = '43';"
+    code = code & "     fieldJson['value']['field_48'] = '44';"
+    code = code & "     fieldJson['value']['field_49'] = '45';"
+    code = code & "     fieldJson['value']['field_50'] = '46';"
+    code = code & "     fieldJson['value']['field_51'] = '47';"
+    code = code & "     fieldJson['value']['field_52'] = '48';"
+    code = code & "     fieldJson['value']['field_53'] = '49';"
+    code = code & "     fieldJson['value']['field_54'] = '50';"
+    code = code & "     fieldJson['value']['field_55'] = '51';"
+    code = code & "     fieldJson['value']['field_56'] = '52';"
+    
+    code = code & "     request = cursor.update(fieldJson);"
+    code = code & "     request.onsuccess = () => {;"
+    code = code & "         console.log(request.result);"
+    code = code & "         console.log('Fields updated');"
+    code = code & "         location.reload();"
+    code = code & "     };"
+    code = code & " };"
+    code = code & "};"
+
+    With CreateObject("htmlfile")
+        With .parentWindow.clipboardData
+            .setData "text", code
+        End With
+    End With
+    ActiveWorkbook.FollowHyperlink address:="https://survey123.arcgis.com/share/43a57395fe8c4ae5ade7b3bf1e2b8313"
+End Sub
+
 ' This macro subroutine may be used to double-check
 ' street addresses by lookup on the Gaithersburg city address search page in browser window.
 '@EntryPoint
