@@ -132,9 +132,11 @@ End Property
 
 ' Expects AddressKey StreetAddress, UnitType, UnitNum, Zip
 Public Sub SetValidAddress(ByVal address As Scripting.Dictionary)
-    validAddress = address.Item(addressKey.streetAddress)
-    validUnitWithNum = address.Item(addressKey.unitWithNum)
-    ValidZipcode = address.Item(addressKey.zip)
+    ' USPS data is in all caps
+    ' NOTE This turns O'Neill into O'neill but that shouldn't matter for Gburg db search
+    validAddress = StrConv(address.Item(addressKey.streetAddress), vbProperCase)
+    validUnitWithNum = StrConv(address.Item(addressKey.unitWithNum), vbProperCase)
+    ValidZipcode = StrConv(address.Item(addressKey.zip), vbProperCase)
 End Sub
 
 Public Property Get RawAddress() As String
@@ -158,8 +160,10 @@ Public Property Let RawUnitWithNum(ByVal str As String)
 End Property
 
 Public Property Get isAutocorrected() As Boolean
-    isAutocorrected = ((validAddress <> vbNullString) And validAddress <> RawAddress) Or _
-                      ((validUnitWithNum <> vbNullString) And validUnitWithNum <> RawUnitWithNum) Or _
+    isAutocorrected = ((validAddress <> vbNullString) And _
+                            validAddress <> StrConv(RawAddress, vbProperCase)) Or _
+                      ((validUnitWithNum <> vbNullString) And _
+                            validUnitWithNum <> StrConv(RawUnitWithNum, vbProperCase)) Or _
                       ((ValidZipcode <> vbNullString) And ValidZipcode <> RawZip)
 End Property
 
@@ -513,6 +517,8 @@ Private Function getFormattedSplitAddr(ByVal returnRaw As Boolean) As Scripting.
     End If
     
     addr = CleanString(addr)
+    '@Ignore AssignmentNotUsed
+    ' probably this bug: https://github.com/rubberduck-vba/Rubberduck/issues/6142
     unitWithNum = CleanString(unitWithNum)
     
     ' BUG these will not show up in autocorrected
@@ -550,6 +556,8 @@ Private Function getFormattedSplitAddr(ByVal returnRaw As Boolean) As Scripting.
     addr = Replace(addr, "Square", "Sq")
     addr = Replace(addr, "Street", "St")
     addr = Replace(addr, "Terrace", "Ter")
+    '@Ignore AssignmentNotUsed
+    ' probably this bug https://github.com/rubberduck-vba/Rubberduck/issues/6142
     addr = Replace(addr, "Way", "Way")
 
     Dim splitAddr As Scripting.Dictionary
