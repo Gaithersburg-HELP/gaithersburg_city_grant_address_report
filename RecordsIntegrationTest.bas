@@ -134,11 +134,14 @@ Public Sub TestAllAddresses()
     InterfaceButtons.confirmMoveAutocorrect
 
     ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Select
+
+    ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("C2").value = "13-15 E Deer Park Dr"
     ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("D2").value = "Ste 102"
     ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("C3").value = "13-15 E Deer Park Dr"
     ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("D3").value = "Ste 202"
     ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("D4").value = "Unit 102"
     ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("D5").value = "Unit 102"
+    ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("B6").value = True
     ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("D8").value = "Apt T3"
     ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("D9").value = "Apt 103"
     ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("D10").value = "Ste 100"
@@ -156,15 +159,13 @@ Public Sub TestAllAddresses()
 
     InterfaceButtons.confirmAttemptValidation
     InterfaceButtons.confirmGenerateFinalReport
-'
-'    ' TODO TEST Odend'hal, O'neill
-'    CompareSheetCSV Assert, "Addresses", ActiveWorkbook.path & "\testdata\test6validateduseredits_addressesoutput.csv"
-'    CompareSheetCSV Assert, "Interface", ActiveWorkbook.path & "\testdata\test6validateduseredits_totalsoutput.csv", getTotalsRng
-'    CompareSheetCSV Assert, "Autocorrected", ActiveWorkbook.path & "\testdata\test6validateduseredits_autocorrectedoutput.csv"
-'    CompareSheetCSV Assert, "Final Report", ActiveWorkbook.path & "\testdata\test6validateduseredits_finalreportoutput.csv"
+
+    CompareSheetCSV Assert, "Addresses", ActiveWorkbook.path & "\testdata\test6validateduseredits_addressesoutput.csv"
+    CompareSheetCSV Assert, "Interface", ActiveWorkbook.path & "\testdata\test6validateduseredits_totalsoutput.csv", getTotalsRng
+    CompareSheetCSV Assert, "Autocorrected", ActiveWorkbook.path & "\testdata\test6validateduseredits_autocorrectedoutput.csv"
+    CompareSheetCSV Assert, "Final Report", ActiveWorkbook.path & "\testdata\test6validateduseredits_finalreportoutput.csv"
 
 
-'
 '    ' TODO test delete service column, generate final report
 '    InterfaceButtons.confirmDeleteService
 '    InterfaceButtons.confirmGenerateFinalReport
