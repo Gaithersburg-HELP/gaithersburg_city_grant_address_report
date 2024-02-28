@@ -1,7 +1,7 @@
 Visit on,Tracking Method,Guest ID,First Name,Last Name,Address,Apartment/Suite,City/Town,State/Province,Zip/Postal Code,Total Individuals,--- TOTAL Rx COSTS (number only 0.00),,,,Test Notes
 1/1/2023 0:00,Food,1,1,1,,,,MD,,1,,,,,"invalid address and city, valid zip code"
-2/1/2023 0:00,Food,2,2,2,,,,MD,,2,,,,,address that will be autocorrected
-3/1/2023 0:00,Food,3,3,3,,,,MD,,1,,,,,
+2/1/2023 0:00,Food,2,2,2,2 nina ct,,gaithburg,MD,20878,2,,,,,address that will be autocorrected to in Gaithersburg
+3/1/2023 0:00,Food,3,3,3,,,,MD,,1,,,,,address that will be autocorrected to outside of Gaithersburg
 4/1/2023 0:00,Food,4,4,4,,,,MD,,2,,,,,
 5/1/2023 0:00,Food,5,5,5,,,,MD,,1,,,,,
 6/1/2023 0:00,Food,6,6,6,,,,MD,,2,,,,,

@@ -10,7 +10,7 @@ Private Sub writeFinalReportRecord(ByVal record As RecordTuple)
     row.Cells.Item(1, 2) = record.GburgFormatValidAddress.Item(addressKey.streetNum)
     row.Cells.Item(1, 3) = record.GburgFormatValidAddress.Item(addressKey.PrefixedStreetname)
     row.Cells.Item(1, 4) = record.GburgFormatValidAddress.Item(addressKey.StreetType)
-    row.Cells.Item(1, 5) = record.GburgFormatValidAddress.Item(addressKey.UnitType)
+    row.Cells.Item(1, 5) = record.GburgFormatValidAddress.Item(addressKey.unitType)
     row.Cells.Item(1, 6) = record.GburgFormatValidAddress.Item(addressKey.unitNum)
     row.Cells.Item(1, 7) = "Gaithersburg"
     row.Cells.Item(1, 8) = "MD"

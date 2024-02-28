@@ -9,7 +9,7 @@ Public Enum addressKey
     PrefixedStreetname = 2 ' No postfix
     StreetType = 3
     Postfix = 4
-    UnitType = 5
+    unitType = 5
     unitNum = 6
     unitWithNum = 7
     zip = 8
@@ -28,7 +28,7 @@ Private Function initAddressKey() As Scripting.Dictionary
     address.Add addressKey.PrefixedStreetname, vbNullString
     address.Add addressKey.StreetType, vbNullString
     address.Add addressKey.Postfix, vbNullString
-    address.Add addressKey.UnitType, vbNullString
+    address.Add addressKey.unitType, vbNullString
     address.Add addressKey.unitNum, vbNullString
     address.Add addressKey.unitWithNum, vbNullString
     address.Add addressKey.zip, vbNullString
@@ -114,7 +114,7 @@ Public Function gburgQuery(ByVal fullAddress As String) As Scripting.Dictionary
         
         validatedAddress.Item(addressKey.StreetType) = gburgAddress.Item("Road_Type")
         validatedAddress.Item(addressKey.Postfix) = gburgAddress.Item("Road_Post_Dir")
-        validatedAddress.Item(addressKey.UnitType) = gburgAddress.Item("Unit_Type")
+        validatedAddress.Item(addressKey.unitType) = gburgAddress.Item("Unit_Type")
         validatedAddress.Item(addressKey.unitNum) = gburgAddress.Item("Unit_Number")
         validatedAddress.Item(addressKey.zip) = gburgAddress.Item("Zip_Code")
         
@@ -126,8 +126,8 @@ Public Function gburgQuery(ByVal fullAddress As String) As Scripting.Dictionary
                                                               validatedAddress.Item(addressKey.Postfix)
         End If
         
-        If validatedAddress.Item(addressKey.UnitType) <> vbNullString Then
-            validatedAddress.Item(addressKey.unitWithNum) = validatedAddress.Item(addressKey.UnitType) & " " & _
+        If validatedAddress.Item(addressKey.unitType) <> vbNullString Then
+            validatedAddress.Item(addressKey.unitWithNum) = validatedAddress.Item(addressKey.unitType) & " " & _
                                                             validatedAddress.Item(addressKey.unitNum)
             validatedAddress.Item(addressKey.Full) = validatedAddress.Item(addressKey.streetAddress) & " " & _
                                                      validatedAddress.Item(addressKey.unitWithNum)
@@ -254,25 +254,43 @@ Public Function googleValidateQuery(ByVal fullAddress As String, ByVal city As S
             Select Case splitRWordArr(1)
                 Case "BSMT", "FRNT", "LBBY", "LOWR", "OFC", "PH", "REAR", "SIDE", "UPPR"
                     If validSecondary Then
-                        validatedAddress.Item(addressKey.UnitType) = splitRWordArr(1)
+                        validatedAddress.Item(addressKey.unitType) = splitRWordArr(1)
                         validatedAddress.Item(addressKey.unitWithNum) = splitRWordArr(1)
                     End If
                     streetAddress = splitRWordArr(0)
                 Case Else
                     Dim splitUnitArr() As String
                     splitUnitArr = RWordTrim(splitRWordArr(0))
-                    
-                    ' in theory shouldn't need to double check if USPS returned secondary
-                    ' Case "APT", "BLDG", "BSMT", "DEPT", "FL", "FRNT", "HNGR", "KEY", "LBBY", "LOT", "LOWR", "OFC", _
-                    '      "PH", "PIER", "REAR", "RM", "SIDE", "SLIP", "SPC", "STE", "STOP", "TRLR", "UNIT", "UPPR"
+
                     If validSecondary Then
-                        validatedAddress.Item(addressKey.UnitType) = splitUnitArr(1)
-                        validatedAddress.Item(addressKey.unitNum) = splitRWordArr(1)
-                        validatedAddress.Item(addressKey.unitWithNum) = validatedAddress.Item(addressKey.UnitType) & _
+                        
+                        ' As of 2/27/24, USPS returns 150 Chevy Chase St Apt 102 # Unt when given Unt 102
+                        Dim actualUnit, actualNum As String
+                        
+                        Select Case splitUnitArr(1)
+                            Case "APT", "BLDG", "DEPT", "FL", "HNGR", "KEY", "LOT", _
+                                 "PIER", "SLIP", "SPC", "STE", "STOP", "TRLR", "UNIT"
+                                actualUnit = splitUnitArr(1)
+                                actualNum = splitRWordArr(1)
+                                streetAddress = splitUnitArr(0)
+                            Case Else ' "BSMT", "FRNT", "LBBY", "LOWR", "OFC", "PH", "REAR", "RM", "SIDE", "UPPR" "FRNT", "LOWR",
+                                Dim secondSplitArr() As String
+                                secondSplitArr = RWordTrim(splitUnitArr(0))
+                                ' Gaithersburg database doesn't have Rm 1, etc. so drop last two words
+                                ' actualNum = secondSplitArr(1) & " " & splitUnitArr(1) & " " & splitRWordArr(1)
+                                actualNum = secondSplitArr(1)
+                                Dim thirdSplitArr() As String
+                                thirdSplitArr = RWordTrim(secondSplitArr(0))
+                                actualUnit = thirdSplitArr(1)
+                                streetAddress = thirdSplitArr(0)
+                        End Select
+                        validatedAddress.Item(addressKey.unitType) = actualUnit
+                        validatedAddress.Item(addressKey.unitNum) = actualNum
+                        validatedAddress.Item(addressKey.unitWithNum) = validatedAddress.Item(addressKey.unitType) & _
                                                                         " " & validatedAddress.Item(addressKey.unitNum)
+                    Else
+                        streetAddress = splitUnitArr(0)
                     End If
-                    
-                    streetAddress = splitUnitArr(0)
             End Select
         End If
         

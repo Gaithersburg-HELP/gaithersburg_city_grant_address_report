@@ -482,6 +482,12 @@ Private Function SplitUnit(ByVal unitWithNum As String) As String()
         Case -1
             ' unitWithNum was ""
             SplitUnit = Split(",", ",")
+        Case 1
+            ' 2 words
+            SplitUnit = splitArr
+        Case 2
+            ' 3 words, assume Apt e.g. 103 Rm 1
+            SplitUnit = Split("Apt " & unitWithNum, " ")
         Case Else
             SplitUnit = splitArr
     End Select
@@ -594,11 +600,15 @@ Private Function getFormattedSplitAddr(ByVal returnRaw As Boolean) As Scripting.
     Dim splitUnitArr() As String
     splitUnitArr = SplitUnit(unitWithNum)
     
-    splitAddr.Add addressKey.UnitType, splitUnitArr(0)
-    splitAddr.Add addressKey.unitNum, splitUnitArr(1)
+    splitAddr.Add addressKey.unitType, splitUnitArr(0)
+    ' NOTE remove unit from array and join the rest because sometimes will be given
+    ' multiple secondary numbers e.g. Apt 102 # unt
+    splitUnitArr(0) = vbNullString
+    splitAddr.Add addressKey.unitNum, Trim(Join(splitUnitArr, " "))
     
-    If splitUnitArr(0) <> vbNullString Then
-        splitAddr.Add addressKey.Full, fullAddress & " " & splitUnitArr(0) & " " & splitUnitArr(1)
+    If splitAddr.Item(addressKey.unitType) <> vbNullString Then
+        splitAddr.Add addressKey.Full, fullAddress & " " & splitAddr.Item(addressKey.unitType) & _
+                      " " & splitAddr.Item(addressKey.unitNum)
     Else
         splitAddr.Add addressKey.Full, fullAddress
     End If

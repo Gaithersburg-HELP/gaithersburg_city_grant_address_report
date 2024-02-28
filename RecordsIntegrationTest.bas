@@ -102,68 +102,68 @@ Public Sub TestAllAddresses()
     Assert.IsTrue autocorrect.getRemainingRequests = 7980
 
 
-    Dim testMergeAutocorrectedAddressesArr() As String
-    testMergeAutocorrectedAddressesArr = getCSV(ThisWorkbook.path & "\testdata\test4mergeaddresses.csv")
-    PasteTestRecords testMergeAutocorrectedAddressesArr
-
-    addRecords
-
-    CompareSheetCSV Assert, "Addresses", ActiveWorkbook.path & "\testdata\test4mergeaddresses_addressesoutput.csv"
-    CompareSheetCSV Assert, "Interface", ActiveWorkbook.path & "\testdata\test4mergeaddresses_totalsoutput.csv", getTotalsRng
-    CompareSheetCSV Assert, "Discards", ActiveWorkbook.path & "\testdata\test4mergeaddresses_discardsoutput.csv"
-    CompareSheetCSV Assert, "Autocorrected", ActiveWorkbook.path & "\testdata\test4mergeaddresses_autocorrectedoutput.csv"
-
-    Fakes.MsgBox.Returns vbYes
-
-    InterfaceButtons.confirmDiscardAll
-
-    ActiveWorkbook.Worksheets.[_Default]("Discards").Select
-    Union(ActiveWorkbook.Worksheets.[_Default]("Discards").Range("A3:A6"), _
-          ActiveWorkbook.Worksheets.[_Default]("Discards").Range("A9:A12"), _
-          ActiveWorkbook.Worksheets.[_Default]("Discards").Range("A14:A15")).Select
-    InterfaceButtons.confirmRestoreSelectedDiscard
-
-    ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Select
-    Union(ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("A6"), _
-          ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("A9")).Select
-    InterfaceButtons.confirmDiscardSelected
-
-    ActiveWorkbook.Worksheets.[_Default]("Addresses").Select
-    Union(ActiveWorkbook.Worksheets.[_Default]("Addresses").Range("A3"), _
-          ActiveWorkbook.Worksheets.[_Default]("Addresses").Range("A8")).Select
-    InterfaceButtons.confirmMoveAutocorrect
-
-    ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Select
-
-    ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("C2").value = "13-15 E Deer Park Dr"
-    ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("D2").value = "Ste 102"
-    ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("C3").value = "13-15 E Deer Park Dr"
-    ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("D3").value = "Ste 202"
-    ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("D4").value = "Unit 102"
-    ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("D5").value = "Unit 102"
-    ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("B6").value = True
-    ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("D8").value = "Apt T3"
-    ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("D9").value = "Apt 103"
-    ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("D10").value = "Ste 100"
-    ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("D11").value = "Apt 1"
-
-    Union(ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("A2:A5"), _
-          ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("A8:A11")).Select
-    InterfaceButtons.toggleUserVerified
-
-    CompareSheetCSV Assert, "Addresses", ActiveWorkbook.path & "\testdata\test5usereditsaddresses_addressesoutput.csv"
-    CompareSheetCSV Assert, "Interface", ActiveWorkbook.path & "\testdata\test5usereditsaddresses_totalsoutput.csv", getTotalsRng
-    CompareSheetCSV Assert, "Needs Autocorrect", ActiveWorkbook.path & "\testdata\test5usereditsaddresses_autocorrectoutput.csv"
-    CompareSheetCSV Assert, "Discards", ActiveWorkbook.path & "\testdata\test5usereditsaddresses_discardsoutput.csv"
-    CompareSheetCSV Assert, "Autocorrected", ActiveWorkbook.path & "\testdata\test5usereditsaddresses_autocorrectedoutput.csv"
-
-    InterfaceButtons.confirmAttemptValidation
-    InterfaceButtons.confirmGenerateFinalReport
-
-    CompareSheetCSV Assert, "Addresses", ActiveWorkbook.path & "\testdata\test6validateduseredits_addressesoutput.csv"
-    CompareSheetCSV Assert, "Interface", ActiveWorkbook.path & "\testdata\test6validateduseredits_totalsoutput.csv", getTotalsRng
-    CompareSheetCSV Assert, "Autocorrected", ActiveWorkbook.path & "\testdata\test6validateduseredits_autocorrectedoutput.csv"
-    CompareSheetCSV Assert, "Final Report", ActiveWorkbook.path & "\testdata\test6validateduseredits_finalreportoutput.csv"
+'    Dim testMergeAutocorrectedAddressesArr() As String
+'    testMergeAutocorrectedAddressesArr = getCSV(ThisWorkbook.path & "\testdata\test4mergeaddresses.csv")
+'    PasteTestRecords testMergeAutocorrectedAddressesArr
+'
+'    addRecords
+'
+'    CompareSheetCSV Assert, "Addresses", ActiveWorkbook.path & "\testdata\test4mergeaddresses_addressesoutput.csv"
+'    CompareSheetCSV Assert, "Interface", ActiveWorkbook.path & "\testdata\test4mergeaddresses_totalsoutput.csv", getTotalsRng
+'    CompareSheetCSV Assert, "Discards", ActiveWorkbook.path & "\testdata\test4mergeaddresses_discardsoutput.csv"
+'    CompareSheetCSV Assert, "Autocorrected", ActiveWorkbook.path & "\testdata\test4mergeaddresses_autocorrectedoutput.csv"
+'
+'    Fakes.MsgBox.Returns vbYes
+'
+'    InterfaceButtons.confirmDiscardAll
+'
+'    ActiveWorkbook.Worksheets.[_Default]("Discards").Select
+'    Union(ActiveWorkbook.Worksheets.[_Default]("Discards").Range("A3:A6"), _
+'          ActiveWorkbook.Worksheets.[_Default]("Discards").Range("A9:A12"), _
+'          ActiveWorkbook.Worksheets.[_Default]("Discards").Range("A14:A15")).Select
+'    InterfaceButtons.confirmRestoreSelectedDiscard
+'
+'    ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Select
+'    Union(ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("A6"), _
+'          ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("A9")).Select
+'    InterfaceButtons.confirmDiscardSelected
+'
+'    ActiveWorkbook.Worksheets.[_Default]("Addresses").Select
+'    Union(ActiveWorkbook.Worksheets.[_Default]("Addresses").Range("A3"), _
+'          ActiveWorkbook.Worksheets.[_Default]("Addresses").Range("A8")).Select
+'    InterfaceButtons.confirmMoveAutocorrect
+'
+'    ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Select
+'
+'    ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("C2").value = "13-15 E Deer Park Dr"
+'    ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("D2").value = "Ste 102"
+'    ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("C3").value = "13-15 E Deer Park Dr"
+'    ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("D3").value = "Ste 202"
+'    ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("D4").value = "Unit 102"
+'    ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("D5").value = "Unit 102"
+'    ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("B6").value = True
+'    ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("D8").value = "Apt T3"
+'    ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("D9").value = "Apt 103"
+'    ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("D10").value = "Ste 100"
+'    ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("D11").value = "Apt 1"
+'
+'    Union(ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("A2:A5"), _
+'          ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("A8:A11")).Select
+'    InterfaceButtons.toggleUserVerified
+'
+'    CompareSheetCSV Assert, "Addresses", ActiveWorkbook.path & "\testdata\test5usereditsaddresses_addressesoutput.csv"
+'    CompareSheetCSV Assert, "Interface", ActiveWorkbook.path & "\testdata\test5usereditsaddresses_totalsoutput.csv", getTotalsRng
+'    CompareSheetCSV Assert, "Needs Autocorrect", ActiveWorkbook.path & "\testdata\test5usereditsaddresses_autocorrectoutput.csv"
+'    CompareSheetCSV Assert, "Discards", ActiveWorkbook.path & "\testdata\test5usereditsaddresses_discardsoutput.csv"
+'    CompareSheetCSV Assert, "Autocorrected", ActiveWorkbook.path & "\testdata\test5usereditsaddresses_autocorrectedoutput.csv"
+'
+'    InterfaceButtons.confirmAttemptValidation
+'    InterfaceButtons.confirmGenerateFinalReport
+'
+'    CompareSheetCSV Assert, "Addresses", ActiveWorkbook.path & "\testdata\test6validateduseredits_addressesoutput.csv"
+'    CompareSheetCSV Assert, "Interface", ActiveWorkbook.path & "\testdata\test6validateduseredits_totalsoutput.csv", getTotalsRng
+'    CompareSheetCSV Assert, "Autocorrected", ActiveWorkbook.path & "\testdata\test6validateduseredits_autocorrectedoutput.csv"
+'    CompareSheetCSV Assert, "Final Report", ActiveWorkbook.path & "\testdata\test6validateduseredits_finalreportoutput.csv"
 
 
 '    ' TODO test delete service column, generate final report

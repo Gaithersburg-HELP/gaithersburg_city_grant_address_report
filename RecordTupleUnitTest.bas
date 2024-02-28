@@ -80,7 +80,7 @@ Public Sub TestFormatAddress()
     Assert.IsTrue gburgFormat.Item(addressKey.streetNum) = "501a", "Street no. incorrect"
     Assert.IsTrue gburgFormat.Item(addressKey.StreetType) = "Ave", "Street type incorrect"
     Assert.IsTrue gburgFormat.Item(addressKey.unitNum) = "1", "Unit no. incorrect"
-    Assert.IsTrue gburgFormat.Item(addressKey.UnitType) = "Ste", "Unit type incorrect"
+    Assert.IsTrue gburgFormat.Item(addressKey.unitType) = "Ste", "Unit type incorrect"
     
     Dim recordNoPostfix As RecordTuple
     Set recordNoPostfix = New RecordTuple
@@ -91,7 +91,7 @@ Public Sub TestFormatAddress()
     Assert.IsTrue gburgFormat.Item(addressKey.Postfix) = vbNullString, "Postfix incorrect"
     Assert.IsTrue gburgFormat.Item(addressKey.PrefixedStreetname) = "Nina", "Street name incorrect"
     Assert.IsTrue gburgFormat.Item(addressKey.unitNum) = vbNullString, "Unit no. incorrect"
-    Assert.IsTrue gburgFormat.Item(addressKey.UnitType) = vbNullString, "Unit type incorrect"
+    Assert.IsTrue gburgFormat.Item(addressKey.unitType) = vbNullString, "Unit type incorrect"
     
     Dim numericRecord As RecordTuple
     Set numericRecord = New RecordTuple
