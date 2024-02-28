@@ -4,6 +4,134 @@ Option Explicit
 
 Public Const firstServiceColumn As Long = 16
 
+Public Enum CountyTotalCols
+    countymonth = 1
+    householdDuplicate = 2
+    householdUnduplicate = 3
+    individualDuplicate = 4
+    individualUnduplicate = 5
+    childrenDuplicate = 6
+    adultDuplicate = 7
+    poundsFood = 8
+    
+    zip20906AshtonAspenHill = 10
+    zip20906SilverSpring = 84
+    
+    zip20916AshtonAspenHill = 11
+    zip20916SilverSpring = 93
+    
+    zip20815Bethesda = 16
+    zip20815ChevyChaseClarksburg = 27
+    
+    zip20825Bethesda = 20
+    zip20825ChevyChaseClarksburg = 28
+    
+    zip20852Bethesda = 22
+    zip20852Rockville = 70
+    
+    zip20904ColesvilleDamascus = 30
+    zip20904SilverSpring = 82
+    
+    zip20905ColesvilleDamascus = 31
+    zip20905SilverSpring = 83
+    
+    zip20914ColesvilleDamascus = 32
+    zip20914SilverSpring = 91
+    
+    zip20874DarnestownDerwoodDickerson = 34
+    zip20874GarrettParkGermantownGlenEcho = 48
+    
+    zip20878DarnestownDerwoodDickerson = 35
+    zip20878Gaithersburg = 39
+    zip20878PoolesvillePotomac = 64
+    
+    zip20855DarnestownDerwoodDickerson = 36
+    zip20855Rockville = 73
+    
+    zip20877Gaithersburg = 38
+    zip20877MontgomeryVillageOlney = 56
+    
+    zip20882Gaithersburg = 41
+    zip20882KensingtonLaytonsville = 55
+    
+    zip20886Gaithersburg = 45
+    zip20886MontgomeryVillageOlney = 58
+    
+    zip20879Gaithersburg = 40
+    zip20879KensingtonLaytonsville = 54
+    zip20879MontgomeryVillageOlney = 57
+     
+    zip20854PoolesvillePotomac = 62
+    zip20854Rockville = 72
+    
+    zip20859PoolesvillePotomac = 63
+    zip20859Rockville = 74
+    
+    zip20912SandySpringSpencervilleTakomaPark = 77
+    zip20912SilverSpring = 89
+    
+    zip20913SandySpringSpencervilleTakomaPark = 78
+    zip20913SilverSpring = 90
+    
+    zip20902SilverSpring = 80
+    zip20902WashingtonGroveWheaton = 96
+    
+    zip20915SilverSpring = 92
+    zip20915WashingtonGroveWheaton = 97
+End Enum
+
+Private Function uniqueCountyZipCols() As Scripting.Dictionary
+    Dim cols As Scripting.Dictionary
+    Set cols = New Scripting.Dictionary
+    cols.Add 20861, 9
+    cols.Add 20839, 12
+    cols.Add 20838, 13
+    cols.Add 20813, 14
+    cols.Add 20814, 15
+    cols.Add 20816, 17
+    cols.Add 20817, 18
+    cols.Add 20824, 19
+    cols.Add 20827, 21
+    cols.Add 20841, 23
+    cols.Add 20862, 24
+    cols.Add 20866, 25
+    cols.Add 20818, 26
+    cols.Add 20871, 29
+    cols.Add 20872, 33
+    cols.Add 20842, 37
+    cols.Add 20883, 42
+    cols.Add 20884, 43
+    cols.Add 20885, 44
+    cols.Add 20898, 46
+    cols.Add 20896, 47
+    cols.Add 20875, 49
+    cols.Add 20876, 50
+    cols.Add 20812, 51
+    cols.Add 20891, 52
+    cols.Add 20895, 53
+    cols.Add 20830, 59
+    cols.Add 20832, 60
+    cols.Add 20837, 61
+    cols.Add 20847, 65
+    cols.Add 20848, 66
+    cols.Add 20849, 67
+    cols.Add 20850, 68
+    cols.Add 20851, 69
+    cols.Add 20853, 71
+    cols.Add 20860, 75
+    cols.Add 20868, 76
+    cols.Add 20901, 79
+    cols.Add 20903, 81
+    cols.Add 20907, 85
+    cols.Add 20908, 86
+    cols.Add 20910, 87
+    cols.Add 20911, 88
+    cols.Add 20918, 94
+    cols.Add 20880, 95
+    Set uniqueCountyZipCols = cols
+End Function
+
+
 Public Function serviceFirstCell() As String
     serviceFirstCell = ActiveSheet.Range("A1").offset(0, firstServiceColumn - 1).address
 End Function
