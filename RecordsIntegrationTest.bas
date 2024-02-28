@@ -178,8 +178,39 @@ TestFail:
 End Sub
 
 
+'@TestMethod
+Public Sub TestCountyTotals()
+    On Error GoTo TestFail
+    
+'    Dim testAddressesArr() As String
+'    testAddressesArr = getCSV(ThisWorkbook.path & "\testdata\testcounty.csv")
+'
+'    PasteTestRecords testAddressesArr
+'
+'    addRecords
+'    attemptValidation
+    
+    'CompareSheetCSV Assert, "Interface", ActiveWorkbook.path & "\testdata\test4mergeaddresses_totalsoutput.csv", getCountyRng
+    
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
 
 '@TestMethod
 Public Sub TestHandcorrected()
     ' TODO test against Diane corrected, get percentage correct
+    On Error GoTo TestFail
+    
+    'Dim testAddressesArr() As String
+    'testAddressesArr = getCSV(ThisWorkbook.path & "\testdata\test1addresses.csv")
+    
+    'PasteTestRecords testAddressesArr
+    
+    'addRecords
+    'attemptValidation
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
 End Sub
