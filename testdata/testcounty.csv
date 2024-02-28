@@ -1,5 +1,5 @@
 Visit on,Tracking Method,Guest ID,First Name,Last Name,Address,Apartment/Suite,City/Town,State/Province,Zip/Postal Code,Total Individuals,--- TOTAL Rx COSTS (number only 0.00),,,,Test Notes
-1/1/2023 0:00,Food,1,1,1,2 nin ct,,mont village,MD,20877,1,,,,,"invalid address and city, valid zip code"
+1/1/2023 0:00,Food,1,1,1,2 n ct,,mont village,MD,20877,1,,,,,"invalid address and city, valid zip code"
 2/1/2023 0:00,Food,2,2,2,2 nina ct,,gaithburg,MD,20878,1,,,,,address that will be autocorrected to in Gaithersburg 20877
 3/1/2023 0:00,Food,3,3,3,14101 darntown rd,,darntown,MD,20877,1,,,,,address that will be autocorrected to outside of Gaithersburg 20874
 4/1/2023 0:00,Food,4,4,4,17701 New Hampshire Ave,,Ashton,MD,20861,1,,,,,real address

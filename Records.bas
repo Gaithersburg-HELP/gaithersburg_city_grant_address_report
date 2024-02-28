@@ -175,6 +175,8 @@ End Sub
 
 Public Sub computeTotals()
     SheetUtilities.getTotalsRng.Clear
+    ' TODO actual totals computation
+    SheetUtilities.getCountyRng.value = 0
     
     Dim addresses As Scripting.Dictionary
     Set addresses = Records.loadAddresses("Addresses")

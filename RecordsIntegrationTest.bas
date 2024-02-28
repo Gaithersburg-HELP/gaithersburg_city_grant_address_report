@@ -182,15 +182,15 @@ End Sub
 Public Sub TestCountyTotals()
     On Error GoTo TestFail
     
-'    Dim testAddressesArr() As String
-'    testAddressesArr = getCSV(ThisWorkbook.path & "\testdata\testcounty.csv")
-'
-'    PasteTestRecords testAddressesArr
-'
-'    addRecords
-'    attemptValidation
+    Dim testAddressesArr() As String
+    testAddressesArr = getCSV(ThisWorkbook.path & "\testdata\testcounty.csv")
+
+    PasteTestRecords testAddressesArr
+
+    addRecords
+    attemptValidation
     
-    'CompareSheetCSV Assert, "Interface", ActiveWorkbook.path & "\testdata\test4mergeaddresses_totalsoutput.csv", getCountyRng
+    CompareSheetCSV Assert, "Interface", ActiveWorkbook.path & "\testdata\testcounty_totalsoutput.csv", getCountyRng
     
     Exit Sub
 TestFail:

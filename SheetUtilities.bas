@@ -179,6 +179,10 @@ Public Function getTotalsRng() As Range
     Set getTotalsRng = ActiveWorkbook.Worksheets.[_Default]("Interface").Range("N2:Q6")
 End Function
 
+Public Function getCountyRng() As Range
+    Set getCountyRng = ActiveWorkbook.Worksheets.[_Default]("Interface").Range("B9:CS20")
+End Function
+
 Public Function getFinalReportRng() As Range
     Set getFinalReportRng = getRng("Final Report", "A2", "M2")
 End Function
@@ -300,9 +304,9 @@ Public Sub ClearSheet(ByVal sheetName As String)
 End Sub
 
 Public Sub ClearAll()
-    ' TODO clear county totals
     getPastedRecordsRng.Clear
     getTotalsRng.value = 0
+    getCountyRng.value = 0
     getFinalReportRng.Clear
     
     Dim i As Long
