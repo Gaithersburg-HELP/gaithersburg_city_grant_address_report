@@ -3,6 +3,133 @@ Option Explicit
 
 '@Folder("City_Grant_Address_Report.src")
 
+Public Enum CountyTotalCols
+    countymonth = 1
+    householdDuplicate = 2
+    householdUnduplicate = 3
+    individualDuplicate = 4
+    individualUnduplicate = 5
+    childrenDuplicate = 6
+    adultDuplicate = 7
+    poundsFood = 8
+    
+    zip20906AshtonAspenHill = 10
+    zip20906SilverSpring = 84
+    
+    zip20916AshtonAspenHill = 11
+    zip20916SilverSpring = 93
+    
+    zip20815Bethesda = 16
+    zip20815ChevyChaseClarksburg = 27
+    
+    zip20825Bethesda = 20
+    zip20825ChevyChaseClarksburg = 28
+    
+    zip20852Bethesda = 22
+    zip20852Rockville = 70
+    
+    zip20904ColesvilleDamascus = 30
+    zip20904SilverSpring = 82
+    
+    zip20905ColesvilleDamascus = 31
+    zip20905SilverSpring = 83
+    
+    zip20914ColesvilleDamascus = 32
+    zip20914SilverSpring = 91
+    
+    zip20874DarnestownDerwoodDickerson = 34
+    zip20874GarrettParkGermantownGlenEcho = 48
+    
+    zip20878DarnestownDerwoodDickerson = 35
+    zip20878Gaithersburg = 39
+    zip20878PoolesvillePotomac = 64
+    
+    zip20855DarnestownDerwoodDickerson = 36
+    zip20855Rockville = 73
+    
+    zip20877Gaithersburg = 38
+    zip20877MontgomeryVillageOlney = 56
+    
+    zip20882Gaithersburg = 41
+    zip20882KensingtonLaytonsville = 55
+    
+    zip20886Gaithersburg = 45
+    zip20886MontgomeryVillageOlney = 58
+    
+    zip20879Gaithersburg = 40
+    zip20879KensingtonLaytonsville = 54
+    zip20879MontgomeryVillageOlney = 57
+     
+    zip20854PoolesvillePotomac = 62
+    zip20854Rockville = 72
+    
+    zip20859PoolesvillePotomac = 63
+    zip20859Rockville = 74
+    
+    zip20912SandySpringSpencervilleTakomaPark = 77
+    zip20912SilverSpring = 89
+    
+    zip20913SandySpringSpencervilleTakomaPark = 78
+    zip20913SilverSpring = 90
+    
+    zip20902SilverSpring = 80
+    zip20902WashingtonGroveWheaton = 96
+    
+    zip20915SilverSpring = 92
+    zip20915WashingtonGroveWheaton = 97
+End Enum
+
+Private Function uniqueCountyZipCols() As Scripting.Dictionary
+    Dim cols As Scripting.Dictionary
+    cols.Add 20861, 9
+    cols.Add 20839, 12
+    cols.Add 20838, 13
+    cols.Add 20813, 14
+    cols.Add 20814, 15
+    cols.Add 20816, 17
+    cols.Add 20817, 18
+    cols.Add 20824, 19
+    cols.Add 20827, 21
+    cols.Add 20841, 23
+    cols.Add 20862, 24
+    cols.Add 20866, 25
+    cols.Add 20818, 26
+    cols.Add 20871, 29
+    cols.Add 20872, 33
+    cols.Add 20842, 37
+    cols.Add 20883, 42
+    cols.Add 20884, 43
+    cols.Add 20885, 44
+    cols.Add 20898, 46
+    cols.Add 20896, 47
+    cols.Add 20875, 49
+    cols.Add 20876, 50
+    cols.Add 20812, 51
+    cols.Add 20891, 52
+    cols.Add 20895, 53
+    cols.Add 20830, 59
+    cols.Add 20832, 60
+    cols.Add 20837, 61
+    cols.Add 20847, 65
+    cols.Add 20848, 66
+    cols.Add 20849, 67
+    cols.Add 20850, 68
+    cols.Add 20851, 69
+    cols.Add 20853, 71
+    cols.Add 20860, 75
+    cols.Add 20868, 76
+    cols.Add 20901, 79
+    cols.Add 20903, 81
+    cols.Add 20907, 85
+    cols.Add 20908, 86
+    cols.Add 20910, 87
+    cols.Add 20911, 88
+    cols.Add 20918, 94
+    cols.Add 20880, 95
+    Set uniqueCountyZipCols = cols
+End Function
+
+
 ' Returns Nothing if error occurred
 Private Function getUniqueSelection(ByVal returnRows As Boolean, ByVal min As Long) As Collection
     Dim uniques As Collection
@@ -310,7 +437,8 @@ End Sub
 
 '@EntryPoint
 Public Sub CopyAndOpenCountyTotalsSite()
-    ' TODO get current selection row
+    Dim values As Range
+    Set values = ActiveSheet.rows(selection.row)
     
     Dim code As Variant
     code = vbNullString
@@ -324,104 +452,103 @@ Public Sub CopyAndOpenCountyTotalsSite()
     code = code & "    request.onsuccess = () => {"
     code = code & "        const cursor = request.result;"
     code = code & "        const fieldJson = cursor.value;"
-    ' TODO totals
-    code = code & "        fieldJson['value']['month_report'] = 'March';"
-    code = code & "        fieldJson['value']['hh_dup'] = '1';"
-    code = code & "        fieldJson['value']['hh_undup'] = '2';"
-    code = code & "        fieldJson['value']['individual_dup'] = '3';"
-    code = code & "        fieldJson['value']['individual_undup'] = '4';"
-    code = code & "        fieldJson['value']['children_ages_0_18'] = '5';"
-    code = code & "        fieldJson['value']['adults_ages_18'] = '6';"
-    code = code & "        fieldJson['value']['fa_pre_pack_boxbags'] = '6.5';"
-    code = code & "        fieldJson['value']['field_7'] = '7';"
-    code = code & "        fieldJson['value']['field_8'] = '8';"
-    code = code & "        fieldJson['value']['field_9'] = '9';"
-    code = code & "        fieldJson['value']['field_14'] = '10';"
-    code = code & "        fieldJson['value']['field_11'] = '11';"
-    code = code & "        fieldJson['value']['field_15'] = '12';"
-    code = code & "        fieldJson['value']['field_16'] = '13';"
-    code = code & "        fieldJson['value']['field_17'] = '14';"
-    code = code & "        fieldJson['value']['field_18'] = '15';"
-    code = code & "        fieldJson['value']['field_19'] = '16';"
-    code = code & "        fieldJson['value']['field_20'] = '17';"
-    code = code & "        fieldJson['value']['field_21'] = '18';"
-    code = code & "        fieldJson['value']['field_22'] = '19';"
-    code = code & "        fieldJson['value']['field_106'] = '19.5';"
-    code = code & "        fieldJson['value']['field_23'] = '20';"
-    code = code & "        fieldJson['value']['field_24'] = '21';"
-    code = code & "        fieldJson['value']['field_25'] = '22';"
-    code = code & "        fieldJson['value']['field_26'] = '23';"
-    code = code & "        fieldJson['value']['field_27'] = '24';"
-    code = code & "        fieldJson['value']['field_28'] = '25';"
-    code = code & "        fieldJson['value']['field_29'] = '26';"
-    code = code & "        fieldJson['value']['field_30'] = '27';"
-    code = code & "        fieldJson['value']['field_31'] = '28';"
-    code = code & "        fieldJson['value']['field_32'] = '29';"
-    code = code & "        fieldJson['value']['field_37'] = '30';"
-    code = code & "        fieldJson['value']['field_35'] = '31';"
-    code = code & "        fieldJson['value']['field_36'] = '32';"
-    code = code & "        fieldJson['value']['field_34'] = '33';"
-    code = code & "        fieldJson['value']['field_38'] = '34';"
-    code = code & "        fieldJson['value']['field_39'] = '35';"
-    code = code & "        fieldJson['value']['field_40'] = '36';"
-    code = code & "        fieldJson['value']['field_41'] = '37';"
-    code = code & "        fieldJson['value']['field_42'] = '38';"
-    code = code & "        fieldJson['value']['field_43'] = '39';"
-    code = code & "        fieldJson['value']['field_44'] = '40';"
-    code = code & "        fieldJson['value']['field_45'] = '41';"
-    code = code & "        fieldJson['value']['field_46'] = '42';"
-    code = code & "        fieldJson['value']['field_47'] = '43';"
-    code = code & "        fieldJson['value']['field_48'] = '44';"
-    code = code & "        fieldJson['value']['field_49'] = '45';"
-    code = code & "        fieldJson['value']['field_50'] = '46';"
-    code = code & "        fieldJson['value']['field_51'] = '47';"
-    code = code & "        fieldJson['value']['field_52'] = '48';"
-    code = code & "        fieldJson['value']['field_53'] = '49';"
-    code = code & "        fieldJson['value']['field_54'] = '50';"
-    code = code & "        fieldJson['value']['field_55'] = '51';"
-    code = code & "        fieldJson['value']['field_56'] = '52';"
-    code = code & "        fieldJson['value']['field_107'] = '53';"
-    code = code & "        fieldJson['value']['field_108'] = '54';"
-    code = code & "        fieldJson['value']['field_109'] = '55';"
-    code = code & "        fieldJson['value']['field_110'] = '56';"
-    code = code & "        fieldJson['value']['field_111'] = '57';"
-    code = code & "        fieldJson['value']['field_112'] = '58';"
-    code = code & "        fieldJson['value']['field_113'] = '59';"
-    code = code & "        fieldJson['value']['field_114'] = '60';"
-    code = code & "        fieldJson['value']['field_115'] = '61';"
-    code = code & "        fieldJson['value']['field_116'] = '62';"
-    code = code & "        fieldJson['value']['field_117'] = '114';"
-    code = code & "        fieldJson['value']['field_118'] = '115';"
-    code = code & "        fieldJson['value']['field_119'] = '116';"
-    code = code & "        fieldJson['value']['field_120'] = '117';"
-    code = code & "        fieldJson['value']['field_121'] = '118';"
-    code = code & "        fieldJson['value']['field_122'] = '119';"
-    code = code & "        fieldJson['value']['field_123'] = '120';"
-    code = code & "        fieldJson['value']['field_124'] = '121';"
-    code = code & "        fieldJson['value']['field_125'] = '122';"
-    code = code & "        fieldJson['value']['field_126'] = '123';"
-    code = code & "        fieldJson['value']['field_127'] = '124';"
-    code = code & "        fieldJson['value']['field_128'] = '125';"
-    code = code & "        fieldJson['value']['field_129'] = '126';"
-    code = code & "        fieldJson['value']['field_130'] = '127';"
-    code = code & "        fieldJson['value']['field_131'] = '128';"
-    code = code & "        fieldJson['value']['field_132'] = '129';"
-    code = code & "        fieldJson['value']['field_133'] = '130';"
-    code = code & "        fieldJson['value']['field_134'] = '131';"
-    code = code & "        fieldJson['value']['field_135'] = '132';"
-    code = code & "        fieldJson['value']['field_136'] = '133';"
-    code = code & "        fieldJson['value']['field_137'] = '133.5';"
-    code = code & "        fieldJson['value']['field_138'] = '134';"
-    code = code & "        fieldJson['value']['field_139'] = '135';"
-    code = code & "        fieldJson['value']['field_140'] = '136';"
-    code = code & "        fieldJson['value']['field_141'] = '137';"
-    code = code & "        fieldJson['value']['field_142'] = '138';"
-    code = code & "        fieldJson['value']['field_143'] = '139';"
-    code = code & "        fieldJson['value']['field_144'] = '140';"
-    code = code & "        fieldJson['value']['field_145'] = '141';"
-    code = code & "        fieldJson['value']['field_146'] = '142';"
-    code = code & "        fieldJson['value']['field_147'] = '143';"
-    code = code & "        fieldJson['value']['field_148'] = '144';"
+    code = code & "        fieldJson['value']['month_report'] = '" & values.Cells(1, 1).value & "';"
+    code = code & "        fieldJson['value']['hh_dup'] ='" & values.Cells(1, 2).value & "';"
+    code = code & "        fieldJson['value']['hh_undup'] ='" & values.Cells(1, 3).value & "';"
+    code = code & "        fieldJson['value']['individual_dup'] ='" & values.Cells(1, 4).value & "';"
+    code = code & "        fieldJson['value']['individual_undup'] ='" & values.Cells(1, 5).value & "';"
+    code = code & "        fieldJson['value']['children_ages_0_18'] ='" & values.Cells(1, 6).value & "';"
+    code = code & "        fieldJson['value']['adults_ages_18'] ='" & values.Cells(1, 7).value & "';"
+    code = code & "        fieldJson['value']['fa_pre_pack_boxbags'] ='" & values.Cells(1, 8).value & "';"
+    code = code & "        fieldJson['value']['field_7'] ='" & values.Cells(1, 9).value & "';"
+    code = code & "        fieldJson['value']['field_8'] ='" & values.Cells(1, 10).value & "';"
+    code = code & "        fieldJson['value']['field_9'] ='" & values.Cells(1, 11).value & "';"
+    code = code & "        fieldJson['value']['field_14'] ='" & values.Cells(1, 12).value & "';"
+    code = code & "        fieldJson['value']['field_11'] ='" & values.Cells(1, 13).value & "';"
+    code = code & "        fieldJson['value']['field_15'] ='" & values.Cells(1, 14).value & "';"
+    code = code & "        fieldJson['value']['field_16'] ='" & values.Cells(1, 15).value & "';"
+    code = code & "        fieldJson['value']['field_17'] ='" & values.Cells(1, 16).value & "';"
+    code = code & "        fieldJson['value']['field_18'] ='" & values.Cells(1, 17).value & "';"
+    code = code & "        fieldJson['value']['field_19'] ='" & values.Cells(1, 18).value & "';"
+    code = code & "        fieldJson['value']['field_20'] ='" & values.Cells(1, 19).value & "';"
+    code = code & "        fieldJson['value']['field_21'] ='" & values.Cells(1, 20).value & "';"
+    code = code & "        fieldJson['value']['field_22'] ='" & values.Cells(1, 21).value & "';"
+    code = code & "        fieldJson['value']['field_106'] ='" & values.Cells(1, 22).value & "';"
+    code = code & "        fieldJson['value']['field_23'] ='" & values.Cells(1, 23).value & "';"
+    code = code & "        fieldJson['value']['field_24'] ='" & values.Cells(1, 24).value & "';"
+    code = code & "        fieldJson['value']['field_25'] ='" & values.Cells(1, 25).value & "';"
+    code = code & "        fieldJson['value']['field_26'] ='" & values.Cells(1, 26).value & "';"
+    code = code & "        fieldJson['value']['field_27'] ='" & values.Cells(1, 27).value & "';"
+    code = code & "        fieldJson['value']['field_28'] ='" & values.Cells(1, 28).value & "';"
+    code = code & "        fieldJson['value']['field_29'] ='" & values.Cells(1, 29).value & "';"
+    code = code & "        fieldJson['value']['field_30'] ='" & values.Cells(1, 30).value & "';"
+    code = code & "        fieldJson['value']['field_31'] ='" & values.Cells(1, 31).value & "';"
+    code = code & "        fieldJson['value']['field_32'] ='" & values.Cells(1, 32).value & "';"
+    code = code & "        fieldJson['value']['field_37'] ='" & values.Cells(1, 33).value & "';"
+    code = code & "        fieldJson['value']['field_35'] ='" & values.Cells(1, 34).value & "';"
+    code = code & "        fieldJson['value']['field_36'] ='" & values.Cells(1, 35).value & "';"
+    code = code & "        fieldJson['value']['field_34'] ='" & values.Cells(1, 36).value & "';"
+    code = code & "        fieldJson['value']['field_38'] ='" & values.Cells(1, 37).value & "';"
+    code = code & "        fieldJson['value']['field_39'] ='" & values.Cells(1, 38).value & "';"
+    code = code & "        fieldJson['value']['field_40'] ='" & values.Cells(1, 39).value & "';"
+    code = code & "        fieldJson['value']['field_41'] ='" & values.Cells(1, 40).value & "';"
+    code = code & "        fieldJson['value']['field_42'] ='" & values.Cells(1, 41).value & "';"
+    code = code & "        fieldJson['value']['field_43'] ='" & values.Cells(1, 42).value & "';"
+    code = code & "        fieldJson['value']['field_44'] ='" & values.Cells(1, 43).value & "';"
+    code = code & "        fieldJson['value']['field_45'] ='" & values.Cells(1, 44).value & "';"
+    code = code & "        fieldJson['value']['field_46'] ='" & values.Cells(1, 45).value & "';"
+    code = code & "        fieldJson['value']['field_47'] ='" & values.Cells(1, 46).value & "';"
+    code = code & "        fieldJson['value']['field_48'] ='" & values.Cells(1, 47).value & "';"
+    code = code & "        fieldJson['value']['field_49'] ='" & values.Cells(1, 48).value & "';"
+    code = code & "        fieldJson['value']['field_50'] ='" & values.Cells(1, 49).value & "';"
+    code = code & "        fieldJson['value']['field_51'] ='" & values.Cells(1, 50).value & "';"
+    code = code & "        fieldJson['value']['field_52'] ='" & values.Cells(1, 51).value & "';"
+    code = code & "        fieldJson['value']['field_53'] ='" & values.Cells(1, 52).value & "';"
+    code = code & "        fieldJson['value']['field_54'] ='" & values.Cells(1, 53).value & "';"
+    code = code & "        fieldJson['value']['field_55'] ='" & values.Cells(1, 54).value & "';"
+    code = code & "        fieldJson['value']['field_56'] ='" & values.Cells(1, 55).value & "';"
+    code = code & "        fieldJson['value']['field_107'] ='" & values.Cells(1, 56).value & "';"
+    code = code & "        fieldJson['value']['field_108'] ='" & values.Cells(1, 57).value & "';"
+    code = code & "        fieldJson['value']['field_109'] ='" & values.Cells(1, 58).value & "';"
+    code = code & "        fieldJson['value']['field_110'] ='" & values.Cells(1, 59).value & "';"
+    code = code & "        fieldJson['value']['field_111'] ='" & values.Cells(1, 60).value & "';"
+    code = code & "        fieldJson['value']['field_112'] ='" & values.Cells(1, 61).value & "';"
+    code = code & "        fieldJson['value']['field_113'] ='" & values.Cells(1, 62).value & "';"
+    code = code & "        fieldJson['value']['field_114'] ='" & values.Cells(1, 63).value & "';"
+    code = code & "        fieldJson['value']['field_115'] ='" & values.Cells(1, 64).value & "';"
+    code = code & "        fieldJson['value']['field_116'] ='" & values.Cells(1, 65).value & "';"
+    code = code & "        fieldJson['value']['field_117'] ='" & values.Cells(1, 66).value & "';"
+    code = code & "        fieldJson['value']['field_118'] ='" & values.Cells(1, 67).value & "';"
+    code = code & "        fieldJson['value']['field_119'] ='" & values.Cells(1, 68).value & "';"
+    code = code & "        fieldJson['value']['field_120'] ='" & values.Cells(1, 69).value & "';"
+    code = code & "        fieldJson['value']['field_121'] ='" & values.Cells(1, 70).value & "';"
+    code = code & "        fieldJson['value']['field_122'] ='" & values.Cells(1, 71).value & "';"
+    code = code & "        fieldJson['value']['field_123'] ='" & values.Cells(1, 72).value & "';"
+    code = code & "        fieldJson['value']['field_124'] ='" & values.Cells(1, 73).value & "';"
+    code = code & "        fieldJson['value']['field_125'] ='" & values.Cells(1, 74).value & "';"
+    code = code & "        fieldJson['value']['field_126'] ='" & values.Cells(1, 75).value & "';"
+    code = code & "        fieldJson['value']['field_127'] ='" & values.Cells(1, 76).value & "';"
+    code = code & "        fieldJson['value']['field_128'] ='" & values.Cells(1, 77).value & "';"
+    code = code & "        fieldJson['value']['field_129'] ='" & values.Cells(1, 78).value & "';"
+    code = code & "        fieldJson['value']['field_130'] ='" & values.Cells(1, 79).value & "';"
+    code = code & "        fieldJson['value']['field_131'] ='" & values.Cells(1, 80).value & "';"
+    code = code & "        fieldJson['value']['field_132'] ='" & values.Cells(1, 81).value & "';"
+    code = code & "        fieldJson['value']['field_133'] ='" & values.Cells(1, 82).value & "';"
+    code = code & "        fieldJson['value']['field_134'] ='" & values.Cells(1, 83).value & "';"
+    code = code & "        fieldJson['value']['field_135'] ='" & values.Cells(1, 84).value & "';"
+    code = code & "        fieldJson['value']['field_136'] ='" & values.Cells(1, 85).value & "';"
+    code = code & "        fieldJson['value']['field_137'] ='" & values.Cells(1, 86).value & "';"
+    code = code & "        fieldJson['value']['field_138'] ='" & values.Cells(1, 87).value & "';"
+    code = code & "        fieldJson['value']['field_139'] ='" & values.Cells(1, 88).value & "';"
+    code = code & "        fieldJson['value']['field_140'] ='" & values.Cells(1, 89).value & "';"
+    code = code & "        fieldJson['value']['field_141'] ='" & values.Cells(1, 90).value & "';"
+    code = code & "        fieldJson['value']['field_142'] ='" & values.Cells(1, 91).value & "';"
+    code = code & "        fieldJson['value']['field_143'] ='" & values.Cells(1, 92).value & "';"
+    code = code & "        fieldJson['value']['field_144'] ='" & values.Cells(1, 93).value & "';"
+    code = code & "        fieldJson['value']['field_145'] ='" & values.Cells(1, 94).value & "';"
+    code = code & "        fieldJson['value']['field_146'] ='" & values.Cells(1, 95).value & "';"
+    code = code & "        fieldJson['value']['field_147'] ='" & values.Cells(1, 96).value & "';"
+    code = code & "        fieldJson['value']['field_148'] ='" & values.Cells(1, 97).value & "';"
     code = code & "        request = cursor.update(fieldJson);"
     code = code & "        request.onsuccess = () => {"
     code = code & "            location.reload();"
