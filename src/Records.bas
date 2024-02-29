@@ -422,7 +422,6 @@ End Sub
 
 Public Sub computeTotals()
     SheetUtilities.getTotalsRng.Clear
-    SheetUtilities.getCountyRng.Clear
     
     Dim addresses As Scripting.Dictionary
     Set addresses = Records.loadAddresses("Addresses")

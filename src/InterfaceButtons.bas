@@ -489,31 +489,31 @@ End Sub
 
 '@EntryPoint
 Public Sub ImportRecords()
-    Dim wb As Workbook
-    Set wb = FileUtilities.getWorkbook()
+    Dim wbook As Workbook
+    Set wbook = FileUtilities.getWorkbook()
     
-    If wb Is Nothing Then
+    If wbook Is Nothing Then
         Exit Sub
     End If
     
     SheetUtilities.ClearAll
     
-    wb.Worksheets.[_Default]("Interface").UsedRange.Copy
+    wbook.Worksheets.[_Default]("Interface").UsedRange.Copy
     InterfaceSheet.Range("A1").PasteSpecial xlPasteValues
     
-    wb.Worksheets.[_Default]("Final Report").UsedRange.Copy
+    wbook.Worksheets.[_Default]("Final Report").UsedRange.Copy
     FinalReportSheet.Range("A1").PasteSpecial xlPasteValues
     
-    wb.Worksheets.[_Default]("Addresses").UsedRange.Copy
+    wbook.Worksheets.[_Default]("Addresses").UsedRange.Copy
     AddressesSheet.Range("A1").PasteSpecial xlPasteValues
     
-    wb.Worksheets.[_Default]("Needs Autocorrect").UsedRange.Copy
+    wbook.Worksheets.[_Default]("Needs Autocorrect").UsedRange.Copy
     AutocorrectAddressesSheet.Range("A1").PasteSpecial xlPasteValues
     
-    wb.Worksheets.[_Default]("Discards").UsedRange.Copy
+    wbook.Worksheets.[_Default]("Discards").UsedRange.Copy
     DiscardsSheet.Range("A1").PasteSpecial xlPasteValues
     
-    wb.Worksheets.[_Default]("Autocorrected").UsedRange.Copy
+    wbook.Worksheets.[_Default]("Autocorrected").UsedRange.Copy
     AutocorrectedAddressesSheet.Range("A1").PasteSpecial xlPasteValues
     
     With CreateObject("htmlfile")
@@ -524,7 +524,7 @@ Public Sub ImportRecords()
     
     InterfaceSheet.Range("A1").value = "version 3"
     
-    wb.Close
+    wbook.Close
 End Sub
 
 ' This macro subroutine may be used to double-check
