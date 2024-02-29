@@ -535,7 +535,7 @@ Public Sub addRecords()
     i = getPastedRecordsRng.row
     Do While i < getBlankRow("Interface").row
         Dim recordToAdd As RecordTuple
-        Set recordToAdd = loadRecordFromRaw(ThisWorkbook.Sheets.[_Default]("Interface").Range("A" & i))
+        Set recordToAdd = loadRecordFromRaw(InterfaceSheet.Range("A" & i))
         
         Dim existingRecord As RecordTuple
         

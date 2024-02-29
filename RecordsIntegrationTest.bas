@@ -36,7 +36,7 @@ Private Sub TestCleanup()
 End Sub
 
 Private Sub PasteTestRecords(ByRef addressArr() As String)
-    ThisWorkbook.Worksheets.[_Default]("Interface").Select
+    InterfaceSheet.Select
     getPastedRecordsRng.Cells.Item(1, 1).Select
     
     Dim i As Long
@@ -118,43 +118,43 @@ Public Sub TestAllAddresses()
 
     InterfaceButtons.confirmDiscardAll
 
-    ThisWorkbook.Worksheets.[_Default]("Discards").Select
-    Union(ThisWorkbook.Worksheets.[_Default]("Discards").Range("A3:A7"), _
-          ThisWorkbook.Worksheets.[_Default]("Discards").Range("A10:A11"), _
-          ThisWorkbook.Worksheets.[_Default]("Discards").Range("A13:A14")).Select
+    DiscardsSheet.Select
+    Union(DiscardsSheet.Range("A3:A7"), _
+          DiscardsSheet.Range("A10:A11"), _
+          DiscardsSheet.Range("A13:A14")).Select
     InterfaceButtons.confirmRestoreSelectedDiscard
 
-    ThisWorkbook.Worksheets.[_Default]("Needs Autocorrect").Select
-    Union(ThisWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("A6"), _
-          ThisWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("A8")).Select
+    AutocorrectAddressesSheet.Select
+    Union(AutocorrectAddressesSheet.Range("A6"), _
+          AutocorrectAddressesSheet.Range("A8")).Select
     InterfaceButtons.confirmDiscardSelected
 
-    ThisWorkbook.Worksheets.[_Default]("Addresses").Select
-    Union(ThisWorkbook.Worksheets.[_Default]("Addresses").Range("A3"), _
-          ThisWorkbook.Worksheets.[_Default]("Addresses").Range("A8"), _
-          ThisWorkbook.Worksheets.[_Default]("Addresses").Range("A12")).Select
+    AddressesSheet.Select
+    Union(AddressesSheet.Range("A3"), _
+          AddressesSheet.Range("A8"), _
+          AddressesSheet.Range("A12")).Select
     InterfaceButtons.confirmMoveAutocorrect
 
-    ThisWorkbook.Worksheets.[_Default]("Needs Autocorrect").Select
+    AutocorrectAddressesSheet.Select
 
-    ThisWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("C2").value = "13-15 E Deer Park Dr"
-    ThisWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("D2").value = "Ste 102"
-    ThisWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("C3").value = "13-15 E Deer Park Dr"
-    ThisWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("D3").value = "Ste 202"
-    ThisWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("D4").value = "Unit 102"
-    ThisWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("D5").value = "Unit 102"
-    ThisWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("B6").value = True
-    ThisWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("D9").value = "Apt 103"
-    ThisWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("D10").value = "Ste 100"
-    ThisWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("D11").value = "Apt 1"
+    AutocorrectAddressesSheet.Range("C2").value = "13-15 E Deer Park Dr"
+    AutocorrectAddressesSheet.Range("D2").value = "Ste 102"
+    AutocorrectAddressesSheet.Range("C3").value = "13-15 E Deer Park Dr"
+    AutocorrectAddressesSheet.Range("D3").value = "Ste 202"
+    AutocorrectAddressesSheet.Range("D4").value = "Unit 102"
+    AutocorrectAddressesSheet.Range("D5").value = "Unit 102"
+    AutocorrectAddressesSheet.Range("B6").value = True
+    AutocorrectAddressesSheet.Range("D9").value = "Apt 103"
+    AutocorrectAddressesSheet.Range("D10").value = "Ste 100"
+    AutocorrectAddressesSheet.Range("D11").value = "Apt 1"
 
-    Union(ThisWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("A2:A5"), _
-          ThisWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("A8:A11")).Select
+    Union(AutocorrectAddressesSheet.Range("A2:A5"), _
+          AutocorrectAddressesSheet.Range("A8:A11")).Select
     InterfaceButtons.toggleUserVerified
     
-    ThisWorkbook.Worksheets.[_Default]("Discards").Select
-    Union(ThisWorkbook.Worksheets.[_Default]("Discards").Range("A2"), _
-          ThisWorkbook.Worksheets.[_Default]("Discards").Range("A4")).Select
+    DiscardsSheet.Select
+    Union(DiscardsSheet.Range("A2"), _
+          DiscardsSheet.Range("A4")).Select
     InterfaceButtons.toggleUserVerifiedAutocorrected
 
     CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\test5usereditsaddresses_addressesoutput.csv"
@@ -195,11 +195,11 @@ Public Sub TestToggleUserVerifiedAutocorrect()
     addRecords
     attemptValidation
     
-    ThisWorkbook.Worksheets.[_Default]("Autocorrected").Select
-    ThisWorkbook.Worksheets.[_Default]("Autocorrected").Range("A2:A3").Select
+    AutocorrectedAddressesSheet.Select
+    AutocorrectedAddressesSheet.Range("A2:A3").Select
     InterfaceButtons.toggleUserVerifiedAutocorrected
     
-    ThisWorkbook.Worksheets.[_Default]("Autocorrected").Range("A2").Select
+    AutocorrectedAddressesSheet.Range("A2").Select
     InterfaceButtons.toggleUserVerifiedAutocorrected
     
     CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\testtoggleuserverified_addressesoutput.csv"

@@ -176,11 +176,11 @@ Public Function getPastedRecordsRng() As Range
 End Function
 
 Public Function getTotalsRng() As Range
-    Set getTotalsRng = ThisWorkbook.Worksheets.[_Default]("Interface").Range("N2:Q6")
+    Set getTotalsRng = InterfaceSheet.Range("N2:Q6")
 End Function
 
 Public Function getCountyRng() As Range
-    Set getCountyRng = ThisWorkbook.Worksheets.[_Default]("Interface").Range("B9:CS20")
+    Set getCountyRng = InterfaceSheet.Range("B9:CS20")
 End Function
 
 Public Function getFinalReportRng() As Range
@@ -332,8 +332,8 @@ Public Sub SortSheet(ByVal sheetName As String)
     End Select
     
     If sheetName = "Final Report" Then
-        ThisWorkbook.Sheets.[_Default]("Final Report").Select
-        ThisWorkbook.Sheets.[_Default]("Final Report").Range("A2:O2").Select
+        FinalReportSheet.Select
+        FinalReportSheet.Range("A2:O2").Select
         ActiveSheet.Range(selection, selection.End(xlDown)).Select
         
         With ActiveSheet.Sort

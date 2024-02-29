@@ -50,7 +50,7 @@ Public Sub PasteRecords()
     SheetUtilities.DisableAllFilters
     
     
-    ThisWorkbook.Worksheets.[_Default]("Interface").Activate
+    InterfaceSheet.Activate
     Application.ScreenUpdating = False
     
     getBlankRow("Interface").Cells.Item(1, 1).Select
@@ -152,10 +152,10 @@ Public Sub confirmDeleteService()
     For Each column In columns
         If addressColsToDelete Is Nothing Then
             Set addressColsToDelete = _
-                ThisWorkbook.Worksheets.[_Default]("Addresses").columns(column)
+                AddressesSheet.columns.Item(column)
         Else
             Set addressColsToDelete = Union(addressColsToDelete, _
-                ThisWorkbook.Worksheets.[_Default]("Addresses").columns(column))
+                AddressesSheet.columns.Item(column))
         End If
         
         Dim service As String
@@ -167,12 +167,12 @@ Public Sub confirmDeleteService()
             If service = autocorrectedServices(i) Then
                 If autocorrectedColsToDelete Is Nothing Then
                     Set autocorrectedColsToDelete = _
-                        ThisWorkbook.Worksheets.[_Default]("Autocorrected") _
-                        .columns(i + SheetUtilities.firstServiceColumn)
+                        AutocorrectedAddressesSheet _
+                        .columns.Item(i + SheetUtilities.firstServiceColumn)
                 Else
                     Set autocorrectedColsToDelete = Union(autocorrectedColsToDelete, _
-                            ThisWorkbook.Worksheets.[_Default]("Autocorrected") _
-                            .columns(i + SheetUtilities.firstServiceColumn))
+                            AutocorrectedAddressesSheet _
+                            .columns.Item(i + SheetUtilities.firstServiceColumn))
                 End If
                 Exit Do
             End If
@@ -304,8 +304,8 @@ Public Sub toggleUserVerified()
     
     Dim row As Variant
     For Each row In rows
-        ThisWorkbook.Worksheets.[_Default]("Needs Autocorrect").Cells(row, 2).value = _
-            Not ThisWorkbook.Worksheets.[_Default]("Needs Autocorrect").Cells(row, 2).value
+        AutocorrectAddressesSheet.Cells.Item(row, 2).value = _
+            Not AutocorrectAddressesSheet.Cells.Item(row, 2).value
     Next row
 End Sub
 
@@ -331,7 +331,7 @@ Public Sub toggleUserVerifiedAutocorrected()
     Dim row As Variant
     For Each row In rows
         Dim currentRowRng As Range
-        Set currentRowRng = ThisWorkbook.Worksheets.[_Default]("Autocorrected").Range("A" & row)
+        Set currentRowRng = AutocorrectedAddressesSheet.Range("A" & row)
         Dim record As RecordTuple
         Set record = Records.loadRecordFromSheet(currentRowRng)
         
