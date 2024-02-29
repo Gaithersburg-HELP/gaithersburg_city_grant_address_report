@@ -45,7 +45,7 @@ Private Sub PasteTestRecords(ByRef addressArr() As String)
         If addressArr(i) <> vbNullString Then
             fileArrLine = Split(addressArr(i), ",")
             Dim j As Long
-            For j = 0 To 15 ' TODO when adding adult/child. Not UBound because of test notes
+            For j = 0 To 14 ' TODO when adding adult/child. Not UBound because of test notes
                 ActiveCell.value = fileArrLine(j)
                 ActiveCell.offset(0, 1).Select
             Next j
