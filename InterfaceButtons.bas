@@ -50,7 +50,7 @@ Public Sub PasteRecords()
     SheetUtilities.DisableAllFilters
     
     
-    ActiveWorkbook.Worksheets.[_Default]("Interface").Activate
+    ThisWorkbook.Worksheets.[_Default]("Interface").Activate
     Application.ScreenUpdating = False
     
     getBlankRow("Interface").Cells.Item(1, 1).Select
@@ -152,10 +152,10 @@ Public Sub confirmDeleteService()
     For Each column In columns
         If addressColsToDelete Is Nothing Then
             Set addressColsToDelete = _
-                ActiveWorkbook.Worksheets.[_Default]("Addresses").columns(column)
+                ThisWorkbook.Worksheets.[_Default]("Addresses").columns(column)
         Else
             Set addressColsToDelete = Union(addressColsToDelete, _
-                ActiveWorkbook.Worksheets.[_Default]("Addresses").columns(column))
+                ThisWorkbook.Worksheets.[_Default]("Addresses").columns(column))
         End If
         
         Dim service As String
@@ -167,11 +167,11 @@ Public Sub confirmDeleteService()
             If service = autocorrectedServices(i) Then
                 If autocorrectedColsToDelete Is Nothing Then
                     Set autocorrectedColsToDelete = _
-                        ActiveWorkbook.Worksheets.[_Default]("Autocorrected") _
+                        ThisWorkbook.Worksheets.[_Default]("Autocorrected") _
                         .columns(i + SheetUtilities.firstServiceColumn)
                 Else
                     Set autocorrectedColsToDelete = Union(autocorrectedColsToDelete, _
-                            ActiveWorkbook.Worksheets.[_Default]("Autocorrected") _
+                            ThisWorkbook.Worksheets.[_Default]("Autocorrected") _
                             .columns(i + SheetUtilities.firstServiceColumn))
                 End If
                 Exit Do
@@ -239,7 +239,7 @@ Private Sub moveSelectedRows(ByVal sourceSheet As String, ByVal destSheet As Str
     Dim row As Variant
     For Each row In rows
         Dim currentRowRng As Range
-        Set currentRowRng = ActiveWorkbook.Worksheets.[_Default](sourceSheet).Range("A" & row)
+        Set currentRowRng = ThisWorkbook.Worksheets.[_Default](sourceSheet).Range("A" & row)
         Dim record As RecordTuple
         Set record = Records.loadRecordFromSheet(currentRowRng)
         
@@ -304,8 +304,8 @@ Public Sub toggleUserVerified()
     
     Dim row As Variant
     For Each row In rows
-        ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Cells(row, 2).value = _
-            Not ActiveWorkbook.Worksheets.[_Default]("Needs Autocorrect").Cells(row, 2).value
+        ThisWorkbook.Worksheets.[_Default]("Needs Autocorrect").Cells(row, 2).value = _
+            Not ThisWorkbook.Worksheets.[_Default]("Needs Autocorrect").Cells(row, 2).value
     Next row
 End Sub
 
@@ -435,7 +435,7 @@ Public Sub CopyAndOpenCountyTotalsSite()
             .setData "text", code
         End With
     End With
-    ActiveWorkbook.FollowHyperlink address:="https://survey123.arcgis.com/share/43a57395fe8c4ae5ade7b3bf1e2b8313"
+    ThisWorkbook.FollowHyperlink address:="https://survey123.arcgis.com/share/43a57395fe8c4ae5ade7b3bf1e2b8313"
 End Sub
 
 ' This macro subroutine may be used to double-check
@@ -445,7 +445,7 @@ End Sub
 Public Sub LookupInCity()
 Attribute LookupInCity.VB_ProcData.VB_Invoke_Func = "L\n14"
     Dim currentRowFirstCell As Range
-    Set currentRowFirstCell = ActiveWorkbook.ActiveSheet.Cells.Item(ActiveCell.row, 1)
+    Set currentRowFirstCell = ThisWorkbook.ActiveSheet.Cells.Item(ActiveCell.row, 1)
     
     Dim record As RecordTuple
     Set record = Records.loadRecordFromSheet(currentRowFirstCell)
@@ -455,20 +455,20 @@ Attribute LookupInCity.VB_ProcData.VB_Invoke_Func = "L\n14"
     AddrLookupURL = AddrLookupURL & record.GburgFormatRawAddress.Item(addressKey.streetAddress)
     AddrLookupURL = Replace(AddrLookupURL, " ", "+")
     
-    ActiveWorkbook.FollowHyperlink address:=AddrLookupURL
+    ThisWorkbook.FollowHyperlink address:=AddrLookupURL
 End Sub
 
 '@EntryPoint
 Public Sub OpenAddressValidationWebsite()
-    ActiveWorkbook.FollowHyperlink address:="https://developers.google.com/maps/documentation/address-validation/demo"
+    ThisWorkbook.FollowHyperlink address:="https://developers.google.com/maps/documentation/address-validation/demo"
 End Sub
 
 '@EntryPoint
 Public Sub OpenUSPSZipcodeWebsite()
-    ActiveWorkbook.FollowHyperlink address:="https://tools.usps.com/zip-code-lookup.htm?byaddress"
+    ThisWorkbook.FollowHyperlink address:="https://tools.usps.com/zip-code-lookup.htm?byaddress"
 End Sub
 
 '@EntryPoint
 Public Sub OpenGoogleMapsWebsite()
-    ActiveWorkbook.FollowHyperlink address:="https://www.google.com/maps"
+    ThisWorkbook.FollowHyperlink address:="https://www.google.com/maps"
 End Sub

@@ -86,7 +86,7 @@ Public Function loadAddresses(ByVal sheetName As String) As Scripting.Dictionary
     Set addresses = New Scripting.Dictionary
     
     Dim sheet As Worksheet
-    Set sheet = ActiveWorkbook.Worksheets.[_Default](sheetName)
+    Set sheet = ThisWorkbook.Worksheets.[_Default](sheetName)
        
     If sheet.Range("A2").value = vbNullString Then
         Set loadAddresses = addresses
@@ -111,7 +111,7 @@ End Function
 
 Public Sub writeAddress(ByVal sheetName As String, ByVal record As RecordTuple)
     Dim sheet As Worksheet
-    Set sheet = ActiveWorkbook.Worksheets.[_Default](sheetName)
+    Set sheet = ThisWorkbook.Worksheets.[_Default](sheetName)
     
     ' Saves column numbers per existing service
     Dim serviceCols As Scripting.Dictionary
@@ -158,7 +158,7 @@ Public Sub writeAddress(ByVal sheetName As String, ByVal record As RecordTuple)
             Dim newServiceCol As Long
             newServiceCol = 15 + 1 + UBound(serviceCols.Keys) + 1
             serviceCols.Add serviceToAdd, newServiceCol
-            ActiveWorkbook.Worksheets.[_Default](sheetName).Cells(1, newServiceCol).value = serviceToAdd
+            ThisWorkbook.Worksheets.[_Default](sheetName).Cells(1, newServiceCol).value = serviceToAdd
         End If
         
         recordRow.Cells.Item(1, serviceCols.Item(serviceToAdd)).value = visitDataToAdd
@@ -515,7 +515,7 @@ Public Sub addRecords()
     i = getPastedRecordsRng.row
     Do While i < getBlankRow("Interface").row
         Dim recordToAdd As RecordTuple
-        Set recordToAdd = loadRecordFromRaw(ActiveWorkbook.Sheets.[_Default]("Interface").Range("A" & i))
+        Set recordToAdd = loadRecordFromRaw(ThisWorkbook.Sheets.[_Default]("Interface").Range("A" & i))
         
         Dim existingRecord As RecordTuple
         

@@ -6,7 +6,7 @@ Public Const requestLimit As Long = 8000
 
 Public Function getRemainingRequests() As Long
     Dim text As String
-    text = ActiveWorkbook.Sheets.[_Default]("Needs Autocorrect").Shapes("API Limit").TextFrame.Characters.text
+    text = ThisWorkbook.Sheets.[_Default]("Needs Autocorrect").Shapes("API Limit").TextFrame.Characters.text
     Dim refreshMonth As String
     refreshMonth = Lookup.RWordTrim(text)(1)
     If month(DateValue(refreshMonth & " 1 2024")) = month(Date) Then
@@ -19,7 +19,7 @@ Public Function getRemainingRequests() As Long
 End Function
 
 Public Sub printRemainingRequests(ByVal num As Long)
-    ActiveWorkbook.Sheets.[_Default]("Needs Autocorrect").Shapes("API Limit").TextFrame.Characters.text = _
+    ThisWorkbook.Sheets.[_Default]("Needs Autocorrect").Shapes("API Limit").TextFrame.Characters.text = _
         num & " / " & requestLimit & " left until " & MonthName(month(Date) + 1)
 End Sub
 

@@ -143,7 +143,7 @@ End Function
 ' Returns blank row after all data, assuming Column A is filled in last row
 Public Function getBlankRow(ByVal sheetName As String) As Range
     Dim sheet As Worksheet
-    Set sheet = ActiveWorkbook.Worksheets.[_Default](sheetName)
+    Set sheet = ThisWorkbook.Worksheets.[_Default](sheetName)
     
     Set getBlankRow = sheet.rows.Item(sheet.rows.Item(sheet.rows.Count).End(xlUp).row + 1)
 End Function
@@ -151,7 +151,7 @@ End Function
 ' Returns all data below (all cells between firstCell and lastCol) including blanks and firstCell
 Public Function getRng(ByVal sheetName As String, ByVal firstCell As String, ByVal lastCol As String) As Range
     Dim sheet As Worksheet
-    Set sheet = ActiveWorkbook.Worksheets.[_Default](sheetName)
+    Set sheet = ThisWorkbook.Worksheets.[_Default](sheetName)
         
     Dim lastColNum As Long
     lastColNum = sheet.Range(lastCol).column
@@ -176,11 +176,11 @@ Public Function getPastedRecordsRng() As Range
 End Function
 
 Public Function getTotalsRng() As Range
-    Set getTotalsRng = ActiveWorkbook.Worksheets.[_Default]("Interface").Range("N2:Q6")
+    Set getTotalsRng = ThisWorkbook.Worksheets.[_Default]("Interface").Range("N2:Q6")
 End Function
 
 Public Function getCountyRng() As Range
-    Set getCountyRng = ActiveWorkbook.Worksheets.[_Default]("Interface").Range("B9:CS20")
+    Set getCountyRng = ThisWorkbook.Worksheets.[_Default]("Interface").Range("B9:CS20")
 End Function
 
 Public Function getFinalReportRng() As Range
@@ -188,13 +188,13 @@ Public Function getFinalReportRng() As Range
 End Function
 
 Private Function getServiceHeaderLastCell(ByVal sheetName As String) As String
-    getServiceHeaderLastCell = ActiveWorkbook.Worksheets.[_Default](sheetName) _
+    getServiceHeaderLastCell = ThisWorkbook.Worksheets.[_Default](sheetName) _
                                       .Range("A1").offset(0, firstServiceColumn - 2) _
                                       .End(xlToRight).address
 End Function
 
 Public Function getServiceHeaderRng(ByVal sheetName As String) As Range
-    Set getServiceHeaderRng = ActiveWorkbook.Worksheets.[_Default](sheetName) _
+    Set getServiceHeaderRng = ThisWorkbook.Worksheets.[_Default](sheetName) _
                                     .Range(serviceFirstCell, getServiceHeaderLastCell(sheetName))
 End Function
 
@@ -227,10 +227,10 @@ Public Function sheetToCSVArray(ByVal sheetName As String, Optional ByVal rng As
     ' From https://stackoverflow.com/a/37038840/13342792
     Dim CurrentWB As Workbook
      
-    Set CurrentWB = ActiveWorkbook
+    Set CurrentWB = ThisWorkbook
     
     If rng Is Nothing Then
-        ActiveWorkbook.Worksheets.[_Default](sheetName).UsedRange.Copy
+        ThisWorkbook.Worksheets.[_Default](sheetName).UsedRange.Copy
     Else
         rng.Copy
     End If
@@ -274,7 +274,7 @@ Public Sub ClearEmptyServices(ByVal sheetName As String)
     Set servicesRng = getServiceHeaderRng(sheetName)
     
     Dim max As Long
-    max = ActiveWorkbook.Worksheets.[_Default](sheetName).rows.Count
+    max = ThisWorkbook.Worksheets.[_Default](sheetName).rows.Count
     
     Dim columnsToDelete As Range
     
@@ -283,7 +283,7 @@ Public Sub ClearEmptyServices(ByVal sheetName As String)
     Do While i <= servicesRng.Count
         If servicesRng.Cells.Item(max, i).End(xlUp).row = 1 Then
             Dim column As Range
-            Set column = ActiveWorkbook.Worksheets.[_Default](sheetName).columns( _
+            Set column = ThisWorkbook.Worksheets.[_Default](sheetName).columns( _
                             i + SheetUtilities.firstServiceColumn - 1)
             If columnsToDelete Is Nothing Then
                 Set columnsToDelete = column
@@ -310,15 +310,15 @@ Public Sub ClearAll()
     getFinalReportRng.Clear
     
     Dim i As Long
-    For i = 3 To ActiveWorkbook.Sheets.Count
-        ClearSheet ActiveWorkbook.Sheets.[_Default](i).Name
+    For i = 3 To ThisWorkbook.Sheets.Count
+        ClearSheet ThisWorkbook.Sheets.[_Default](i).Name
     Next
 End Sub
 
 Public Sub DisableAllFilters()
     Dim i As Long
-    For i = 1 To ActiveWorkbook.Sheets.Count
-        ActiveWorkbook.Sheets.[_Default](i).AutoFilterMode = False
+    For i = 1 To ThisWorkbook.Sheets.Count
+        ThisWorkbook.Sheets.[_Default](i).AutoFilterMode = False
     Next
 End Sub
 
@@ -332,8 +332,8 @@ Public Sub SortSheet(ByVal sheetName As String)
     End Select
     
     If sheetName = "Final Report" Then
-        ActiveWorkbook.Sheets.[_Default]("Final Report").Select
-        ActiveWorkbook.Sheets.[_Default]("Final Report").Range("A2:O2").Select
+        ThisWorkbook.Sheets.[_Default]("Final Report").Select
+        ThisWorkbook.Sheets.[_Default]("Final Report").Range("A2:O2").Select
         ActiveSheet.Range(selection, selection.End(xlDown)).Select
         
         With ActiveSheet.Sort
@@ -348,8 +348,8 @@ Public Sub SortSheet(ByVal sheetName As String)
         End With
     Else
         getAddressRng(sheetName).Sort _
-        key1:=ActiveWorkbook.Sheets.[_Default](sheetName).Range("B2"), _
-        key2:=ActiveWorkbook.Sheets.[_Default](sheetName).Range(addressKey), _
+        key1:=ThisWorkbook.Sheets.[_Default](sheetName).Range("B2"), _
+        key2:=ThisWorkbook.Sheets.[_Default](sheetName).Range(addressKey), _
         Order1:=xlDescending, Order2:=xlAscending, Header:=xlNo
     End If
 End Sub
