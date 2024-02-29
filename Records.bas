@@ -31,9 +31,12 @@ Private Function loadRecordFromRaw(ByVal recordRowFirstCell As Range) As RecordT
     record.RawState = recordRowFirstCell.offset(0, 8).value
     record.RawZip = recordRowFirstCell.offset(0, 9).value
     record.householdTotal = recordRowFirstCell.offset(0, 10).value
+    record.zeroToOneTotal = recordRowFirstCell.offset(0, 11).value
+    record.twoToSeventeenTotal = recordRowFirstCell.offset(0, 12).value
+    record.eighteenPlusTotal = recordRowFirstCell.offset(0, 13).value
     
     Dim rx As Double
-    rx = recordRowFirstCell.offset(0, 11).value
+    rx = recordRowFirstCell.offset(0, 14).value
     If rx <> 0 Then record.addRx recordRowFirstCell.value, rx
     
     Set loadRecordFromRaw = record
@@ -60,7 +63,12 @@ Public Function loadRecordFromSheet(ByVal recordRowFirstCell As Range) As Record
     record.FirstName = recordRowFirstCell.offset(0, 11).value
     record.LastName = recordRowFirstCell.offset(0, 12).value
     record.householdTotal = recordRowFirstCell.offset(0, 13).value
-    Set record.rxTotal = JsonConverter.ParseJson(recordRowFirstCell.offset(0, 14).value)
+    record.zeroToOneTotal = recordRowFirstCell.offset(0, 14).value
+    record.twoToSeventeenTotal = recordRowFirstCell.offset(0, 15).value
+    record.eighteenPlusTotal = recordRowFirstCell.offset(0, 16).value
+    
+    Set record.rxTotal = JsonConverter.ParseJson(recordRowFirstCell.offset(0, _
+                                                        SheetUtilities.firstServiceColumn - 2).value)
     
     Dim visitData As Scripting.Dictionary
     Set visitData = New Scripting.Dictionary
@@ -69,7 +77,7 @@ Public Function loadRecordFromSheet(ByVal recordRowFirstCell As Range) As Record
     j = 1
     Do While j <= UBound(services) + 1
         Dim visitJson As String
-        visitJson = recordRowFirstCell.offset(0, 14 + j).value
+        visitJson = recordRowFirstCell.offset(0, SheetUtilities.firstServiceColumn - 2 + j).value
         If visitJson <> vbNullString Then
             visitData.Add services(j - 1), JsonConverter.ParseJson(visitJson)
         End If
@@ -121,7 +129,7 @@ Public Sub writeAddress(ByVal sheetName As String, ByVal record As RecordTuple)
         Dim services() As String
         services = loadServiceNames(sheetName)
         Dim i As Long
-        i = 16
+        i = SheetUtilities.firstServiceColumn
         Dim service As Variant
         For Each service In services
             serviceCols.Add service, i
@@ -146,8 +154,12 @@ Public Sub writeAddress(ByVal sheetName As String, ByVal record As RecordTuple)
     recordRow.Cells.Item(1, 12).value = record.FirstName
     recordRow.Cells.Item(1, 13).value = record.LastName
     recordRow.Cells.Item(1, 14).value = record.householdTotal
+    recordRow.Cells.Item(1, 15).value = record.zeroToOneTotal
+    recordRow.Cells.Item(1, 16).value = record.twoToSeventeenTotal
+    recordRow.Cells.Item(1, 17).value = record.eighteenPlusTotal
     
-    recordRow.Cells.Item(1, 15).value = JsonConverter.ConvertToJson(record.rxTotal)
+    recordRow.Cells.Item(1, SheetUtilities.firstServiceColumn - 1).value = _
+                                                            JsonConverter.ConvertToJson(record.rxTotal)
     
     Dim serviceToAdd As Variant
     For Each serviceToAdd In record.visitData.Keys
@@ -156,7 +168,7 @@ Public Sub writeAddress(ByVal sheetName As String, ByVal record As RecordTuple)
         
         If Not serviceCols.Exists(serviceToAdd) Then
             Dim newServiceCol As Long
-            newServiceCol = 15 + 1 + UBound(serviceCols.Keys) + 1
+            newServiceCol = SheetUtilities.firstServiceColumn + UBound(serviceCols.Keys) + 1
             serviceCols.Add serviceToAdd, newServiceCol
             ThisWorkbook.Worksheets.[_Default](sheetName).Cells(1, newServiceCol).value = serviceToAdd
         End If
@@ -179,6 +191,8 @@ Private Sub incrementCountyTotal(ByVal record As RecordTuple)
     Dim uniqueGuestIDHouseholdTotal(1 To 12) As Long
     Dim guestIDTotal(1 To 12) As Long
     Dim householdTotal(1 To 12) As Long
+    Dim childrenTotal(1 To 12) As Long
+    Dim adultTotal(1 To 12) As Long
     
     Dim monthNum As Long
     
@@ -191,6 +205,9 @@ Private Sub incrementCountyTotal(ByVal record As RecordTuple)
                 monthNum = month(visit)
                 guestIDTotal(monthNum) = guestIDTotal(monthNum) + 1
                 householdTotal(monthNum) = householdTotal(monthNum) + record.householdTotal
+                childrenTotal(monthNum) = childrenTotal(monthNum) + record.zeroToOneTotal + _
+                                          record.twoToSeventeenTotal
+                adultTotal(monthNum) = adultTotal(monthNum) + record.eighteenPlusTotal
                 If Not monthVisited(monthNum) Then
                     uniqueGuestIDTotal(monthNum) = uniqueGuestIDTotal(monthNum) + 1
                     uniqueGuestIDHouseholdTotal(monthNum) = uniqueGuestIDHouseholdTotal(monthNum) + _
@@ -364,7 +381,10 @@ Private Sub incrementCountyTotal(ByVal record As RecordTuple)
             getCountyRng.Cells.Item(i, CountyTotalCols.individualDuplicate - 1) + householdTotal(i)
         getCountyRng.Cells.Item(i, CountyTotalCols.individualUnduplicate - 1) = _
             getCountyRng.Cells.Item(i, CountyTotalCols.individualUnduplicate - 1) + uniqueGuestIDHouseholdTotal(i)
-            
+        getCountyRng.Cells.Item(i, CountyTotalCols.childrenDuplicate - 1) = _
+            getCountyRng.Cells.Item(i, CountyTotalCols.childrenDuplicate - 1) + childrenTotal(i)
+        getCountyRng.Cells.Item(i, CountyTotalCols.adultDuplicate - 1) = _
+            getCountyRng.Cells.Item(i, CountyTotalCols.adultDuplicate - 1) + adultTotal(i)
         getCountyRng.Cells.Item(i, CountyTotalCols.poundsFood - 1) = _
             getCountyRng.Cells.Item(i, CountyTotalCols.poundsFood - 1) + (householdTotal(i) * 8)
         

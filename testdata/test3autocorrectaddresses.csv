@@ -1,14 +1,14 @@
-Visit on,Tracking Method,Guest ID,First Name,Last Name,Address,Apartment/Suite,City/Town,State/Province,Zip/Postal Code,Total Individuals,--- TOTAL Rx COSTS (number only 0.00),,,,,Test notes
-1/10/2023,Food,Bongcloud Regret,Bongcloud,Regret,18235 Lost Knife Cir,101,Gaithersburg,MD,20886,10,10,,,,,"falls just outside Gaithersburg, should be marked as valid not in city"
-3/11/2023,Food,1004,Uber,Victor,2 nina ave,,Gaitherburg,MD,20871,3,,,,,,"should autocorrect to 2 Nina Ct, Gaithersburg, 20877"
-5/28/2023,Food,1003,Bobby,Hill,150 Chevy Chase St,Unt 102,Gaithersburg,MD,20878,2,,,,,,"only unit types in gaithersburg are unit, fl, bldg, ste, apt. gaithersburg has this as unit, USPS as Apt, should be in Gaithersburg under NeedsAutocorrect (Google fails to autocorrect Unt to Apt)"
-4/14/2023,Food,Hannibal Cannibal,Hannibal,Cannibal,150 Chevy Chase St,102,Gaithersburg,MD,20878,3,,,,,,"should be in gaithersburg under NeedsAutocorrect, USPS validates as Apt, Gaithersburg as Unit"
-1/7/2023,Food,6012,Regret,Much,13-15 E Deer Park Dr,202,Gaithersburg,MD,20877,9,,,,,,"hyphens do exist in street number, should match suite 202 in Gaithersburg but USPS does not recognize so should be in gaithersburg under NeedsAutocorrect"
-2/4/2023,Food,GraphQL Oxidation,GraphQL,Oxidation,13 E Deer Pk Dr,102,Gaithersburg,MD,20877,4,,,,,,"should autocorrect to E Deer Park Dr Ste 102, USPS valid but does not exist in Gaithersburg database so should go to Needs Autocorrect"
-3/4/2023,Food,N Zombies Ghouls,Ghouls,N Zombies,600 Frederick Av,,Gaithersburg,MD,20877,4,,,,,,"falls in Gaithersburg but fails DPV validation due to no secondary number, should correct to 600 S Frederick Ave in Addresses, hasInferredComponents"
-8/15/2023,Food,Melon Pineapple,Melon,Pineapple,537 Odendhal Dr,,Gaithersburg,MD,20877,2,,,,,,should autocorrect to 537 Odend'hal Ave in Gaithersburg
-9/10/2023,Food,Grape Cheese,Grape,Cheese,775 Kimberly Ct,,Gaithersburg,MD,20878,3,,,,,,should autocorrect to 775 Kimberly Ct E in Gaithersburg
-5/10/2023,Food,Cherry Rose,Cherry,Rose,18235 Lost Knife,,Gaithersburg,MD,20886,4,,,,,,"falls outside Gaithersburg but not DPV deliverable, should correct Cir, should be discarded"
-11/5/2023,Food,Mango Dragonfruit,Mango,Dragonfruit,501 Fck Ave,,,,,4,,,,,,assume in Gaithersburg so should be in Needs Autocorrect
-10/4/2023,Food,Shrimp Lobster,Shrimp,Lobster,501 Fck Ave,,Hyattsville,MD,20877,4,,,,,,falls outside Gaithersburg and is invalid so should be discarded
-2/4/2023,Food,Dragonfruit Plum,Dragonfruit,Plum,501 N Frederick Ave,Ste 600,Gaithersburg,MD,20877,2,,,,,,"nonexistent apartment number, should go to Needs Autocorrect"
+Visit on,Tracking Method,Guest ID,First Name,Last Name,Address,Apartment/Suite,City/Town,State/Province,Zip/Postal Code,Total Individuals,0 to 1,2 to 17,18+,--- TOTAL Rx COSTS (number only 0.00),,Test notes
+1/10/2023,Food,Bongcloud Regret,Bongcloud,Regret,18235 Lost Knife Cir,101,Gaithersburg,MD,20886,10,0,0,10,10,,"falls just outside Gaithersburg, should be marked as valid not in city"
+3/11/2023,Food,1004,Uber,Victor,2 nina ave,,Gaitherburg,MD,20871,3,0,0,3,,,"should autocorrect to 2 Nina Ct, Gaithersburg, 20877"
+5/28/2023,Food,1003,Bobby,Hill,150 Chevy Chase St,Unt 102,Gaithersburg,MD,20878,2,0,0,2,,,"only unit types in gaithersburg are unit, fl, bldg, ste, apt. gaithersburg has this as unit, USPS as Apt, should be in Gaithersburg under NeedsAutocorrect (Google fails to autocorrect Unt to Apt)"
+4/14/2023,Food,Hannibal Cannibal,Hannibal,Cannibal,150 Chevy Chase St,102,Gaithersburg,MD,20878,3,0,0,3,,,"should be in gaithersburg under NeedsAutocorrect, USPS validates as Apt, Gaithersburg as Unit"
+1/7/2023,Food,6012,Regret,Much,13-15 E Deer Park Dr,202,Gaithersburg,MD,20877,9,0,0,9,,,"hyphens do exist in street number, should match suite 202 in Gaithersburg but USPS does not recognize so should be in gaithersburg under NeedsAutocorrect"
+2/4/2023,Food,GraphQL Oxidation,GraphQL,Oxidation,13 E Deer Pk Dr,102,Gaithersburg,MD,20877,4,0,0,4,,,"should autocorrect to E Deer Park Dr Ste 102, USPS valid but does not exist in Gaithersburg database so should go to Needs Autocorrect"
+3/4/2023,Food,N Zombies Ghouls,Ghouls,N Zombies,600 Frederick Av,,Gaithersburg,MD,20877,4,0,0,4,,,"falls in Gaithersburg but fails DPV validation due to no secondary number, should correct to 600 S Frederick Ave in Addresses, hasInferredComponents"
+8/15/2023,Food,Melon Pineapple,Melon,Pineapple,537 Odendhal Dr,,Gaithersburg,MD,20877,2,0,0,2,,,should autocorrect to 537 Odend'hal Ave in Gaithersburg
+9/10/2023,Food,Grape Cheese,Grape,Cheese,775 Kimberly Ct,,Gaithersburg,MD,20878,3,0,0,3,,,should autocorrect to 775 Kimberly Ct E in Gaithersburg
+5/10/2023,Food,Cherry Rose,Cherry,Rose,18235 Lost Knife,,Gaithersburg,MD,20886,4,0,0,4,,,"falls outside Gaithersburg but not DPV deliverable, should correct Cir, should be discarded"
+11/5/2023,Food,Mango Dragonfruit,Mango,Dragonfruit,501 Fck Ave,,,,,4,0,0,4,,,assume in Gaithersburg so should be in Needs Autocorrect
+10/4/2023,Food,Shrimp Lobster,Shrimp,Lobster,501 Fck Ave,,Hyattsville,MD,20877,4,0,0,4,,,falls outside Gaithersburg and is invalid so should be discarded
+2/4/2023,Food,Dragonfruit Plum,Dragonfruit,Plum,501 N Frederick Ave,Ste 600,Gaithersburg,MD,20877,2,0,0,2,,,"nonexistent apartment number, should go to Needs Autocorrect"

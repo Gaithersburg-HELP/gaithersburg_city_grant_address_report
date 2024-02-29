@@ -38,6 +38,9 @@ Private pLastName As String
 
 'BUG does not track household total by quarter
 Private pHouseholdTotal As Long
+Private pZeroToOneTotal As Long
+Private pTwoToSeventeenTotal As Long
+Private pEighteenPlusTotal As Long
 
 ' Quarter: Dictionary (VisitDate Date: RxTotal Double)
 Private pRxTotal As Scripting.Dictionary
@@ -222,6 +225,31 @@ End Property
 Public Property Let householdTotal(ByVal num As Long)
     pHouseholdTotal = num
 End Property
+
+Public Property Get zeroToOneTotal() As Long
+    zeroToOneTotal = pZeroToOneTotal
+End Property
+
+Public Property Let zeroToOneTotal(ByVal num As Long)
+    pZeroToOneTotal = num
+End Property
+
+Public Property Get twoToSeventeenTotal() As Long
+    twoToSeventeenTotal = pTwoToSeventeenTotal
+End Property
+
+Public Property Let twoToSeventeenTotal(ByVal num As Long)
+    pTwoToSeventeenTotal = num
+End Property
+
+Public Property Get eighteenPlusTotal() As Long
+    eighteenPlusTotal = pEighteenPlusTotal
+End Property
+
+Public Property Let eighteenPlusTotal(ByVal num As Long)
+    pEighteenPlusTotal = num
+End Property
+
 
 Public Property Get rxTotal() As Scripting.Dictionary
     If pRxTotal Is Nothing Then Set pRxTotal = New Scripting.Dictionary

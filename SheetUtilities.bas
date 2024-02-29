@@ -2,7 +2,7 @@ Attribute VB_Name = "SheetUtilities"
 '@Folder("City_Grant_Address_Report.src")
 Option Explicit
 
-Public Const firstServiceColumn As Long = 16
+Public Const firstServiceColumn As Long = 19
 
 Public Enum CountyTotalCols
     countymonth = 1
@@ -172,7 +172,7 @@ Public Function getRng(ByVal sheetName As String, ByVal firstCell As String, ByV
 End Function
 
 Public Function getPastedRecordsRng() As Range
-    Set getPastedRecordsRng = getRng("Interface", "A23", "L23")
+    Set getPastedRecordsRng = getRng("Interface", "A23", "O23")
 End Function
 
 Public Function getTotalsRng() As Range

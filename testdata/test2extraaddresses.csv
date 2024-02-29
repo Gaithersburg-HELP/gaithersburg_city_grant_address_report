@@ -1,8 +1,8 @@
-Visit on,Tracking Method,Guest ID,First Name,Last Name,Address,Apartment/Suite,City/Town,State/Province,Zip/Postal Code,Total Individuals,--- TOTAL Rx COSTS (number only 0.00),,,,,Test notes
-4/15/2023,Food,9999,Hats,Off,534 Odend'hal Dr,5,Gaithersburg,MD,20877,6,15,,,,,test tracking method & rx merge and totals
-6/15/2023,7,9999,Hats,Off,534 Odend'hal Dr,5,Gaithersburg,MD,20877,6,11,,,,,test additional tracking method
-3/10/2023,Food,9999,Hats,Off,534 Odend'hal Dr,5,Gaithersburg,MD,20877,6,8,,,,,test same quarter tracking method & rx merge
-2/28/2023,Doof,7728,Moxie Doxie,Manifold Populate,9 E Deer Park DR,305,Gaithersburg,MD,20877,3,,,,,,merge with address table repeated visit same date different service
-8/11/2023,Clothes,Panoply Toilet Seat,Toilet Seat,Panoply,13308,,Germantown,MD,20874,4,2,,,,,merge with number only discard address
-4/28/2023,Clothes,1111,Why,This,101 Odendhal AVE,1007,Gaitheburg,ME,20870,6,,,,,,merge with address tables
-4/1/2023,Clothes,9998,Nancy,Drew,501A S Frederick Ave,0,Gaithersburg,MD,20877,5,,,,,,merge with needs autocorrect
+Visit on,Tracking Method,Guest ID,First Name,Last Name,Address,Apartment/Suite,City/Town,State/Province,Zip/Postal Code,Total Individuals,0 to 1,2 to 17,18+,--- TOTAL Rx COSTS (number only 0.00),,Test notes
+4/15/2023,Food,9999,Hats,Off,534 Odend'hal Dr,5,Gaithersburg,MD,20877,6,0,0,6,15,,test tracking method & rx merge and totals
+6/15/2023,7,9999,Hats,Off,534 Odend'hal Dr,5,Gaithersburg,MD,20877,6,0,0,6,11,,test additional tracking method
+3/10/2023,Food,9999,Hats,Off,534 Odend'hal Dr,5,Gaithersburg,MD,20877,6,0,0,6,8,,test same quarter tracking method & rx merge
+2/28/2023,Doof,7728,Moxie Doxie,Manifold Populate,9 E Deer Park DR,305,Gaithersburg,MD,20877,3,0,1,2,,,merge with address table repeated visit same date different service
+8/11/2023,Clothes,Panoply Toilet Seat,Toilet Seat,Panoply,13308,,Germantown,MD,20874,4,1,1,2,2,,merge with number only discard address
+4/28/2023,Clothes,1111,Why,This,101 Odendhal AVE,1007,Gaitheburg,ME,20870,6,0,0,6,,,merge with address tables
+4/1/2023,Clothes,9998,Nancy,Drew,501A S Frederick Ave,0,Gaithersburg,MD,20877,5,0,0,5,,,merge with needs autocorrect
