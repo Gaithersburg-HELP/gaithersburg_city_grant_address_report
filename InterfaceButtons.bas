@@ -54,7 +54,6 @@ Public Sub PasteRecords()
     Application.ScreenUpdating = False
     
     getBlankRow("Interface").Cells.Item(1, 1).Select
-    ActiveCell.offset(1, 0).Range("A1").Select
     ActiveCell.PasteSpecial (xlPasteValues)
     
     ActiveSheet.Cells(1, 1).Select
