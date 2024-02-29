@@ -8,7 +8,6 @@ Yes,TRUE,409 Christopher Ave,Apt T3,20879,409 Christopher Ave,T3 RM 1,Gaithersbu
 Yes,TRUE,422 Girard St,Apt 103,20877,422 N GIRARD ST E,103  Room 1,Gaithersburg,MD,20877,3575,Pluto,Neptune Michael,3,{},"{""Q4"":[""4/5/2023""]}",,
 Yes,TRUE,501 N Frederick Ave,Ste 100,20877,501 N Frederick Ave,Ste 600,Gaithersburg,MD,20877,Dragonfruit Plum,Dragonfruit,Plum,2,{},"{""Q3"":[""2/4/2023""]}",,
 Yes,TRUE,501a S Frederick Ave,Apt 1,20877,501A S Frederick Ave,0,Gaithersburg,MD,20877,9998,Nancy,Drew,5,{},"{""Q3"":[""2/1/2023""]}",,"{""Q4"":[""4/1/2023""]}"
-Failed autocorrection and geocoded not in city,FALSE,18235 Lost Knife Cir,,20886,18235 Lost Knife,,Gaithersburg,MD,20886,Cherry Rose,Cherry,Rose,4,"{""Q3"":{""1/5/2023"":10}}","{""Q4"":[""5/10/2023""],""Q3"":[""1/5/2023""]}",,
 Yes,FALSE,2 Nina Ct,,20877,2 nina ave,,Gaitherburg,MD,20871,1004,Uber,Victor,3,"{""Q4"":{""4/17/2023"":4.05}}","{""Q3"":[""3/11/2023""],""Q4"":[""4/17/2023""]}",,
 Yes,FALSE,200 Olde Towne Ave,Apt 202,20877,200 OLDE TOWNE  AVE,202,Gaithersburg,MD,20877,6842,Justin,Case,3,{},"{""Q3"":[""3/21/2023""]}",,
 Yes,FALSE,537 Odend'hal Ave,,20877,537 Odendhal Dr,,Gaithersburg,MD,20877,Melon Pineapple,Melon,Pineapple,2,{},"{""Q1"":[""8/15/2023""]}",,
