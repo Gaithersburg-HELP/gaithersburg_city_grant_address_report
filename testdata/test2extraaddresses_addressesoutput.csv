@@ -1,14 +1,14 @@
-In City,User Verified,Validated Address,Validated Unit Type and No.,Validated Zip Code,Raw Address,Raw Unit Type With Number,Raw City,Raw State,Raw Zipcode,Guest ID,First Name,Last Name,Household Total,Rx Total,Food,Clothes,18,9,Rx Asst,7,Doof
-Yes,FALSE,101 Odend'hal Ave,Apt 1007,20877,101 Odendhal AVE,1007,Gaitheburg,ME,20870,1111,Why,This,6,{},"{""Q4"":[""5/31/2023""]}","{""Q4"":[""4/28/2023""]}",,,,,
-Yes,FALSE,20 O'neill Dr,Apt 5,20877,20 ONEILL DR,5,Gaithersburg,MD,20877,6570,Supine,Yellow Orchard Juke,6,{},"{""Q4"":[""5/31/2023""]}",,,,,,
-Yes,FALSE,20 O'neill Dr,Apt 5,20877,20 O'NEILL DR,5,Gaithersburg,MD,20877,1567,Nope,Yep,6,"{""Q4"":{""4/14/2023"":11}}","{""Q4"":[""4/14/2023""]}",,,,,,
-Yes,FALSE,200 Olde Towne Ave,Apt 202,20877,200 OLDE TOWNE  AVE,202,Gaithersburg,MD,20877,6842,Justin,Case,3,{},"{""Q3"":[""3/21/2023""]}",,,,,,
-Yes,FALSE,28 O'neill Dr,Apt 1,20877,28 Oneil Dr,1,Gaithersburg,MD,20877,7685,Anita,Thapa,5,{},"{""Q4"":[""6/25/2023""]}",,,,,,
-Yes,FALSE,3 Prism Pl,Apt 202,20877,3 MCCAUSLAND PL,202,Gaithersburg,MD,20877,4125,Nutcase,Pendleton,9,{},"{""Q2"":[""10/7/2023""]}",,,,,,
-Yes,FALSE,405 Christopher Ave,Apt T3,20879,405 CHRISTOPHER AVE,T3,Gaithersburg,MD,20879,2260,Thirst,Hunger,1,{},,,"{""Q2"":[""12/5/2023 11:00:00 AM""]}",,,,
-Yes,FALSE,413 Muddy Branch Rd,Apt T2,20878,413 MUDDY BRANCH RD,T2,Gaithersburg,MD,20878,7514,Music,Quartet,8,{},"{""Q1"":[""7/5/2023 9:35:00 AM""]}",,,"{""Q1"":[""9/2/2023 9:35:00 AM""]}",,,
-Yes,FALSE,501a S Frederick Ave,Apt 1,20877,501A S. Frederick Ave,1,Gaithersburg,MD,20877,7544,Crabcake,Dinosaur,1,{},"{""Q3"":[""1/6/2023 10:04:00 AM""]}",,,,,,
-Yes,FALSE,534 Odend'hal Ave,,20877,534 Odendhal AVE,,Gaithersburg,MD,20877,8888,Junk,Yard,6,"{""Q3"":{""1/31/2023"":22}}","{""Q3"":[""1/31/2023""]}",,,,,,
-Yes,FALSE,742 Quince Orchard Blvd,Apt T1,20878,742 QUINCE ORCHARD BLVD,T1,Gaithersburg,MD,20878,6468,Jupiter,Quinoa,1,"{""Q2"":{""10/3/2023 9:55:00 AM"":28}}",,,,,"{""Q2"":[""10/3/2023 9:55:00 AM""]}",,
-Yes,FALSE,9 E Deer Park Dr,Apt 305,20877,9 E Deer Park DR,305,Gaithersburg,MD,20877,7728,Moxie Doxie,Manifold Populate,3,"{""Q3"":{""2/28/2023"":7.3,""3/28/2023"":5.5}}","{""Q3"":[""2/28/2023""]}",,,,,"{""Q3"":[""2/28/2023"",""3/28/2023""]}","{""Q3"":[""2/28/2023""]}"
-Yes,FALSE,901 Russell Ave,Ste 201,20879,901 Russell Ave,Suite 201,Gaithersburg,MD,20877,1001,Knife,Fightin,3,{},"{""Q3"":[""3/28/2023""]}",,,,,,
+In City,User Verified,Validated Address,Validated Unit Type and No.,Validated Zip Code,Raw Address,Raw Unit Type With Number,Raw City,Raw State,Raw Zipcode,Guest ID,First Name,Last Name,Household Total,0 to 1,2 to 17,18+,Rx Total,Food,Clothes,18,9,Rx Asst,7,Doof
+Yes,FALSE,101 Odend'hal Ave,Apt 1007,20877,101 Odendhal AVE,1007,Gaitheburg,ME,20870,1111,Why,This,6,0,0,6,{},"{""Q4"":[""5/31/2023""]}","{""Q4"":[""4/28/2023""]}",,,,,
+Yes,FALSE,20 O'neill Dr,Apt 5,20877,20 ONEILL DR,5,Gaithersburg,MD,20877,6570,Supine,Yellow Orchard Juke,6,0,0,6,{},"{""Q4"":[""5/31/2023""]}",,,,,,
+Yes,FALSE,20 O'neill Dr,Apt 5,20877,20 O'NEILL DR,5,Gaithersburg,MD,20877,1567,Nope,Yep,6,0,0,6,"{""Q4"":{""4/14/2023"":11}}","{""Q4"":[""4/14/2023""]}",,,,,,
+Yes,FALSE,200 Olde Towne Ave,Apt 202,20877,200 OLDE TOWNE  AVE,202,Gaithersburg,MD,20877,6842,Justin,Case,3,0,0,3,{},"{""Q3"":[""3/21/2023""]}",,,,,,
+Yes,FALSE,28 O'neill Dr,Apt 1,20877,28 Oneil Dr,1,Gaithersburg,MD,20877,7685,Anita,Thapa,5,0,0,5,{},"{""Q4"":[""6/25/2023""]}",,,,,,
+Yes,FALSE,3 Prism Pl,Apt 202,20877,3 MCCAUSLAND PL,202,Gaithersburg,MD,20877,4125,Nutcase,Pendleton,9,0,0,9,{},"{""Q2"":[""10/7/2023""]}",,,,,,
+Yes,FALSE,405 Christopher Ave,Apt T3,20879,405 CHRISTOPHER AVE,T3,Gaithersburg,MD,20879,2260,Thirst,Hunger,1,0,0,1,{},,,"{""Q2"":[""12/5/2023 11:00:00 AM""]}",,,,
+Yes,FALSE,413 Muddy Branch Rd,Apt T2,20878,413 MUDDY BRANCH RD,T2,Gaithersburg,MD,20878,7514,Music,Quartet,8,0,0,8,{},"{""Q1"":[""7/5/2023 9:35:00 AM""]}",,,"{""Q1"":[""9/2/2023 9:35:00 AM""]}",,,
+Yes,FALSE,501a S Frederick Ave,Apt 1,20877,501A S. Frederick Ave,1,Gaithersburg,MD,20877,7544,Crabcake,Dinosaur,1,0,0,1,{},"{""Q3"":[""1/6/2023 10:04:00 AM""]}",,,,,,
+Yes,FALSE,534 Odend'hal Ave,,20877,534 Odendhal AVE,,Gaithersburg,MD,20877,8888,Junk,Yard,6,0,0,6,"{""Q3"":{""1/31/2023"":22}}","{""Q3"":[""1/31/2023""]}",,,,,,
+Yes,FALSE,742 Quince Orchard Blvd,Apt T1,20878,742 QUINCE ORCHARD BLVD,T1,Gaithersburg,MD,20878,6468,Jupiter,Quinoa,1,0,0,1,"{""Q2"":{""10/3/2023 9:55:00 AM"":28}}",,,,,"{""Q2"":[""10/3/2023 9:55:00 AM""]}",,
+Yes,FALSE,9 E Deer Park Dr,Apt 305,20877,9 E Deer Park DR,305,Gaithersburg,MD,20877,7728,Moxie Doxie,Manifold Populate,3,0,1,2,"{""Q3"":{""2/28/2023"":7.3,""3/28/2023"":5.5}}","{""Q3"":[""2/28/2023""]}",,,,,"{""Q3"":[""2/28/2023"",""3/28/2023""]}","{""Q3"":[""2/28/2023""]}"
+Yes,FALSE,901 Russell Ave,Ste 201,20879,901 Russell Ave,Suite 201,Gaithersburg,MD,20877,1001,Knife,Fightin,3,0,0,3,{},"{""Q3"":[""3/28/2023""]}",,,,,,
