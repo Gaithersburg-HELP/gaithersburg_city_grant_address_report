@@ -173,10 +173,236 @@ Public Sub writeAddresses(ByVal sheetName As String, ByVal addresses As Scriptin
     Next key
 End Sub
 
+Private Sub incrementCountyTotal(ByVal record As RecordTuple)
+    Dim monthVisited(1 To 12) As Boolean
+    Dim uniqueGuestIDTotal(1 To 12) As Long
+    Dim uniqueGuestIDHouseholdTotal(1 To 12) As Long
+    Dim guestIDTotal(1 To 12) As Long
+    Dim householdTotal(1 To 12) As Long
+    
+    Dim monthNum As Long
+    
+    Dim service As Variant
+    For Each service In record.visitData.Keys
+        Dim quarter As Variant
+        For Each quarter In record.visitData.Item(service).Keys
+            Dim visit As Variant
+            For Each visit In record.visitData.Item(service).Item(quarter)
+                monthNum = month(visit)
+                guestIDTotal(monthNum) = guestIDTotal(monthNum) + 1
+                householdTotal(monthNum) = householdTotal(monthNum) + record.householdTotal
+                If Not monthVisited(monthNum) Then
+                    uniqueGuestIDTotal(monthNum) = uniqueGuestIDTotal(monthNum) + 1
+                    uniqueGuestIDHouseholdTotal(monthNum) = uniqueGuestIDHouseholdTotal(monthNum) + _
+                                                            record.householdTotal
+                    monthVisited(monthNum) = True
+                End If
+            Next visit
+        Next quarter
+    Next service
+    
+    Dim zip As String
+    If record.ValidZipcode <> vbNullString Then
+        zip = record.ValidZipcode
+    Else
+        zip = record.RawZip
+    End If
+    
+    Dim uniqueCols As Scripting.Dictionary
+    Set uniqueCols = SheetUtilities.uniqueCountyZipCols()
+    
+    Dim zipCol As Long
+    
+    If uniqueCols.Exists(zip) Then
+        zipCol = uniqueCols.Item(zip)
+    Else
+        ' BUG assumes poorer city
+    Select Case zip
+        Case 20906
+            If record.RawCity = "Ashton" Or record.RawCity = "Aspen Hill" Then
+                zipCol = CountyTotalCols.zip20906AshtonAspenHill
+            Else
+                zipCol = CountyTotalCols.zip20906SilverSpring
+            End If
+        Case 20916
+            If record.RawCity = "Ashton" Or record.RawCity = "Aspen Hill" Then
+                zipCol = CountyTotalCols.zip20916AshtonAspenHill
+            Else
+                zipCol = CountyTotalCols.zip20916SilverSpring
+            End If
+        Case 20815
+            If record.RawCity = "Chevy Chase" Or record.RawCity = "Clarksburg" Then
+                zipCol = CountyTotalCols.zip20815ChevyChaseClarksburg
+            Else
+                zipCol = CountyTotalCols.zip20815Bethesda
+            End If
+        Case 20825
+            If record.RawCity = "Chevy Chase" Or record.RawCity = "Clarksburg" Then
+                zipCol = CountyTotalCols.zip20825ChevyChaseClarksburg
+            Else
+                zipCol = CountyTotalCols.zip20825Bethesda
+            End If
+        Case 20852
+            If record.RawCity = "Bethesda" Then
+                zipCol = CountyTotalCols.zip20852Bethesda
+            Else
+                zipCol = CountyTotalCols.zip20852Rockville
+            End If
+        Case 20904
+            If record.RawCity = "Colesville" Or record.RawCity = "Damascus" Then
+                zipCol = CountyTotalCols.zip20904ColesvilleDamascus
+            Else
+                zipCol = CountyTotalCols.zip20904SilverSpring
+            End If
+        Case 20905
+            If record.RawCity = "Colesville" Or record.RawCity = "Damascus" Then
+                zipCol = CountyTotalCols.zip20905ColesvilleDamascus
+            Else
+                zipCol = CountyTotalCols.zip20905SilverSpring
+            End If
+        Case 20914
+            If record.RawCity = "Colesville" Or record.RawCity = "Damascus" Then
+                zipCol = CountyTotalCols.zip20914ColesvilleDamascus
+            Else
+                zipCol = CountyTotalCols.zip20914SilverSpring
+            End If
+        Case 20874
+            If record.RawCity = "Darnestown" Or record.RawCity = "Derwood" Or record.RawCity = "Dickerson" Then
+                zipCol = CountyTotalCols.zip20874DarnestownDerwoodDickerson
+            Else
+                zipCol = CountyTotalCols.zip20874GarrettParkGermantownGlenEcho
+            End If
+        Case 20878
+            If record.RawCity = "Darnestown" Or record.RawCity = "Derwood" Or record.RawCity = "Dickerson" Then
+                zipCol = CountyTotalCols.zip20878DarnestownDerwoodDickerson
+            ElseIf record.RawCity = "Poolesville" Or record.RawCity = "Potomac" Then
+                zipCol = CountyTotalCols.zip20878PoolesvillePotomac
+            Else
+                zipCol = CountyTotalCols.zip20878Gaithersburg
+            End If
+        Case 20855
+            If record.RawCity = "Darnestown" Or record.RawCity = "Derwood" Or record.RawCity = "Dickerson" Then
+                zipCol = CountyTotalCols.zip20855DarnestownDerwoodDickerson
+            Else
+                zipCol = CountyTotalCols.zip20855Rockville
+            End If
+        Case 20877
+            If record.RawCity = "Montgomery Village" Or record.RawCity = "Olney" Then
+                zipCol = CountyTotalCols.zip20877MontgomeryVillageOlney
+            Else
+                zipCol = CountyTotalCols.zip20877Gaithersburg
+            End If
+        Case 20882
+            If record.RawCity = "Kensington" Or record.RawCity = "Laytonsville" Then
+                zipCol = CountyTotalCols.zip20882KensingtonLaytonsville
+            Else
+                zipCol = CountyTotalCols.zip20882Gaithersburg
+            End If
+        Case 20886
+            If record.RawCity = "Montgomery Village" Or record.RawCity = "Olney" Then
+                zipCol = CountyTotalCols.zip20886MontgomeryVillageOlney
+            Else
+                zipCol = CountyTotalCols.zip20886Gaithersburg
+            End If
+        Case 20879
+            If record.RawCity = "Kensington" Or record.RawCity = "Laytonsville" Then
+                zipCol = CountyTotalCols.zip20879KensingtonLaytonsville
+            ElseIf record.RawCity = "Montgomery Village" Or record.RawCity = "Olney" Then
+                zipCol = CountyTotalCols.zip20879MontgomeryVillageOlney
+            Else
+                zipCol = CountyTotalCols.zip20879Gaithersburg
+            End If
+        Case 20854
+            If record.RawCity = "Poolesville" Or record.RawCity = "Potomac" Then
+                zipCol = CountyTotalCols.zip20854PoolesvillePotomac
+            Else
+                zipCol = CountyTotalCols.zip20854Rockville
+            End If
+        Case 20859
+            If record.RawCity = "Poolesville" Or record.RawCity = "Potomac" Then
+                zipCol = CountyTotalCols.zip20859PoolesvillePotomac
+            Else
+                zipCol = CountyTotalCols.zip20859Rockville
+            End If
+        Case 20912
+            If record.RawCity = "Sandy Spring" Or record.RawCity = "Spencerville" Or record.RawCity = "Takoma Park" Then
+                zipCol = CountyTotalCols.zip20912SandySpringSpencervilleTakomaPark
+            Else
+                zipCol = CountyTotalCols.zip20912SilverSpring
+            End If
+        Case 20913
+            If record.RawCity = "Sandy Spring" Or record.RawCity = "Spencerville" Or record.RawCity = "Takoma Park" Then
+                zipCol = CountyTotalCols.zip20913SandySpringSpencervilleTakomaPark
+            Else
+                zipCol = CountyTotalCols.zip20913SilverSpring
+            End If
+        Case 20902
+            If record.RawCity = "Washington Grove" Or record.RawCity = "Wheaton" Then
+                zipCol = CountyTotalCols.zip20902WashingtonGroveWheaton
+            Else
+                zipCol = CountyTotalCols.zip20902SilverSpring
+            End If
+        Case 20915
+            If record.RawCity = "Washington Grove" Or record.RawCity = "Wheaton" Then
+                zipCol = CountyTotalCols.zip20915WashingtonGroveWheaton
+            Else
+                zipCol = CountyTotalCols.zip20915SilverSpring
+            End If
+        Case Else
+            zipCol = -1
+        End Select
+    End If
+    
+    Dim i As Long
+    For i = 1 To 12
+        ' TODO off-by-one error on column enum
+        getCountyRng.Cells.Item(i, CountyTotalCols.householdDuplicate - 1) = _
+            getCountyRng.Cells.Item(i, CountyTotalCols.householdDuplicate - 1) + guestIDTotal(i)
+        getCountyRng.Cells.Item(i, CountyTotalCols.householdUnduplicate - 1) = _
+            getCountyRng.Cells.Item(i, CountyTotalCols.householdUnduplicate - 1) + uniqueGuestIDTotal(i)
+        getCountyRng.Cells.Item(i, CountyTotalCols.individualDuplicate - 1) = _
+            getCountyRng.Cells.Item(i, CountyTotalCols.individualDuplicate - 1) + householdTotal(i)
+        getCountyRng.Cells.Item(i, CountyTotalCols.individualUnduplicate - 1) = _
+            getCountyRng.Cells.Item(i, CountyTotalCols.individualUnduplicate - 1) + uniqueGuestIDHouseholdTotal(i)
+            
+        getCountyRng.Cells.Item(i, CountyTotalCols.poundsFood - 1) = _
+            getCountyRng.Cells.Item(i, CountyTotalCols.poundsFood - 1) + (householdTotal(i) * 8)
+        
+        If zipCol <> -1 Then
+            getCountyRng.Cells.Item(i, zipCol - 1) = getCountyRng.Cells.Item(i, zipCol - 1) + guestIDTotal(i)
+        End If
+        
+    Next i
+End Sub
+
+Public Sub computeCountyTotals()
+    getCountyRng.value = 0
+    
+    Dim addresses As Scripting.Dictionary
+    Set addresses = Records.loadAddresses("Addresses")
+    Dim key As Variant
+    For Each key In addresses.Keys
+        incrementCountyTotal addresses.Item(key)
+    Next key
+    
+    Dim autocorrect As Scripting.Dictionary
+    Set autocorrect = Records.loadAddresses("Needs Autocorrect")
+    
+    For Each key In autocorrect.Keys
+        incrementCountyTotal autocorrect.Item(key)
+    Next key
+    
+    Dim discards As Scripting.Dictionary
+    Set discards = Records.loadAddresses("Discards")
+    
+    For Each key In discards.Keys
+        incrementCountyTotal discards.Item(key)
+    Next key
+End Sub
+
 Public Sub computeTotals()
     SheetUtilities.getTotalsRng.Clear
-    ' TODO actual totals computation
-    SheetUtilities.getCountyRng.value = 0
+    SheetUtilities.getCountyRng.Clear
     
     Dim addresses As Scripting.Dictionary
     Set addresses = Records.loadAddresses("Addresses")
@@ -193,6 +419,7 @@ Public Sub computeTotals()
         Dim record As RecordTuple
         Set record = addresses.Item(key)
         
+        ' Gaithersburg totals
         If record.InCity = InCityCode.ValidInCity Then
             Dim rxCount(1 To 4) As Double
             Dim quarter As Variant
@@ -359,7 +586,8 @@ Public Sub addRecords()
     Application.StatusBar = "Writing addresses and computing totals"
     
     writeAddressesComputeTotals addresses, needsAutocorrect, discards, autocorrected
-
+    computeCountyTotals
+    
     Application.StatusBar = appStatus
 End Sub
 

@@ -188,6 +188,7 @@ Public Sub confirmDeleteService()
     
     SheetUtilities.getFinalReportRng.Clear
     Records.computeTotals
+    Records.computeCountyTotals
 End Sub
 
 '@EntryPoint

@@ -182,6 +182,7 @@ Public Sub attemptValidation()
     Application.StatusBar = "Writing addresses"
     
     Records.writeAddressesComputeTotals addresses, addressesToAutocorrect, discards, autocorrected
+    Records.computeCountyTotals
     
     printRemainingRequests (getRemainingRequests() - usedRequests)
     
