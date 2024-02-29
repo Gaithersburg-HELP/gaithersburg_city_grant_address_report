@@ -632,7 +632,7 @@ Private Function getFormattedSplitAddr(ByVal returnRaw As Boolean) As Scripting.
     ' NOTE remove unit from array and join the rest because sometimes will be given
     ' multiple secondary numbers e.g. Apt 102 # unt
     splitUnitArr(0) = vbNullString
-    splitAddr.Add addressKey.unitNum, Trim(Join(splitUnitArr, " "))
+    splitAddr.Add addressKey.unitNum, Trim$(Join(splitUnitArr, " "))
     
     If splitAddr.Item(addressKey.unitType) <> vbNullString Then
         splitAddr.Add addressKey.Full, fullAddress & " " & splitAddr.Item(addressKey.unitType) & _

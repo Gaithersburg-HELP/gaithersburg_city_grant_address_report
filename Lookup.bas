@@ -265,7 +265,8 @@ Public Function googleValidateQuery(ByVal fullAddress As String, ByVal city As S
                     If validSecondary Then
                         
                         ' As of 2/27/24, USPS returns 150 Chevy Chase St Apt 102 # Unt when given Unt 102
-                        Dim actualUnit, actualNum As String
+                        Dim actualUnit As String
+                        Dim actualNum As String
                         
                         Select Case splitUnitArr(1)
                             Case "APT", "BLDG", "DEPT", "FL", "HNGR", "KEY", "LOT", _
