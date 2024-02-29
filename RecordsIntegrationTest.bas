@@ -100,20 +100,20 @@ Public Sub TestAllAddresses()
     CompareSheetCSV Assert, "Discards", ThisWorkbook.path & "\testdata\test3autocorrectaddresses_discardsoutput.csv"
     CompareSheetCSV Assert, "Autocorrected", ThisWorkbook.path & "\testdata\test3autocorrectaddresses_autocorrectedoutput.csv"
 
-'    Assert.IsTrue autocorrect.getRemainingRequests = 7980
-'
-'
-'    Dim testMergeAutocorrectedAddressesArr() As String
-'    testMergeAutocorrectedAddressesArr = getCSV(ThisWorkbook.path & "\testdata\test4mergeaddresses.csv")
-'    PasteTestRecords testMergeAutocorrectedAddressesArr
-'
-'    addRecords
-'
-'    CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\test4mergeaddresses_addressesoutput.csv"
-'    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test4mergeaddresses_totalsoutput.csv", getTotalsRng
-'    CompareSheetCSV Assert, "Discards", ThisWorkbook.path & "\testdata\test4mergeaddresses_discardsoutput.csv"
-'    CompareSheetCSV Assert, "Autocorrected", ThisWorkbook.path & "\testdata\test4mergeaddresses_autocorrectedoutput.csv"
-'
+    Assert.IsTrue autocorrect.getRemainingRequests = 7980
+
+
+    Dim testMergeAutocorrectedAddressesArr() As String
+    testMergeAutocorrectedAddressesArr = getCSV(ThisWorkbook.path & "\testdata\test4mergeaddresses.csv")
+    PasteTestRecords testMergeAutocorrectedAddressesArr
+
+    addRecords
+
+    CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\test4mergeaddresses_addressesoutput.csv"
+    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test4mergeaddresses_totalsoutput.csv", getTotalsRng
+    CompareSheetCSV Assert, "Discards", ThisWorkbook.path & "\testdata\test4mergeaddresses_discardsoutput.csv"
+    CompareSheetCSV Assert, "Autocorrected", ThisWorkbook.path & "\testdata\test4mergeaddresses_autocorrectedoutput.csv"
+
 '    Fakes.MsgBox.Returns vbYes
 '
 '    InterfaceButtons.confirmDiscardAll

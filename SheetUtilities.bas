@@ -249,7 +249,7 @@ Public Function sheetToCSVArray(ByVal sheetName As String, Optional ByVal rng As
     
     
     sheetToCSVArray = getCSV(MyFileName)
-'    Kill (MyFileName)
+    Kill (MyFileName)
 End Function
 
 Public Sub CompareSheetCSV(ByVal Assert As Object, ByVal sheetName As String, ByVal csvPath As String, Optional ByVal rng As Range)
