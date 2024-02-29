@@ -310,6 +310,56 @@ Public Sub toggleUserVerified()
 End Sub
 
 '@EntryPoint
+Public Sub toggleUserVerifiedAutocorrected()
+    Dim rows As Collection
+    Set rows = getUniqueSelection(True, 2)
+    
+    If rows Is Nothing Then Exit Sub
+    
+    Dim addresses As Scripting.Dictionary
+    Set addresses = Records.loadAddresses("Addresses")
+    
+    Dim autocorrected As Scripting.Dictionary
+    Set autocorrected = Records.loadAddresses("Autocorrected")
+    
+    Dim discards As Scripting.Dictionary
+    Set discards = Records.loadAddresses("Discards")
+    
+    Dim addressesModified As Boolean
+    Dim discardsModified As Boolean
+    
+    Dim row As Variant
+    For Each row In rows
+        Dim currentRowRng As Range
+        Set currentRowRng = ThisWorkbook.Worksheets.[_Default]("Autocorrected").Range("A" & row)
+        Dim record As RecordTuple
+        Set record = Records.loadRecordFromSheet(currentRowRng)
+        
+        autocorrected.Item(record.key).UserVerified = Not autocorrected.Item(record.key).UserVerified
+        
+        If addresses.Exists(record.key) Then
+            addresses.Item(record.key).UserVerified = Not addresses.Item(record.key).UserVerified
+            addressesModified = True
+        ElseIf discards.Exists(record.key) Then
+            discards.Item(record.key).UserVerified = Not discards.Item(record.key).UserVerified
+            discardsModified = True
+        End If
+    Next row
+    
+    SheetUtilities.ClearSheet "Autocorrected"
+    Records.writeAddresses "Autocorrected", autocorrected
+    
+    If addressesModified Then
+        SheetUtilities.ClearSheet "Addresses"
+        Records.writeAddresses "Addresses", addresses
+    End If
+    If discardsModified Then
+        SheetUtilities.ClearSheet "Discards"
+        Records.writeAddresses "Discards", discards
+    End If
+End Sub
+
+'@EntryPoint
 Public Sub CopyAndOpenCountyTotalsSite()
     Dim values As Range
     Set values = ActiveSheet.rows(selection.row)

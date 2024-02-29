@@ -151,6 +151,11 @@ Public Sub TestAllAddresses()
     Union(ThisWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("A2:A5"), _
           ThisWorkbook.Worksheets.[_Default]("Needs Autocorrect").Range("A8:A11")).Select
     InterfaceButtons.toggleUserVerified
+    
+    ThisWorkbook.Worksheets.[_Default]("Discards").Select
+    Union(ThisWorkbook.Worksheets.[_Default]("Discards").Range("A2"), _
+          ThisWorkbook.Worksheets.[_Default]("Discards").Range("A4")).Select
+    InterfaceButtons.toggleUserVerifiedAutocorrected
 
     CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\test5usereditsaddresses_addressesoutput.csv"
     CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test5usereditsaddresses_totalsoutput.csv", getTotalsRng
@@ -178,6 +183,34 @@ TestFail:
     Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
 End Sub
 
+'@TestMethod
+Public Sub TestToggleUserVerifiedAutocorrect()
+    On Error GoTo TestFail
+    
+    Dim testAddressesArr() As String
+    testAddressesArr = getCSV(ThisWorkbook.path & "\testdata\testtoggleuserverified.csv")
+    
+    PasteTestRecords testAddressesArr
+    
+    addRecords
+    attemptValidation
+    
+    ThisWorkbook.Worksheets.[_Default]("Autocorrected").Select
+    ThisWorkbook.Worksheets.[_Default]("Autocorrected").Range("A2:A3").Select
+    InterfaceButtons.toggleUserVerifiedAutocorrected
+    
+    ThisWorkbook.Worksheets.[_Default]("Autocorrected").Range("A2").Select
+    InterfaceButtons.toggleUserVerifiedAutocorrected
+    
+    CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\testtoggleuserverified_addressesoutput.csv"
+    CompareSheetCSV Assert, "Discards", ThisWorkbook.path & "\testdata\testtoggleuserverified_discardsoutput.csv"
+    CompareSheetCSV Assert, "Autocorrected", ThisWorkbook.path & "\testdata\testtoggleuserverified_autocorrectedoutput.csv"
+    
+    
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
 
 '@TestMethod
 Public Sub TestCountyTotals()
