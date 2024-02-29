@@ -213,6 +213,11 @@ Public Sub confirmDiscardAll()
     SheetUtilities.SortSheet "Discards"
 End Sub
 
+Private Function findRow(ByVal sheetName As String, ByVal key As String) As Range
+    Set findRow = ThisWorkbook.Worksheets.[_Default](sheetName).columns(SheetUtilities.keyColumn). _
+                            Find(What:=key, LookIn:=xlValues, LookAt:=xlWhole)
+End Function
+
 Private Sub moveSelectedRows(ByVal sourceSheet As String, ByVal destSheet As String, _
                              ByVal removeFromAutocorrected As Boolean)
     Dim rows As Collection
@@ -259,22 +264,15 @@ Private Sub moveSelectedRows(ByVal sourceSheet As String, ByVal destSheet As Str
     SheetUtilities.SortSheet destSheet
     
     If (Not removeFromAutocorrected) Then Exit Sub
-    
-    Dim autocorrected As Scripting.Dictionary
-    Set autocorrected = Records.loadAddresses("Autocorrected")
-    
-    Dim changedAutocorrected As Boolean
-    changedAutocorrected = False
-    
+       
     Dim movedRecord As Variant
     For Each movedRecord In movedRecords
-        If autocorrected.Exists(movedRecord.key) Then
-            changedAutocorrected = True
-            autocorrected.Remove movedRecord.key
+        Dim foundCell As Range
+        Set foundCell = findRow("Autocorrected", movedRecord.key)
+        If Not foundCell Is Nothing Then
+            foundCell.EntireRow.Delete
         End If
     Next movedRecord
-    
-    If changedAutocorrected Then Records.writeAddresses "Autocorrected", autocorrected
 End Sub
 
 '@EntryPoint
@@ -315,47 +313,34 @@ Public Sub toggleUserVerifiedAutocorrected()
     
     If rows Is Nothing Then Exit Sub
     
-    Dim addresses As Scripting.Dictionary
-    Set addresses = Records.loadAddresses("Addresses")
-    
-    Dim autocorrected As Scripting.Dictionary
-    Set autocorrected = Records.loadAddresses("Autocorrected")
-    
-    Dim discards As Scripting.Dictionary
-    Set discards = Records.loadAddresses("Discards")
-    
-    Dim addressesModified As Boolean
-    Dim discardsModified As Boolean
     
     Dim row As Variant
     For Each row In rows
         Dim currentRowRng As Range
         Set currentRowRng = AutocorrectedAddressesSheet.Range("A" & row)
-        Dim record As RecordTuple
-        Set record = Records.loadRecordFromSheet(currentRowRng)
         
-        autocorrected.Item(record.key).UserVerified = Not autocorrected.Item(record.key).UserVerified
+        currentRowRng.Cells.Item(1, 2).value = Not currentRowRng.Cells.Item(1, 2).value
         
-        If addresses.Exists(record.key) Then
-            addresses.Item(record.key).UserVerified = Not addresses.Item(record.key).UserVerified
-            addressesModified = True
-        ElseIf discards.Exists(record.key) Then
-            discards.Item(record.key).UserVerified = Not discards.Item(record.key).UserVerified
-            discardsModified = True
+        Dim key As String
+        key = currentRowRng.Cells.Item(1, SheetUtilities.keyColumn)
+        
+        Dim foundCell As Range
+        Set foundCell = findRow("Addresses", key)
+        
+        If Not foundCell Is Nothing Then
+            AddressesSheet.rows.Item(foundCell.row).Cells.Item(1, 2) = _
+                                        Not AddressesSheet.rows.Item(foundCell.row).Cells.Item(1, 2)
         End If
+        
+        Set foundCell = DiscardsSheet.columns.Item(SheetUtilities.keyColumn). _
+                            Find(What:=key, LookIn:=xlValues, LookAt:=xlWhole)
+        
+        If Not foundCell Is Nothing Then
+            DiscardsSheet.rows.Item(foundCell.row).Cells.Item(1, 2) = _
+                                        Not DiscardsSheet.rows.Item(foundCell.row).Cells.Item(1, 2)
+        End If
+        
     Next row
-    
-    SheetUtilities.ClearSheet "Autocorrected"
-    Records.writeAddresses "Autocorrected", autocorrected
-    
-    If addressesModified Then
-        SheetUtilities.ClearSheet "Addresses"
-        Records.writeAddresses "Addresses", addresses
-    End If
-    If discardsModified Then
-        SheetUtilities.ClearSheet "Discards"
-        Records.writeAddresses "Discards", discards
-    End If
 End Sub
 
 '@EntryPoint

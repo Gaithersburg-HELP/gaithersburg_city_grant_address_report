@@ -2,6 +2,7 @@ Attribute VB_Name = "SheetUtilities"
 '@Folder("City_Grant_Address_Report.src")
 Option Explicit
 
+Public Const keyColumn As Long = 11
 Public Const firstServiceColumn As Long = 19
 
 Public Enum CountyTotalCols
