@@ -67,6 +67,7 @@ Public Sub TestAllAddresses()
     
     CompareSheetCSV Assert, "Addresses", ActiveWorkbook.path & "\testdata\test1addresses_addressesoutput.csv"
     CompareSheetCSV Assert, "Interface", ActiveWorkbook.path & "\testdata\test1addresses_totalsoutput.csv", getTotalsRng
+    CompareSheetCSV Assert, "Interface", ActiveWorkbook.path & "\testdata\test1addresses_countytotalsoutput.csv", getCountyRng
     CompareSheetCSV Assert, "Needs Autocorrect", ActiveWorkbook.path & "\testdata\test1addresses_autocorrectoutput.csv"
     CompareSheetCSV Assert, "Discards", ActiveWorkbook.path & "\testdata\test1addresses_discardsoutput.csv"
     CompareSheetCSV Assert, "Autocorrected", ActiveWorkbook.path & "\testdata\test1addresses_autocorrectedoutput.csv"
