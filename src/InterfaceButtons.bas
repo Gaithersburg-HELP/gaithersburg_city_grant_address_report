@@ -487,6 +487,46 @@ Public Sub CopyAndOpenCountyTotalsSite()
     ThisWorkbook.FollowHyperlink address:="https://survey123.arcgis.com/share/43a57395fe8c4ae5ade7b3bf1e2b8313"
 End Sub
 
+'@EntryPoint
+Public Sub ImportRecords()
+    Dim wb As Workbook
+    Set wb = FileUtilities.getWorkbook()
+    
+    If wb Is Nothing Then
+        Exit Sub
+    End If
+    
+    SheetUtilities.ClearAll
+    
+    wb.Worksheets.[_Default]("Interface").UsedRange.Copy
+    InterfaceSheet.Range("A1").PasteSpecial xlPasteValues
+    
+    wb.Worksheets.[_Default]("Final Report").UsedRange.Copy
+    FinalReportSheet.Range("A1").PasteSpecial xlPasteValues
+    
+    wb.Worksheets.[_Default]("Addresses").UsedRange.Copy
+    AddressesSheet.Range("A1").PasteSpecial xlPasteValues
+    
+    wb.Worksheets.[_Default]("Needs Autocorrect").UsedRange.Copy
+    AutocorrectAddressesSheet.Range("A1").PasteSpecial xlPasteValues
+    
+    wb.Worksheets.[_Default]("Discards").UsedRange.Copy
+    DiscardsSheet.Range("A1").PasteSpecial xlPasteValues
+    
+    wb.Worksheets.[_Default]("Autocorrected").UsedRange.Copy
+    AutocorrectedAddressesSheet.Range("A1").PasteSpecial xlPasteValues
+    
+    With CreateObject("htmlfile")
+        With .parentWindow.clipboardData
+            .setData "text", vbNullString
+        End With
+    End With
+    
+    InterfaceSheet.Range("A1").value = "version 3"
+    
+    wb.Close
+End Sub
+
 ' This macro subroutine may be used to double-check
 ' street addresses by lookup on the Gaithersburg city address search page in browser window.
 '@EntryPoint

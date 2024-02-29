@@ -5,6 +5,33 @@ Public Const addressValidationKeyname As String = "address_key"
 
 '@Folder "City_Grant_Address_Report.src"
 
+Public Function getWorkbook() As Workbook
+    Dim fd As FileDialog
+    Dim selectedFile As String
+
+    ' Create a FileDialog object
+    Set fd = Application.FileDialog(msoFileDialogFilePicker)
+
+    ' Customize the FileDialog (optional)
+    With fd
+        .Title = "Select a File"  ' Dialog box title
+        .AllowMultiSelect = False  ' Allow only single file selection
+        .InitialFileName = ThisWorkbook.path   ' Set a default starting folder
+        ' Add file filters if needed (Example)
+        .Filters.Clear
+        .Filters.Add "Excel Files", "*.xlsm"
+    End With
+
+    ' Show the dialog. If user selects a file:
+    If fd.Show = -1 Then
+        selectedFile = fd.SelectedItems(1)  ' Get the selected file's path
+        ' Do something with the file, e.g., open it:
+        Set getWorkbook = Workbooks.Open(Filename:=selectedFile)
+    Else
+        Set getWorkbook = Nothing
+    End If
+End Function
+
 ' Expects a complete file path to CSV
 ' Returns a zero-based one dimensional array of each row in CSV
 Public Function getCSV(ByVal path As String) As String()
