@@ -234,16 +234,21 @@ End Sub
 
 '@TestMethod
 Public Sub TestHandcorrected()
-    ' TODO test against Diane corrected, get percentage correct
     On Error GoTo TestFail
     
-    'Dim testAddressesArr() As String
-    'testAddressesArr = getCSV(ThisWorkbook.path & "\testdata\test1addresses.csv")
+    Dim testAddressesArr() As String
+    testAddressesArr = getCSV(ThisWorkbook.path & "\testdata\testhandcorrected.csv")
     
-    'PasteTestRecords testAddressesArr
+    PasteTestRecords testAddressesArr
     
-    'addRecords
-    'attemptValidation
+    addRecords
+    attemptValidation
+    
+    CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\testhandcorrected_addressesoutput.csv"
+    CompareSheetCSV Assert, "Needs Autocorrect", ThisWorkbook.path & "\testdata\testhandcorrected_autocorrectoutput.csv"
+    CompareSheetCSV Assert, "Discards", ThisWorkbook.path & "\testdata\testhandcorrected_discardsoutput.csv"
+    CompareSheetCSV Assert, "Autocorrected", ThisWorkbook.path & "\testdata\testhandcorrected_autocorrectedoutput.csv"
+    
     Exit Sub
 TestFail:
     Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
