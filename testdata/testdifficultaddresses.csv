@@ -8,4 +8,4 @@ Visit on,Tracking Method,Guest ID,First Name,Last Name,Address,Apartment/Suite,C
 1/7/2023,Food,7,7,7,19515 Frederick Rd,Trl 180,Germantown,MD,20876,1,0,0,1,,,trlr 180
 1/8/2023,Food,8,8,8,858 W SIDE DR,Room 2,Gaithersburg,MD,20878,1,0,0,1,,,"Gaithersburg database does not have Room and only one match, should drop Room and return Yes"
 1/9/2023,Food,9,9,9,497 Quince Orchard RD Motel 6,118,Gaithersburg,MD,20878,1,0,0,1,,,"motel 6, only one match in Gaithersburg database, should drop 118 and return Yes"
-1/10/2023,Food,9,9,9,1 el forest ct,,Clarksburg,MD,20878,1,0,0,1,,,no zip code should not go to autocorrected
+1/10/2023,Food,10,10,10,1 el forest ct,,Clarksburg,MD,,1,0,0,1,,,no zip code should not go to autocorrected

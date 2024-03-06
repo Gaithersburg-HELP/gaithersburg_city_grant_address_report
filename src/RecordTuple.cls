@@ -167,7 +167,7 @@ Public Property Get isAutocorrected() As Boolean
                             validAddress <> StrConv(RawAddress, vbProperCase)) Or _
                       ((validUnitWithNum <> vbNullString) And _
                             validUnitWithNum <> StrConv(RawUnitWithNum, vbProperCase)) Or _
-                      ((ValidZipcode <> vbNullString) And ValidZipcode <> RawZip)
+                      ((ValidZipcode <> vbNullString) And (ValidZipcode <> RawZip) And (RawZip <> vbNullString))
 End Property
 
 Public Property Get RawCity() As String
