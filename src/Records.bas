@@ -457,7 +457,7 @@ Public Sub computeTotals()
                 For Each quarter In record.visitData.Item(service).Keys
                     visitCount(getQuarterNum(quarter)) = _
                         visitCount(getQuarterNum(quarter)) + _
-                        record.visitData.Item(service).Item(quarter).Count
+                        record.visitData.Item(service).Item(quarter).count
                 Next quarter
             Next service
             

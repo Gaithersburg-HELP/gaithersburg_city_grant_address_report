@@ -73,6 +73,32 @@ Private Function sendQuery(ByVal requestMethod As String, ByVal url As String, _
     End With
 End Function
 
+' Executes REST query on Gaithersburg ArcGIS website Core_Address
+' Expects Gaithersburg address with no unit type or number
+' Returns number of results
+Public Function gburgPartialQuery(ByVal fullAddress As String) As Long
+    ' ' is escaped as ''
+    Dim formatAddress As String
+    formatAddress = Replace(fullAddress, "'", "''")
+
+    
+    Dim queryString As String
+    queryString = "https://maps.gaithersburgmd.gov/arcgis/rest/services/layers/GaithersburgCityAddresses/MapServer/0/query?" & _
+        "f=json&" & "returnGeometry=false&" & _
+        "outFields=Full_Address,Address_Number,Road_Prefix_Dir,Road_Name,Road_Type,Road_Post_Dir,Unit_Type,Unit_Number,Zip_Code&" & _
+        "where=Core_Address%20LIKE%20%27" & _
+        WorksheetFunction.EncodeURL(formatAddress) & "%27"
+           
+    Dim jsonResult As Scripting.Dictionary
+    Set jsonResult = sendQuery("GET", queryString, "application/x-www-form-urlencoded", vbNullString)
+    
+    If jsonResult Is Nothing Then
+        gburgPartialQuery = 0
+    Else
+        gburgPartialQuery = jsonResult.Item("features").count
+    End If
+End Function
+
 ' Executes REST query on Gaithersburg ArcGIS website to see if address is in city or not
 ' Expects Gaithersburg full formatted address
 ' Returns address dictionary of validated fields. All keys will exist but may be set to vbNullString or 0
@@ -98,7 +124,7 @@ Public Function gburgQuery(ByVal fullAddress As String) As Scripting.Dictionary
     Dim jsonResult As Scripting.Dictionary
     Set jsonResult = sendQuery("GET", queryString, "application/x-www-form-urlencoded", vbNullString)
     
-    If (Not (jsonResult Is Nothing)) And jsonResult.Item("features").Count > 0 Then
+    If (Not (jsonResult Is Nothing)) And jsonResult.Item("features").count > 0 Then
         ' Since searching on Full_Address, expect only one feature to be returned
         Dim gburgAddress As Scripting.Dictionary
         Set gburgAddress = jsonResult.Item("features").Item(1).Item("attributes")
@@ -350,6 +376,6 @@ Public Function possibleInGburgQuery(ByVal minLongitude As Double, ByVal minLati
     Dim jsonResult As Scripting.Dictionary
     Set jsonResult = sendQuery("GET", queryString, "application/x-www-form-urlencoded", vbNullString)
     
-    possibleInGburgQuery = (Not (jsonResult Is Nothing)) And jsonResult.Item("features").Count > 0
+    possibleInGburgQuery = (Not (jsonResult Is Nothing)) And jsonResult.Item("features").count > 0
 End Function
 

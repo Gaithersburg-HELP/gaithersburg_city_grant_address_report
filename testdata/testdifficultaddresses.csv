@@ -1,5 +1,5 @@
 Visit on,Tracking Method,Guest ID,First Name,Last Name,Address,Apartment/Suite,City/Town,State/Province,Zip/Postal Code,Total Individuals,0 to 1,2 to 17,18+,--- TOTAL Rx COSTS (number only 0.00),,Test Notes
-1/1/2023,Food,1,1,1,425 N Frederick Ave,C14,Gaithersburg,MD,20877,1,0,0,1,,,14C
+1/1/2023,Food,1,1,1,425 N Frederick Ave,C14,Gaithersburg,MD,20877,1,0,0,1,,,"USPS has 14C, Gaithersburg has 425C. maybe hardcode?"
 1/2/2023,Food,2,2,2,90 Waverly Dr,L3O3,Frederick,MD,21702,1,0,0,1,,,"L303, not O3, Waverley"
 1/3/2023,Food,3,3,3,19515 Frederick Rd,Trlr 108,Germantown,MD,20876,1,0,0,1,,,real
 1/4/2023,Food,4,4,4,722 Clopper Rd,#24,Gaithersburg,MD,20878,1,0,0,1,,,real

@@ -115,6 +115,7 @@ Public Sub attemptValidation()
         End If
                 
         Dim gburgAddress As Scripting.Dictionary
+        ' Note that this does NOT use Google's addressKey.Full, this builds GburgFormatValidAddress from base valid fields
         Set gburgAddress = Lookup.gburgQuery(recordToAutocorrect.GburgFormatValidAddress.Item(addressKey.Full))
         
         If (gburgAddress.Item(addressKey.Full) <> vbNullString) Then
@@ -124,13 +125,26 @@ Public Sub attemptValidation()
             ' in theory this should be the same as Google's valid address, but gburgQuery could return different zip
             recordToAutocorrect.SetValidAddress gburgAddress
             
+            Dim isSingleMatch As Boolean
+            
             ' Addresses with unit will always match even if raw unit is incorrect
             ' because Gaithersburg has the same address without unit in their database
-            ' Check for this and fail autocorrection if dropped raw unit
+            ' However, some addresses like 497 Quince Orchard Rd are Motel 6 and unit can be dropped safely
+            ' because there's only one match in Gaithersburg database
+            ' Check for this and fail autocorrection if dropped raw unit and more than one match
             If recordToAutocorrect.validUnitWithNum = vbNullString And _
                recordToAutocorrect.RawUnitWithNum <> vbNullString Then
-                recordToAutocorrect.SetInCity InCityCode.FailedAutocorrectInCity
+                Dim count As Long
+                count = Lookup.gburgPartialQuery(gburgAddress.Item(addressKey.Full))
+                If count = 1 Then
+                    isSingleMatch = True
+                Else
+                    recordToAutocorrect.SetInCity InCityCode.FailedAutocorrectInCity
+                End If
             Else
+                isSingleMatch = True
+            End If
+            If isSingleMatch Then
                 recordToAutocorrect.SetInCity InCityCode.ValidInCity
                 
                 addresses.Add recordToAutocorrect.key, recordToAutocorrect
