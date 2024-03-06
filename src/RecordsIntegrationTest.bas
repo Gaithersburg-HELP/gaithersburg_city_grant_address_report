@@ -237,17 +237,22 @@ Public Sub TestHandcorrected()
     On Error GoTo TestFail
     
     Dim testAddressesArr() As String
-    testAddressesArr = getCSV(ThisWorkbook.path & "\testdata\testhandcorrected.csv")
-    
+'    testAddressesArr = getCSV(ThisWorkbook.path & "\testdata\testhandcorrected.csv")
+    testAddressesArr = getCSV(ThisWorkbook.path & "\testdata\testdifficultaddresses.csv")
     PasteTestRecords testAddressesArr
     
     addRecords
     attemptValidation
     
-    CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\testhandcorrected_addressesoutput.csv"
-    CompareSheetCSV Assert, "Needs Autocorrect", ThisWorkbook.path & "\testdata\testhandcorrected_autocorrectoutput.csv"
-    CompareSheetCSV Assert, "Discards", ThisWorkbook.path & "\testdata\testhandcorrected_discardsoutput.csv"
-    CompareSheetCSV Assert, "Autocorrected", ThisWorkbook.path & "\testdata\testhandcorrected_autocorrectedoutput.csv"
+'    CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\testhandcorrected_addressesoutput.csv"
+'    CompareSheetCSV Assert, "Needs Autocorrect", ThisWorkbook.path & "\testdata\testhandcorrected_autocorrectoutput.csv"
+'    CompareSheetCSV Assert, "Discards", ThisWorkbook.path & "\testdata\testhandcorrected_discardsoutput.csv"
+'    CompareSheetCSV Assert, "Autocorrected", ThisWorkbook.path & "\testdata\testhandcorrected_autocorrectedoutput.csv"
+    CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\testdifficultaddresses_addressesoutput.csv"
+    CompareSheetCSV Assert, "Needs Autocorrect", ThisWorkbook.path & "\testdata\testdifficultaddresses_autocorrectoutput.csv"
+    CompareSheetCSV Assert, "Discards", ThisWorkbook.path & "\testdata\testdifficultaddresses_discardsoutput.csv"
+    CompareSheetCSV Assert, "Autocorrected", ThisWorkbook.path & "\testdata\testdifficultaddresses_autocorrectedoutput.csv"
+    
     
     Exit Sub
 TestFail:
