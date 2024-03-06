@@ -344,6 +344,11 @@ Public Sub toggleUserVerifiedAutocorrected()
 End Sub
 
 '@EntryPoint
+Public Sub OpenGaithersburgStreets()
+    ThisWorkbook.FollowHyperlink address:="https://maps.gaithersburgmd.gov/arcgis/rest/services/layers/GaithersburgCityAddresses/MapServer/0/query?where=Core_Address+LIKE+%27%25%27&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=Road_Name%2CRoad_Type&returnGeometry=false&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&returnIdsOnly=false&returnCountOnly=false&orderByFields=Road_Name&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=true&resultOffset=&resultRecordCount=&queryByDistance=&returnExtentsOnly=false&datumTransformation=&parameterValues=&rangeValues=&f=html"
+End Sub
+
+'@EntryPoint
 Public Sub CopyAndOpenCountyTotalsSite()
     Dim values As Range
     Set values = ActiveSheet.rows(selection.row)
