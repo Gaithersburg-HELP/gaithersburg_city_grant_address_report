@@ -168,16 +168,20 @@ Public Sub TestAllAddresses()
 
     CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\test6validateduseredits_addressesoutput.csv"
     CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test6validateduseredits_totalsoutput.csv", getTotalsRng
+    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test6validateduseredits_countyoutput.csv", getCountyRng
     CompareSheetCSV Assert, "Autocorrected", ThisWorkbook.path & "\testdata\test6validateduseredits_autocorrectedoutput.csv"
     CompareSheetCSV Assert, "Final Report", ThisWorkbook.path & "\testdata\test6validateduseredits_finalreportoutput.csv"
 
-
-'    ' TODO test delete service column, generate final report
-'    InterfaceButtons.confirmDeleteService
-'    InterfaceButtons.confirmGenerateFinalReport
-'
 '    ' TODO move one record to needs autocorrect, test delete all visit data
 '    InterfaceButtons.confirmDeleteAllVisitData
+'    CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\test7deletedata_addressesoutput.csv"
+'    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test7deletedata_totalsoutput.csv", getTotalsRng
+'    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test7deletedata_countyoutput.csv", getCountyRng
+'    CompareSheetCSV Assert, "Needs Autocorrect", ThisWorkbook.path & "\testdata\test7deletedata_autocorrectoutput.csv"
+'    CompareSheetCSV Assert, "Discards", ThisWorkbook.path & "\testdata\test7deletedata_autocorrectedoutput.csv"
+'    CompareSheetCSV Assert, "Autocorrected", ThisWorkbook.path & "\testdata\test7deletedata_autocorrectedoutput.csv"
+'    CompareSheetCSV Assert, "Final Report", ThisWorkbook.path & "\testdata\test7deletedata_finalreportoutput.csv"
+        
     Exit Sub
 TestFail:
     Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
@@ -254,9 +258,12 @@ Public Sub TestCountyTotals()
     PasteTestRecords testAddressesArr
 
     addRecords
+    
+    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\testcounty_1added_totalsoutput.csv", getCountyRng
+    
     attemptValidation
     
-    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\testcounty_totalsoutput.csv", getCountyRng
+    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\testcounty_2validated_totalsoutput.csv", getCountyRng
     
     Exit Sub
 TestFail:
