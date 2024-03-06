@@ -74,29 +74,27 @@ Public Sub attemptValidation()
         Dim minLatitude As Double
         Dim maxLatitude As Double
         
-        Dim bypassUserVerifiedCheck As Boolean
-        bypassUserVerifiedCheck = False
-        
-        ' check if user moved ValidNotInCity record to Needs Autocorrect and wants to reverify
-        If recordToAutocorrect.UserVerified = True And _
-           recordToAutocorrect.InCity = ValidNotInCity Then
-            recordToAutocorrect.SetInCity InCityCode.NotYetAutocorrected
-            bypassUserVerifiedCheck = True
-        End If
-        
-        
-        If ((recordToAutocorrect.UserVerified = False) Or (bypassUserVerifiedCheck)) And _
-           usedRequests < getRemainingRequests() And _
-           recordToAutocorrect.InCity = InCityCode.NotYetAutocorrected Then
-           
-            Dim formattedRawAddress As Scripting.Dictionary
-            Set formattedRawAddress = recordToAutocorrect.GburgFormatRawAddress
+        ' if user verified, only re-run google validation if fixing a ValidNotInCity address to verify if ValidNotInCity
+        ' other user verified codes like FailedAutocorrection or ValidInCity should be verified in Gaithersburg database
+        If (usedRequests < getRemainingRequests) And _
+           ((recordToAutocorrect.UserVerified = True And recordToAutocorrect.InCity = InCityCode.ValidNotInCity) Or _
+            (recordToAutocorrect.InCity = InCityCode.NotYetAutocorrected)) Then
             
             Dim validatedAddress As Scripting.Dictionary
-            Set validatedAddress = Lookup.googleValidateQuery(formattedRawAddress.Item(addressKey.Full), _
-                                                              recordToAutocorrect.RawCity, _
-                                                              recordToAutocorrect.RawState, _
-                                                              recordToAutocorrect.RawZip, addressAPIKey)
+            If recordToAutocorrect.UserVerified = True Then
+                ' TODO if adding valid city field fix this
+                Set validatedAddress = Lookup.googleValidateQuery( _
+                                        recordToAutocorrect.GburgFormatValidAddress.Item(addressKey.Full), _
+                                        recordToAutocorrect.RawCity, _
+                                        recordToAutocorrect.RawState, _
+                                        recordToAutocorrect.ValidZipcode, addressAPIKey)
+            Else
+                Set validatedAddress = Lookup.googleValidateQuery( _
+                                        recordToAutocorrect.GburgFormatRawAddress.Item(addressKey.Full), _
+                                        recordToAutocorrect.RawCity, _
+                                        recordToAutocorrect.RawState, _
+                                        recordToAutocorrect.RawZip, addressAPIKey)
+            End If
             
             If Not (validatedAddress Is Nothing) Then
                 recordToAutocorrect.SetValidAddress validatedAddress

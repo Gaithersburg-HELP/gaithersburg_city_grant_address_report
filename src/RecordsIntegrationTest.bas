@@ -213,6 +213,38 @@ TestFail:
 End Sub
 
 '@TestMethod
+Public Sub TestUserMove()
+    On Error GoTo TestFail
+    
+    Dim testAddressesArr() As String
+    testAddressesArr = getCSV(ThisWorkbook.path & "\testdata\testusermove.csv")
+    PasteTestRecords testAddressesArr
+    
+    Fakes.MsgBox.Returns vbYes
+
+    InterfaceButtons.confirmAddRecords
+    InterfaceButtons.confirmAttemptValidation
+    
+    AddressesSheet.Select
+    
+    AddressesSheet.Range("A2").Select
+    InterfaceButtons.confirmMoveAutocorrect
+
+    AutocorrectAddressesSheet.Select
+
+    AutocorrectAddressesSheet.Range("A2").Select
+    InterfaceButtons.toggleUserVerified
+    
+    InterfaceButtons.confirmAttemptValidation
+    
+    CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\testusermove_addressesoutput.csv"
+    
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
 Public Sub TestCountyTotals()
     On Error GoTo TestFail
     
