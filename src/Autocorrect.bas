@@ -131,7 +131,9 @@ Public Sub attemptValidation()
             ' However, some addresses like 497 Quince Orchard Rd are Motel 6 and unit can be dropped safely
             ' because there's only one match in Gaithersburg database
             ' Check for this and fail autocorrection if dropped raw unit and more than one match
-            If recordToAutocorrect.validUnitWithNum = vbNullString And _
+            ' However user verified records should be allowed because sometimes unit number is wrong and can't be corrected
+            If recordToAutocorrect.UserVerified = False And _
+               recordToAutocorrect.validUnitWithNum = vbNullString And _
                recordToAutocorrect.RawUnitWithNum <> vbNullString Then
                 Dim count As Long
                 count = Lookup.gburgPartialQuery(gburgAddress.Item(addressKey.Full))
@@ -143,7 +145,7 @@ Public Sub attemptValidation()
             Else
                 isSingleMatch = True
             End If
-            If isSingleMatch Then
+            If isSingleMatch Or recordToAutocorrect.UserVerified Then
                 recordToAutocorrect.SetInCity InCityCode.ValidInCity
                 
                 addresses.Add recordToAutocorrect.key, recordToAutocorrect

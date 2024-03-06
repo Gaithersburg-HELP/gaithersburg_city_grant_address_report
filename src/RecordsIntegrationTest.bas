@@ -231,8 +231,8 @@ Public Sub TestUserMove()
     InterfaceButtons.confirmMoveAutocorrect
 
     AutocorrectAddressesSheet.Select
-
-    AutocorrectAddressesSheet.Range("A2").Select
+    
+    AutocorrectAddressesSheet.Range("A2:A3").Select
     InterfaceButtons.toggleUserVerified
     
     InterfaceButtons.confirmAttemptValidation

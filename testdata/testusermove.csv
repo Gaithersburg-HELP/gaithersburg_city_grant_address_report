@@ -1,12 +1,3 @@
 Visit on,Tracking Method,Guest ID,First Name,Last Name,Address,Apartment/Suite,City/Town,State/Province,Zip/Postal Code,Total Individuals,0 to 1,2 to 17,18+,--- TOTAL Rx COSTS (number only 0.00),,Test Notes
 1/1/2023,Food,1,1,1,1 Banister Ct,,Gaithersburg,Maryland,20879,1,0,0,1,,,"validates and autocorrects to No, should be able to move back and forth between needs autocorrect and addresses"
-,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,
+1/2/2023,Food,2,2,2,118 Duvall LN,B,Gaithersburg,MD,20877,1,0,0,1,,,user should be able to force validate this address in Gaithersburg database even though unit number is invalid
