@@ -114,13 +114,17 @@ Public Sub confirmDeleteAllVisitData()
     
     SheetUtilities.DisableAllFilters
     
-    SheetUtilities.getTotalsRng.Clear
-    ' TODO clear county totals also
+    SheetUtilities.getTotalsRng.value = 0
+    SheetUtilities.getCountyRng.value = 0
     SheetUtilities.getFinalReportRng.Clear
     SheetUtilities.getAddressVisitDataRng("Addresses").Clear
+    SheetUtilities.getRng("Addresses", "A2", "A2").offset(0, SheetUtilities.firstServiceColumn - 2).value = "{}"
     SheetUtilities.getAddressVisitDataRng("Needs Autocorrect").Clear
+    SheetUtilities.getRng("Needs Autocorrect", "A2", "A2").offset(0, SheetUtilities.firstServiceColumn - 2).value = "{}"
     SheetUtilities.getAddressVisitDataRng("Discards").Clear
+    SheetUtilities.getRng("Discards", "A2", "A2").offset(0, SheetUtilities.firstServiceColumn - 2).value = "{}"
     SheetUtilities.getAddressVisitDataRng("Autocorrected").Clear
+    SheetUtilities.getRng("Autocorrected", "A2", "A2").offset(0, SheetUtilities.firstServiceColumn - 2).value = "{}"
 End Sub
 
 '@EntryPoint

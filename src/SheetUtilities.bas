@@ -133,12 +133,14 @@ Public Function uniqueCountyZipCols() As Scripting.Dictionary
 End Function
 
 
-Public Function serviceFirstCell() As String
-    serviceFirstCell = ActiveSheet.Range("A1").offset(0, firstServiceColumn - 1).address
+Public Function serviceFirstCell(ByVal sheetName As String) As String
+    serviceFirstCell = ThisWorkbook.Worksheets.[_Default](sheetName) _
+                         .Range("A1").offset(0, firstServiceColumn - 1).address
 End Function
 
-Public Function rxFirstCell() As String
-    rxFirstCell = ActiveSheet.Range("A2").offset(0, firstServiceColumn - 2).address
+Public Function rxFirstCell(ByVal sheetName As String) As String
+    rxFirstCell = ThisWorkbook.Worksheets.[_Default](sheetName) _
+                        .Range("A2").offset(0, firstServiceColumn - 2).address
 End Function
 
 ' Returns blank row after all data, assuming Column A is filled in last row
@@ -196,7 +198,7 @@ End Function
 
 Public Function getServiceHeaderRng(ByVal sheetName As String) As Range
     Set getServiceHeaderRng = ThisWorkbook.Worksheets.[_Default](sheetName) _
-                                    .Range(serviceFirstCell, getServiceHeaderLastCell(sheetName))
+                                    .Range(serviceFirstCell(sheetName), getServiceHeaderLastCell(sheetName))
 End Function
 
 ' Returns zero based service array
@@ -219,8 +221,8 @@ Public Function getAddressRng(ByVal sheetName As String) As Range
 End Function
 
 Public Function getAddressVisitDataRng(ByVal sheetName As String) As Range
-    Set getAddressVisitDataRng = Application.Union(getRng(sheetName, rxFirstCell, rxFirstCell), _
-                                                   getRng(sheetName, serviceFirstCell, _
+    Set getAddressVisitDataRng = Application.Union(getRng(sheetName, rxFirstCell(sheetName), rxFirstCell(sheetName)), _
+                                                   getRng(sheetName, serviceFirstCell(sheetName), _
                                                           getServiceHeaderLastCell(sheetName)))
 End Function
 

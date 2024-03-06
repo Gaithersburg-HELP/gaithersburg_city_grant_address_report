@@ -171,16 +171,19 @@ Public Sub TestAllAddresses()
     CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test6validateduseredits_countyoutput.csv", getCountyRng
     CompareSheetCSV Assert, "Autocorrected", ThisWorkbook.path & "\testdata\test6validateduseredits_autocorrectedoutput.csv"
     CompareSheetCSV Assert, "Final Report", ThisWorkbook.path & "\testdata\test6validateduseredits_finalreportoutput.csv"
-
-'    ' TODO move one record to needs autocorrect, test delete all visit data
-'    InterfaceButtons.confirmDeleteAllVisitData
-'    CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\test7deletedata_addressesoutput.csv"
-'    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test7deletedata_totalsoutput.csv", getTotalsRng
-'    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test7deletedata_countyoutput.csv", getCountyRng
-'    CompareSheetCSV Assert, "Needs Autocorrect", ThisWorkbook.path & "\testdata\test7deletedata_autocorrectoutput.csv"
-'    CompareSheetCSV Assert, "Discards", ThisWorkbook.path & "\testdata\test7deletedata_autocorrectedoutput.csv"
-'    CompareSheetCSV Assert, "Autocorrected", ThisWorkbook.path & "\testdata\test7deletedata_autocorrectedoutput.csv"
-'    CompareSheetCSV Assert, "Final Report", ThisWorkbook.path & "\testdata\test7deletedata_finalreportoutput.csv"
+   
+    AddressesSheet.Select
+    AddressesSheet.Range("A2").Select
+    InterfaceButtons.confirmMoveAutocorrect
+    InterfaceButtons.confirmDeleteAllVisitData
+    
+    CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\test7deletedata_addressesoutput.csv"
+    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test7deletedata_totalsoutput.csv", getTotalsRng
+    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test7deletedata_countyoutput.csv", getCountyRng
+    CompareSheetCSV Assert, "Needs Autocorrect", ThisWorkbook.path & "\testdata\test7deletedata_autocorrectoutput.csv"
+    CompareSheetCSV Assert, "Discards", ThisWorkbook.path & "\testdata\test7deletedata_discardsoutput.csv"
+    CompareSheetCSV Assert, "Autocorrected", ThisWorkbook.path & "\testdata\test7deletedata_autocorrectedoutput.csv"
+    CompareSheetCSV Assert, "Final Report", ThisWorkbook.path & "\testdata\test7deletedata_finalreportoutput.csv"
         
     Exit Sub
 TestFail:
