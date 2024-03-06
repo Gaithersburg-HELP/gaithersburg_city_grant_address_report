@@ -491,7 +491,8 @@ Private Function SplitUnit(ByVal unitWithNum As String) As String()
     unitWithNum = Replace(unitWithNum, "Upper", "Uppr")
     
     ' If # assume Apt
-    unitWithNum = Replace(unitWithNum, "#", "Apt")
+    unitWithNum = Replace(unitWithNum, "# ", "Apt ")
+    unitWithNum = Replace(unitWithNum, "#", "Apt ")
     
     Dim splitArr() As String
     splitArr = Split(unitWithNum, " ")

@@ -1,11 +1,3 @@
-Visit on,Tracking Method,Guest ID,First Name,Last Name,Address,Apartment/Suite,City/Town,State/Province,Zip/Postal Code,Total Individuals,0 to 1,2 to 17,18+,--- TOTAL Rx COSTS (number only 0.00),,Test Notes
-1/1/2023,Food,1,1,1,425 N Frederick Ave,C14,Gaithersburg,MD,20877,1,0,0,1,,,14C
-1/2/2023,Food,2,2,2,90 Waverly Dr,L3O3,Frederick,MD,21702,1,0,0,1,,,"L303, not O3, Waverley"
-1/3/2023,Food,3,3,3,19515 Frederick Rd,Trlr 108,Germantown,MD,20876,1,0,0,1,,,real
-1/4/2023,Food,4,4,4,722 Clopper Rd,#24,Gaithersburg,MD,20878,1,0,0,1,,,real
-1/5/2023,Food,5,5,5,949 Clopper Road,4A,Gaithersburg,MD,20878,1,0,0,1,,,A4
-1/6/2023,Food,6,6,6,19515 Frederick Rd,Tlr 88,Germantown,MD,20876,1,0,0,1,,,"trlr 88, USPS outputs # TLR"
-1/7/2023,Food,7,7,7,19515 Frederick Rd,Trl 180,Germantown,MD,20876,1,0,0,1,,,trlr 180
-1/8/2023,Food,8,8,8,858 W SIDE DR,Room 2,Gaithersburg,MD,20878,1,0,0,1,,,"Gaithersburg database does not have Room and only one match, should drop Room and return Yes"
-1/9/2023,Food,9,9,9,497 Quince Orchard RD Motel 6,118,Gaithersburg,MD,20878,1,0,0,1,,,"motel 6, only one match in Gaithersburg database, should drop 118 and return Yes"
-1/10/2023,Food,9,9,9,1 el forest ct,,Clarksburg,MD,20878,1,0,0,1,,,no zip code should not go to autocorrected
+In City,User Verified,Validated Address,Validated Unit Type and No.,Validated Zip Code,Raw Address,Raw Unit Type With Number,Raw City,Raw State,Raw Zipcode,Guest ID,First Name,Last Name,Household Total,0 to 1,2 to 17,18+,Rx Total,Food
+Failed autocorrection and geocoded not in city,FALSE,,,20878,1 el forest ct,,Clarksburg,MD,,11,11,11,1,0,0,1,{},"{""Q3"":[""1/11/2023""]}"
+Failed autocorrection and geocoded not in city,FALSE,90 Waverley Dr,,21702,90 Waverly Dr,L3O3,Frederick,MD,21702,2,2,2,1,0,0,1,{},"{""Q3"":[""1/2/2023""]}"

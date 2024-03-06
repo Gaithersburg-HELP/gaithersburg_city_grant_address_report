@@ -126,6 +126,7 @@ Public Sub attemptValidation()
             recordToAutocorrect.SetValidAddress gburgAddress
             
             Dim isSingleMatch As Boolean
+            isSingleMatch = False
             
             ' Addresses with unit will always match even if raw unit is incorrect
             ' because Gaithersburg has the same address without unit in their database

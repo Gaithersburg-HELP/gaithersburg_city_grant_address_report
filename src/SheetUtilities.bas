@@ -146,7 +146,7 @@ Public Function getBlankRow(ByVal sheetName As String) As Range
     Dim sheet As Worksheet
     Set sheet = ThisWorkbook.Worksheets.[_Default](sheetName)
     
-    Set getBlankRow = sheet.rows.Item(sheet.rows.Item(sheet.rows.Count).End(xlUp).row + 1)
+    Set getBlankRow = sheet.rows.Item(sheet.rows.Item(sheet.rows.count).End(xlUp).row + 1)
 End Function
 
 ' Returns all data below (all cells between firstCell and lastCol) including blanks and firstCell
@@ -164,7 +164,7 @@ Public Function getRng(ByVal sheetName As String, ByVal firstCell As String, ByV
     i = sheet.Range(firstCell).column
     Do While i <= lastColNum
         Dim currentLastRow As Long
-        currentLastRow = sheet.Cells.Item(sheet.rows.Count, i).End(xlUp).row
+        currentLastRow = sheet.Cells.Item(sheet.rows.count, i).End(xlUp).row
         If (currentLastRow > lastRow) Then lastRow = currentLastRow
         i = i + 1
     Loop
@@ -203,10 +203,10 @@ End Function
 Public Function loadServiceNames(ByVal sheetName As String) As String()
     Dim servicesRng As Range
     Set servicesRng = SheetUtilities.getServiceHeaderRng(sheetName)
-    ReDim services(servicesRng.Count - 1) As String
+    ReDim services(servicesRng.count - 1) As String
     Dim i As Long
     i = 1
-    Do While i <= servicesRng.Count
+    Do While i <= servicesRng.count
         services(i - 1) = servicesRng.Cells.Item(1, i).value
         i = i + 1
     Loop
@@ -275,13 +275,13 @@ Public Sub ClearEmptyServices(ByVal sheetName As String)
     Set servicesRng = getServiceHeaderRng(sheetName)
     
     Dim max As Long
-    max = ThisWorkbook.Worksheets.[_Default](sheetName).rows.Count
+    max = ThisWorkbook.Worksheets.[_Default](sheetName).rows.count
     
     Dim columnsToDelete As Range
     
     Dim i As Long
     i = 1
-    Do While i <= servicesRng.Count
+    Do While i <= servicesRng.count
         If servicesRng.Cells.Item(max, i).End(xlUp).row = 1 Then
             Dim column As Range
             Set column = ThisWorkbook.Worksheets.[_Default](sheetName).columns( _
@@ -311,14 +311,14 @@ Public Sub ClearAll()
     getFinalReportRng.Clear
     
     Dim i As Long
-    For i = 3 To ThisWorkbook.Sheets.Count
+    For i = 3 To ThisWorkbook.Sheets.count
         ClearSheet ThisWorkbook.Sheets.[_Default](i).Name
     Next
 End Sub
 
 Public Sub DisableAllFilters()
     Dim i As Long
-    For i = 1 To ThisWorkbook.Sheets.Count
+    For i = 1 To ThisWorkbook.Sheets.count
         ThisWorkbook.Sheets.[_Default](i).AutoFilterMode = False
     Next
 End Sub
@@ -367,7 +367,7 @@ End Sub
 Public Sub PrintCollection(ByRef collectionResult As Collection)
     Dim i As Long
     Debug.Print ("[")
-    For i = 1 To collectionResult.Count
+    For i = 1 To collectionResult.count
         If TypeOf collectionResult.Item(i) Is Dictionary Then
             PrintJson collectionResult.Item(i)
         ElseIf TypeOf collectionResult.Item(i) Is Collection Then
@@ -375,7 +375,7 @@ Public Sub PrintCollection(ByRef collectionResult As Collection)
         Else
             Debug.Print """" & collectionResult.Item(i) & """"
         End If
-        If i <> collectionResult.Count Then
+        If i <> collectionResult.count Then
             Debug.Print (",")
         End If
     Next
