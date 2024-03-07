@@ -30,7 +30,7 @@ Public Sub TestMergeRecord()
     record.AddVisit "08/17/2023", "food"
     recordToMerge.AddVisit "10/20/2024", "food"
     
-    record.MergeRecord recordToMerge
+    Assert.IsFalse record.MergeRecord(recordToMerge)
     
     Assert.IsTrue record.visitData.exists("food")
     Assert.IsTrue record.visitData.Item("food").exists("Q1")

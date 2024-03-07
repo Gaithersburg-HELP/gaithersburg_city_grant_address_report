@@ -544,6 +544,7 @@ Public Sub addRecords()
         
         If recordsToValidate.exists(recordToAdd.key) Then
             Set existingRecord = recordsToValidate.Item(recordToAdd.key)
+            '@Ignore FunctionReturnValueDiscarded
             existingRecord.MergeRecord recordToAdd
         Else
             If addresses.exists(recordToAdd.key) Then
@@ -559,10 +560,12 @@ Public Sub addRecords()
             
             If Not (existsInDict Is Nothing) Then
                 Set existingRecord = existsInDict.Item(recordToAdd.key)
+                '@Ignore FunctionReturnValueDiscarded
                 changedAddress = existingRecord.MergeRecord(recordToAdd)
                 
                 If autocorrected.exists(recordToAdd.key) And Not changedAddress Then
                     Set existingRecord = autocorrected.Item(recordToAdd.key)
+                    '@Ignore FunctionReturnValueDiscarded
                     existingRecord.MergeRecord recordToAdd
                 End If
                 

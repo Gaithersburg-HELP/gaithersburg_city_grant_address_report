@@ -5,7 +5,7 @@ Public Const addressValidationKeyname As String = "address_key"
 
 '@Folder "City_Grant_Address_Report.src"
 
-Public Function getWorkbook() As Workbook
+Public Function getWorkbook() As workbook
     Dim fDialog As FileDialog
     Dim selectedFile As String
 
@@ -31,6 +31,29 @@ Public Function getWorkbook() As Workbook
         Set getWorkbook = Nothing
     End If
 End Function
+
+Public Sub sortWorkbooks()
+    Dim fDialog As FileDialog
+    Set fDialog = Application.FileDialog(msoFileDialogFilePicker)
+    With fDialog
+        .AllowMultiSelect = True
+        .Title = "Select CSVs to Sort"
+        .Filters.Clear
+        .Filters.Add "CSV", "*.csv"
+        .Show
+    End With
+    
+    Dim selectedFile As Variant
+    
+    For Each selectedFile In fDialog.SelectedItems
+        Dim wbook As workbook
+        Set wbook = Workbooks.Open(selectedFile)
+        wbook.Activate
+        SheetUtilities.SortSheet
+        wbook.Save
+        wbook.Close
+    Next selectedFile
+End Sub
 
 ' Expects a complete file path to CSV
 ' Returns a zero-based one dimensional array of each row in CSV

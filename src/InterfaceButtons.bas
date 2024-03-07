@@ -483,7 +483,7 @@ End Sub
 
 '@EntryPoint
 Public Sub ImportRecords()
-    Dim wbook As Workbook
+    Dim wbook As workbook
     Set wbook = FileUtilities.getWorkbook()
     
     If wbook Is Nothing Then
