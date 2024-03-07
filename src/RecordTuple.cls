@@ -147,10 +147,6 @@ Public Property Get RawAddress() As String
 End Property
 
 Public Property Let RawAddress(ByVal str As String)
-    If pRawAddress <> vbNullString Then
-        Err.Raise Number:=513, Description:="Reassignment of raw address"
-    End If
-    
     pRawAddress = str
 End Property
 
@@ -314,18 +310,52 @@ Public Sub addRx(ByVal visitDate As String, ByVal rx As Double)
     MergeRx newRx
 End Sub
 
-Public Sub MergeRecord(ByVal record As RecordTuple)
+' Returns true if address changed, false otherwise
+Public Function MergeRecord(ByVal record As RecordTuple) As Boolean
     MergeVisitData record.visitData
     MergeRx record.rxTotal
-End Sub
+    
+    FirstName = record.FirstName
+    LastName = record.LastName
+    householdTotal = record.householdTotal
+    zeroToOneTotal = record.zeroToOneTotal
+    twoToSeventeenTotal = record.twoToSeventeenTotal
+    eighteenPlusTotal = record.eighteenPlusTotal
+        
+    Dim addressChanged As Boolean
+    addressChanged = (record.RawAddress <> RawAddress) Or _
+                     (record.RawUnitWithNum <> RawUnitWithNum) Or _
+                     (record.RawCity <> RawCity) Or _
+                     (record.RawState <> RawState) Or _
+                     (record.RawZip <> RawZip)
+    
+    RawAddress = record.RawAddress
+    RawUnitWithNum = record.RawUnitWithNum
+    RawCity = record.RawCity
+    RawState = record.RawState
+    RawZip = record.RawZip
+    
+    If addressChanged Then
+        UserVerified = False
+        SetInCity InCityCode.NotYetAutocorrected
+        validAddress = vbNullString
+        validUnitWithNum = vbNullString
+        ValidZipcode = vbNullString
+        
+        Set pGburgFormatRawAddress = Nothing
+        Set pGburgFormatValidAddress = Nothing
+    End If
+    
+    MergeRecord = addressChanged
+End Function
 
 Private Sub MergeRx(ByVal rxToMerge As Scripting.Dictionary)
     Dim quarter As Variant
     For Each quarter In rxToMerge.Keys
-        If rxTotal.Exists(quarter) Then
+        If rxTotal.exists(quarter) Then
             Dim visit As Variant
             For Each visit In rxToMerge.Item(quarter).Keys
-                If Not rxTotal.Item(quarter).Exists(visit) Then
+                If Not rxTotal.Item(quarter).exists(visit) Then
                     rxTotal.Item(quarter).Add visit, rxToMerge.Item(quarter).Item(visit)
                 End If
             Next visit
@@ -339,11 +369,11 @@ Private Sub MergeVisitData(ByVal visitDataToMerge As Scripting.Dictionary)
     Dim service As Variant
     
     For Each service In visitDataToMerge.Keys
-        If visitData.Exists(service) Then
+        If visitData.exists(service) Then
             ' Loop through quarters and merge
             Dim quarter As Variant
             For Each quarter In visitDataToMerge.Item(service)
-                If visitData.Item(service).Exists(quarter) Then
+                If visitData.Item(service).exists(quarter) Then
                     Dim visitDateToMerge As Variant
                     For Each visitDateToMerge In visitDataToMerge.Item(service).Item(quarter)
                         Dim visitExists As Boolean

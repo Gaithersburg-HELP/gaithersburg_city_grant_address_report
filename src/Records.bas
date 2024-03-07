@@ -166,7 +166,7 @@ Public Sub writeAddress(ByVal sheetName As String, ByVal record As RecordTuple)
         Dim visitDataToAdd As String
         visitDataToAdd = JsonConverter.ConvertToJson(record.visitData.Item(serviceToAdd))
         
-        If Not serviceCols.Exists(serviceToAdd) Then
+        If Not serviceCols.exists(serviceToAdd) Then
             Dim newServiceCol As Long
             newServiceCol = SheetUtilities.firstServiceColumn + UBound(serviceCols.Keys) + 1
             serviceCols.Add serviceToAdd, newServiceCol
@@ -230,7 +230,7 @@ Private Sub incrementCountyTotal(ByVal record As RecordTuple)
     
     Dim zipCol As Long
     
-    If uniqueCols.Exists(zip) Then
+    If uniqueCols.exists(zip) Then
         zipCol = uniqueCols.Item(zip)
     Else
         ' BUG assumes poorer city
@@ -536,35 +536,52 @@ Public Sub addRecords()
         Dim recordToAdd As RecordTuple
         Set recordToAdd = loadRecordFromRaw(InterfaceSheet.Range("A" & i))
         
-        Dim existingRecord As RecordTuple
+        Dim existsInDict As Scripting.Dictionary
+        Set existsInDict = Nothing
         
-        If addresses.Exists(recordToAdd.key) Then
-            Set existingRecord = addresses.Item(recordToAdd.key)
-            existingRecord.MergeRecord recordToAdd
-            If autocorrected.Exists(recordToAdd.key) Then
-                Set existingRecord = autocorrected.Item(recordToAdd.key)
-                existingRecord.MergeRecord recordToAdd
-            End If
-        ElseIf needsAutocorrect.Exists(recordToAdd.key) Then
-            Set existingRecord = needsAutocorrect.Item(recordToAdd.key)
-            existingRecord.MergeRecord recordToAdd
-        ElseIf discards.Exists(recordToAdd.key) Then
-            ' BUG if previously discarded user ID but address was updated, this will be discarded anyway
-            Set existingRecord = discards.Item(recordToAdd.key)
-            existingRecord.MergeRecord recordToAdd
-            If autocorrected.Exists(recordToAdd.key) Then
-                Set existingRecord = autocorrected.Item(recordToAdd.key)
-                existingRecord.MergeRecord recordToAdd
-            End If
-        ElseIf recordsToValidate.Exists(recordToAdd.key) Then
+        Dim existingRecord As RecordTuple
+        Set existingRecord = Nothing
+        
+        If recordsToValidate.exists(recordToAdd.key) Then
             Set existingRecord = recordsToValidate.Item(recordToAdd.key)
             existingRecord.MergeRecord recordToAdd
         Else
-            If recordToAdd.isCorrectableAddress() Then
-                recordsToValidate.Add recordToAdd.key, recordToAdd
-            Else
-                recordToAdd.SetInCity InCityCode.NotCorrectable
-                discards.Add recordToAdd.key, recordToAdd
+            If addresses.exists(recordToAdd.key) Then
+                Set existsInDict = addresses
+            ElseIf needsAutocorrect.exists(recordToAdd.key) Then
+                Set existsInDict = needsAutocorrect
+            ElseIf discards.exists(recordToAdd.key) Then
+                Set existsInDict = discards
+            End If
+            
+            Dim changedAddress As Boolean
+            changedAddress = False
+            
+            If Not (existsInDict Is Nothing) Then
+                Set existingRecord = existsInDict.Item(recordToAdd.key)
+                changedAddress = existingRecord.MergeRecord(recordToAdd)
+                
+                If autocorrected.exists(recordToAdd.key) And Not changedAddress Then
+                    Set existingRecord = autocorrected.Item(recordToAdd.key)
+                    existingRecord.MergeRecord recordToAdd
+                End If
+                
+                Set recordToAdd = existingRecord
+                If changedAddress Then
+                    existsInDict.Remove recordToAdd.key
+                    If autocorrected.exists(recordToAdd.key) Then
+                        autocorrected.Remove recordToAdd.key
+                    End If
+                End If
+            End If
+            
+            If changedAddress Or (existsInDict Is Nothing) Then
+                If recordToAdd.isCorrectableAddress() Then
+                    recordsToValidate.Add recordToAdd.key, recordToAdd
+                Else
+                    recordToAdd.SetInCity InCityCode.NotCorrectable
+                    discards.Add recordToAdd.key, recordToAdd
+                End If
             End If
         End If
         
@@ -600,7 +617,6 @@ Public Sub addRecords()
         i = i + 1
         DoEvents
     Next key
-    
 
     Application.StatusBar = "Writing addresses and computing totals"
     

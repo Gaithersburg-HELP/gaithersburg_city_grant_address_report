@@ -300,3 +300,29 @@ Public Sub TestHandcorrected()
 TestFail:
     Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
 End Sub
+
+'@TestMethod
+Public Sub TestOverwrite()
+On Error GoTo TestFail
+    
+    Dim testAddressesArr() As String
+    testAddressesArr = getCSV(ThisWorkbook.path & "\testdata\testoverwrite.csv")
+    PasteTestRecords testAddressesArr
+    
+    addRecords
+    attemptValidation
+    
+    testAddressesArr = getCSV(ThisWorkbook.path & "\testdata\testoverwrite_2.csv")
+    PasteTestRecords testAddressesArr
+    
+    addRecords
+    
+    CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\testoverwrite_addressesoutput.csv"
+    CompareSheetCSV Assert, "Needs Autocorrect", ThisWorkbook.path & "\testdata\testoverwrite_autocorrectoutput.csv"
+    CompareSheetCSV Assert, "Discards", ThisWorkbook.path & "\testdata\testoverwrite_discardsoutput.csv"
+    CompareSheetCSV Assert, "Autocorrected", ThisWorkbook.path & "\testdata\testoverwrite_autocorrectedoutput.csv"
+    
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub

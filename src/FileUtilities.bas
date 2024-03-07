@@ -69,7 +69,7 @@ Public Function getAPIKeys() As Scripting.Dictionary
         apiKeysDict.Add apiFileArrLine(0), apiFileArrLine(1)
     Next i
     
-    If Not apiKeysDict.Exists(addressValidationKeyname) Then
+    If Not apiKeysDict.exists(addressValidationKeyname) Then
         Err.Raise 513
     End If
     

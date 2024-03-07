@@ -32,9 +32,9 @@ Public Sub TestMergeRecord()
     
     record.MergeRecord recordToMerge
     
-    Assert.IsTrue record.visitData.Exists("food")
-    Assert.IsTrue record.visitData.Item("food").Exists("Q1")
-    Assert.IsTrue record.visitData.Item("food").Exists("Q2")
+    Assert.IsTrue record.visitData.exists("food")
+    Assert.IsTrue record.visitData.Item("food").exists("Q1")
+    Assert.IsTrue record.visitData.Item("food").exists("Q2")
     Assert.IsTrue record.visitData.Item("food").Item("Q1")(1) = CDate("09/10/2023")
     Assert.IsTrue record.visitData.Item("food").Item("Q1")(2) = CDate("08/17/2023")
     Assert.IsTrue record.visitData.Item("food").Item("Q2")(1) = CDate("10/20/2024")
@@ -53,10 +53,10 @@ Public Sub TestVisitJson()
     
     Set record.visitData = visitData
     
-    Assert.IsTrue record.visitData.Exists("food")
-    Assert.IsTrue record.visitData.Item("food").Exists("Q1")
-    Assert.IsTrue record.visitData.Item("food").Exists("Q3")
-    Assert.IsTrue record.visitData.Item("food").Exists("Q4")
+    Assert.IsTrue record.visitData.exists("food")
+    Assert.IsTrue record.visitData.Item("food").exists("Q1")
+    Assert.IsTrue record.visitData.Item("food").exists("Q3")
+    Assert.IsTrue record.visitData.Item("food").exists("Q4")
     Assert.IsTrue record.visitData.Item("food").Item("Q1").Item(1) = "8/31/2023"
     Assert.IsTrue record.visitData.Item("food").Item("Q1").Item(2) = "9/15/2023"
 End Sub
