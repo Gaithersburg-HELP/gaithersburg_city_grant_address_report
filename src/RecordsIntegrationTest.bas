@@ -326,3 +326,30 @@ On Error GoTo TestFail
 TestFail:
     Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
 End Sub
+
+'@TestMethod
+Public Sub TestSort()
+    On Error GoTo TestFail
+    
+    Dim wbook As Workbook
+    Set wbook = Workbooks.Open(Filename:=ThisWorkbook.path & "\testdata\testsortaddresses.csv")
+    
+    wbook.Worksheets.[_Default](1).UsedRange.Copy
+    AddressesSheet.Range("A1").PasteSpecial xlPasteValues
+    
+    With CreateObject("htmlfile")
+        With .parentWindow.clipboardData
+            .setData "text", vbNullString
+        End With
+    End With
+    
+    wbook.Close
+    
+    SheetUtilities.SortSheet "Addresses"
+    
+    CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\testsortaddresses_addressesoutput.csv"
+    
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
