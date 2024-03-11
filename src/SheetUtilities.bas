@@ -335,7 +335,7 @@ Public Sub SortRange(ByVal rng As Range, ByVal sortOnValidFirst As Boolean)
     
     rng.Sort _
         key1:=rng.Range("B2"), _
-        key2:=rng.Range(addressKey), _
+        key2:=rng.Range(addressKey).value, _
         Order1:=xlDescending, Order2:=xlAscending, Header:=xlNo
 End Sub
 
