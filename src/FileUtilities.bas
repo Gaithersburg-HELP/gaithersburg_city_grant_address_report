@@ -5,7 +5,7 @@ Public Const addressValidationKeyname As String = "address_key"
 
 '@Folder "City_Grant_Address_Report.src"
 
-Public Function getWorkbook() As workbook
+Public Function getWorkbook() As Workbook
     Dim fDialog As FileDialog
     Dim selectedFile As String
 
@@ -46,7 +46,7 @@ Public Sub sortWorkbooks()
     Dim selectedFile As Variant
     
     For Each selectedFile In fDialog.SelectedItems
-        Dim wbook As workbook
+        Dim wbook As Workbook
         Set wbook = Workbooks.Open(selectedFile)
         wbook.Activate
         SheetUtilities.SortSheet

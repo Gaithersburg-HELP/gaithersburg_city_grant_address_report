@@ -127,72 +127,71 @@ Public Sub confirmDeleteAllVisitData()
     SheetUtilities.getRng("Autocorrected", "A2", "A2").offset(0, SheetUtilities.firstServiceColumn - 2).value = "{}"
 End Sub
 
-'@EntryPoint
-Public Sub confirmDeleteService()
-    Dim columns As Collection
-    Set columns = getUniqueSelection(False, SheetUtilities.firstServiceColumn)
-    If columns Is Nothing Then Exit Sub
-    
-    Dim confirmResponse As VbMsgBoxResult
-    confirmResponse = MsgBox("Are you sure you wish to delete the selected service(s)?", vbYesNo + vbQuestion, "Confirmation")
-    If confirmResponse = vbNo Then
-        Exit Sub
-    End If
-    
-    SheetUtilities.DisableAllFilters
-        
-    
-    Dim addressServices() As String
-    addressServices = SheetUtilities.loadServiceNames("Addresses")
-    
-    Dim autocorrectedServices() As String
-    autocorrectedServices = SheetUtilities.loadServiceNames("Autocorrected")
-    
-    Dim addressColsToDelete As Range
-    Dim autocorrectedColsToDelete As Range
-    
-    Dim column As Variant
-    For Each column In columns
-        If addressColsToDelete Is Nothing Then
-            Set addressColsToDelete = _
-                AddressesSheet.columns.Item(column)
-        Else
-            Set addressColsToDelete = Union(addressColsToDelete, _
-                AddressesSheet.columns.Item(column))
-        End If
-        
-        Dim service As String
-        service = addressServices(column - SheetUtilities.firstServiceColumn)
-        
-        Dim i As Long
-        i = 0
-        Do While i <= UBound(autocorrectedServices)
-            If service = autocorrectedServices(i) Then
-                If autocorrectedColsToDelete Is Nothing Then
-                    Set autocorrectedColsToDelete = _
-                        AutocorrectedAddressesSheet _
-                        .columns.Item(i + SheetUtilities.firstServiceColumn)
-                Else
-                    Set autocorrectedColsToDelete = Union(autocorrectedColsToDelete, _
-                            AutocorrectedAddressesSheet _
-                            .columns.Item(i + SheetUtilities.firstServiceColumn))
-                End If
-                Exit Do
-            End If
-            i = i + 1
-        Loop
-    Next column
-    
-    addressColsToDelete.EntireColumn.Delete
-    
-    If Not autocorrectedColsToDelete Is Nothing Then
-        autocorrectedColsToDelete.EntireColumn.Delete
-    End If
-    
-    SheetUtilities.getFinalReportRng.Clear
-    Records.computeTotals
-    Records.computeCountyTotals
-End Sub
+'Public Sub confirmDeleteService()
+'    Dim columns As Collection
+'    Set columns = getUniqueSelection(False, SheetUtilities.firstServiceColumn)
+'    If columns Is Nothing Then Exit Sub
+'
+'    Dim confirmResponse As VbMsgBoxResult
+'    confirmResponse = MsgBox("Are you sure you wish to delete the selected service(s)?", vbYesNo + vbQuestion, "Confirmation")
+'    If confirmResponse = vbNo Then
+'        Exit Sub
+'    End If
+'
+'    SheetUtilities.DisableAllFilters
+'
+'
+'    Dim addressServices() As String
+'    addressServices = SheetUtilities.loadServiceNames("Addresses")
+'
+'    Dim autocorrectedServices() As String
+'    autocorrectedServices = SheetUtilities.loadServiceNames("Autocorrected")
+'
+'    Dim addressColsToDelete As Range
+'    Dim autocorrectedColsToDelete As Range
+'
+'    Dim column As Variant
+'    For Each column In columns
+'        If addressColsToDelete Is Nothing Then
+'            Set addressColsToDelete = _
+'                AddressesSheet.columns.Item(column)
+'        Else
+'            Set addressColsToDelete = Union(addressColsToDelete, _
+'                AddressesSheet.columns.Item(column))
+'        End If
+'
+'        Dim service As String
+'        service = addressServices(column - SheetUtilities.firstServiceColumn)
+'
+'        Dim i As Long
+'        i = 0
+'        Do While i <= UBound(autocorrectedServices)
+'            If service = autocorrectedServices(i) Then
+'                If autocorrectedColsToDelete Is Nothing Then
+'                    Set autocorrectedColsToDelete = _
+'                        AutocorrectedAddressesSheet _
+'                        .columns.Item(i + SheetUtilities.firstServiceColumn)
+'                Else
+'                    Set autocorrectedColsToDelete = Union(autocorrectedColsToDelete, _
+'                            AutocorrectedAddressesSheet _
+'                            .columns.Item(i + SheetUtilities.firstServiceColumn))
+'                End If
+'                Exit Do
+'            End If
+'            i = i + 1
+'        Loop
+'    Next column
+'
+'    addressColsToDelete.EntireColumn.Delete
+'
+'    If Not autocorrectedColsToDelete Is Nothing Then
+'        autocorrectedColsToDelete.EntireColumn.Delete
+'    End If
+'
+'    SheetUtilities.getFinalReportRng.Clear
+'    Records.computeTotals
+'    Records.computeCountyTotals
+'End Sub
 
 '@EntryPoint
 Public Sub confirmDiscardAll()
@@ -483,7 +482,7 @@ End Sub
 
 '@EntryPoint
 Public Sub ImportRecords()
-    Dim wbook As workbook
+    Dim wbook As Workbook
     Set wbook = FileUtilities.getWorkbook()
     
     If wbook Is Nothing Then

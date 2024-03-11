@@ -228,7 +228,7 @@ End Function
 
 Public Function sheetToCSVArray(ByVal sheetName As String, Optional ByVal rng As Range = Nothing) As String()
     ' From https://stackoverflow.com/a/37038840/13342792
-    Dim CurrentWB As workbook
+    Dim CurrentWB As Workbook
      
     Set CurrentWB = ThisWorkbook
     
@@ -238,7 +238,7 @@ Public Function sheetToCSVArray(ByVal sheetName As String, Optional ByVal rng As
         rng.Copy
     End If
     
-    Dim TempWB As workbook
+    Dim TempWB As Workbook
     Set TempWB = Application.Workbooks.Add(1)
     TempWB.Sheets.[_Default](1).Range("A1").PasteSpecial xlPasteValues
     
