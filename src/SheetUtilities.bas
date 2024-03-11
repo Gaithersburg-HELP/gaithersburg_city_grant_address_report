@@ -325,13 +325,28 @@ Public Sub DisableAllFilters()
     Next
 End Sub
 
-Public Sub SortSheet(ByVal sheetName As String)
+Public Sub SortRange(ByVal rng As Range, ByVal sortOnValidFirst As Boolean)
     Dim addressKey As String
+    If sortOnValidFirst Then
+        addressKey = "C2"
+    Else
+        addressKey = "F2"
+    End If
+    
+    rng.Sort _
+        key1:=rng.Range("B2"), _
+        key2:=rng.Range(addressKey), _
+        Order1:=xlDescending, Order2:=xlAscending, Header:=xlNo
+End Sub
+
+Public Sub SortSheet(ByVal sheetName As String)
+    Dim sortOnValidFirst As Boolean
+    
     Select Case sheetName
     Case "Addresses", "Autocorrected", "Final Report"
-        addressKey = "C2"
+        sortOnValidFirst = True
     Case "Needs Autocorrect", "Discards"
-        addressKey = "F2"
+        sortOnValidFirst = False
     End Select
     
     If sheetName = "Final Report" Then
@@ -350,10 +365,7 @@ Public Sub SortSheet(ByVal sheetName As String)
             .Apply
         End With
     Else
-        getAddressRng(sheetName).Sort _
-        key1:=ThisWorkbook.Sheets.[_Default](sheetName).Range("B2"), _
-        key2:=ThisWorkbook.Sheets.[_Default](sheetName).Range(addressKey), _
-        Order1:=xlDescending, Order2:=xlAscending, Header:=xlNo
+        SortRange getAddressRng(sheetName), sortOnValidFirst
     End If
 End Sub
 

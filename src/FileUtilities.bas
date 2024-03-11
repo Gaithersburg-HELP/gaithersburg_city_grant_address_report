@@ -32,6 +32,7 @@ Public Function getWorkbook() As Workbook
     End If
 End Function
 
+'@EntryPoint
 Public Sub sortWorkbooks()
     Dim fDialog As FileDialog
     Set fDialog = Application.FileDialog(msoFileDialogFilePicker)
@@ -49,7 +50,12 @@ Public Sub sortWorkbooks()
         Dim wbook As Workbook
         Set wbook = Workbooks.Open(selectedFile)
         wbook.Activate
-        SheetUtilities.SortSheet
+        
+        Dim rng As Range
+        Set rng = wbook.Worksheets.[_Default](1).UsedRange
+        Set rng = rng.Resize(rng.rows.count - 1).offset(1)
+        
+        SheetUtilities.SortRange rng, True ' False
         wbook.Save
         wbook.Close
     Next selectedFile
