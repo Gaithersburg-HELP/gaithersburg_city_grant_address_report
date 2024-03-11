@@ -328,14 +328,14 @@ End Sub
 Public Sub SortRange(ByVal rng As Range, ByVal sortOnValidFirst As Boolean)
     Dim addressKey As String
     If sortOnValidFirst Then
-        addressKey = "C2"
+        addressKey = "C1"
     Else
-        addressKey = "F2"
+        addressKey = "F1"
     End If
     
     rng.Sort _
-        key1:=rng.Range("B2"), _
-        key2:=rng.Range(addressKey).value, _
+        key1:=rng.Range("B1"), _
+        key2:=rng.Range(addressKey), _
         Order1:=xlDescending, Order2:=xlAscending, Header:=xlNo
 End Sub
 
@@ -427,3 +427,16 @@ Public Sub PrintJson(ByRef jsonResult As Scripting.Dictionary)
 End Sub
 
 
+' Trims off first word including space afterwards
+' Returns [trimmed first word, trimmed string (blank if only one word)]
+Public Function LWordTrim(ByVal str As String) As String()
+    Dim firstWord As String
+    Dim spaceIndex As Long
+    spaceIndex = InStr(1, str, " ", vbTextCompare)
+    If (spaceIndex <> 0) Then
+        firstWord = Left$(str, spaceIndex - 1)
+        LWordTrim = Split(firstWord & "|" & Right$(str, Len(str) - spaceIndex), "|")
+    Else
+        LWordTrim = Split(str & "|", "|")
+    End If
+End Function

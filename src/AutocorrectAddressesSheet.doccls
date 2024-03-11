@@ -1,0 +1,13 @@
+﻿'@Folder "City_Grant_Address_Report.Excel"
+Option Explicit
+
+Private Sub Worksheet_Change(ByVal Target As Range)
+    Dim KeyCells As Range
+
+    ' TODO lock all cells. on user modification of validated address cells, set In City to Not Yet Autocorrected and User Verified to True
+    Set KeyCells = Range("A1:C10")
+
+    If Not Application.Intersect(KeyCells, Range(Target.address)) Is Nothing Then
+        'MsgBox Target.row & " " & Target.Column
+    End If
+End Sub

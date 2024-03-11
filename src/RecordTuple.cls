@@ -552,20 +552,6 @@ Private Function SplitUnit(ByVal unitWithNum As String) As String()
     End Select
 End Function
 
-' Trims off first word including space afterwards
-' Returns [trimmed first word, trimmed string (blank if only one word)]
-Private Function LWordTrim(ByVal str As String) As String()
-    Dim firstWord As String
-    Dim spaceIndex As Long
-    spaceIndex = InStr(1, str, " ", vbTextCompare)
-    If (spaceIndex <> 0) Then
-        firstWord = Left$(str, spaceIndex - 1)
-        LWordTrim = Split(firstWord & "|" & Right$(str, Len(str) - spaceIndex), "|")
-    Else
-        LWordTrim = Split(str & "|", "|")
-    End If
-End Function
-
 ' Returns dictionary of AddressKey full, streetNum, prefixedstreetname, streettype, postfix, unit type, unit num, streetaddress
 ' - capitalized Street Name with abbr. prefix, cap. abbr. Street Type, cap. abbr. Postfix
 '@Ignore AssignedByValParameter
