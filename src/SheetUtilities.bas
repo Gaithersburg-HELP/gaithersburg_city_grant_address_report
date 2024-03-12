@@ -348,7 +348,8 @@ Public Sub SortRange(ByVal rng As Range, ByVal sortOnValidFirst As Boolean)
     
     Dim rngWithSortCol As Range
     Set rngWithSortCol = rng.Resize(ColumnSize:=rng.columns.count + 1).offset(0, -1)
-    
+
+    '@Ignore ImplicitDefaultMemberAccess
     rngWithSortCol.Sort _
         key1:=rngWithSortCol.Cells.Item(1, 1), _
         key2:=rng.Range(addressKey), _
