@@ -1,9 +1,9 @@
 In City,User Verified,Validated Address,Validated Unit Type and No.,Validated Zip Code,Raw Address,Raw Unit Type With Number,Raw City,Raw State,Raw Zipcode,Guest ID,First Name,Last Name,Household Total,0 to 1,2 to 17,18+,Rx Total,Food,7
+Yes,FALSE,409 Christopher Ave,Apt T3,20879,409 Christopher Ave,T3 RM 1,Gaithersburg,MD,20879,1002,O'Hanna,Mulligan,2,0,0,2,{},"{""Q4"":[""4/28/2023""]}",
+Yes,FALSE,775 Kimberly Ct E,,20878,775 Kimberly Ct,,Gaithersburg,MD,20878,Grape Cheese,Grape,Cheese,3,0,0,3,{},"{""Q1"":[""9/10/2023""]}",
 Failed autocorrection and geocoded not in city,FALSE,18235 Lost Knife Cir,,20886,18235 Lost Knife,,Gaithersburg,MD,20886,Cherry Rose,Cherry,Rose,4,0,0,4,"{""Q3"":{""1/5/2023"":10}}","{""Q4"":[""5/10/2023""],""Q3"":[""1/5/2023""]}",
 No,FALSE,18235 Lost Knife Cir,Apt 101,20886,18235 Lost Knife Cir,101,Gaithersburg,MD,20886,Bongcloud Regret,Bongcloud,Regret,10,0,0,10,"{""Q3"":{""1/10/2023"":10,""2/8/2023"":11.75}}","{""Q3"":[""1/10/2023""]}","{""Q3"":[""2/8/2023""]}"
 Yes,FALSE,2 Nina Ct,,20877,2 nina ave,,Gaitherburg,MD,20871,1004,Uber,Victor,3,0,0,3,"{""Q4"":{""4/17/2023"":4.05}}","{""Q3"":[""3/11/2023""],""Q4"":[""4/17/2023""]}",
-Yes,FALSE,409 Christopher Ave,Apt T3,20879,409 Christopher Ave,T3 RM 1,Gaithersburg,MD,20879,1002,O'Hanna,Mulligan,2,0,0,2,{},"{""Q4"":[""4/28/2023""]}",
 Yes,FALSE,537 Odend'hal Ave,,20877,537 Odendhal Dr,,Gaithersburg,MD,20877,Melon Pineapple,Melon,Pineapple,2,0,0,2,{},"{""Q1"":[""8/15/2023""]}",
 Yes,FALSE,537 Odend'hal Ave,,20877,537 Odend'hal Dr,,Gaithersburg,MD,20877,9999,Hats,Off,6,0,0,6,"{""Q3"":{""2/15/2023"":45,""3/15/2023"":30,""3/10/2023"":8},""Q4"":{""4/15/2023"":15,""6/15/2023"":11}}","{""Q3"":[""2/15/2023"",""3/15/2023"",""3/10/2023""],""Q4"":[""4/15/2023""]}","{""Q4"":[""6/15/2023""]}"
 Yes,FALSE,600 S Frederick Ave,,20877,600 Frederick Av,,Gaithersburg,MD,20877,N Zombies Ghouls,Ghouls,N Zombies,4,0,0,4,{},"{""Q3"":[""3/4/2023""]}",
-Yes,FALSE,775 Kimberly Ct E,,20878,775 Kimberly Ct,,Gaithersburg,MD,20878,Grape Cheese,Grape,Cheese,3,0,0,3,{},"{""Q1"":[""9/10/2023""]}",

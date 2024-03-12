@@ -1,9 +1,9 @@
 In City,User Verified,Validated Address,Validated Unit Type and No.,Validated Zip Code,Raw Address,Raw Unit Type With Number,Raw City,Raw State,Raw Zipcode,Guest ID,First Name,Last Name,Household Total,0 to 1,2 to 17,18+,Rx Total,Food
+Yes,FALSE,722 Clopper Rd,Apt 24,20878,722 Clopper Rd,#24,Gaithersburg,MD,20878,4,4,4,1,0,0,1,{},"{""Q3"":[""1/4/2023""]}"
+Yes,FALSE,722 Clopper Rd,Apt 24,20878,722 Clopper Rd,# 24,Gaithersburg,MD,20878,5,5,5,1,0,0,1,{},"{""Q3"":[""1/5/2023""]}"
+Yes,FALSE,949 Clopper Rd,Apt A4,20878,949 Clopper Road,4A,Gaithersburg,MD,20878,6,6,6,1,0,0,1,{},"{""Q3"":[""1/6/2023""]}"
 No,FALSE,19515 Frederick Rd,Trlr 108,20876,19515 Frederick Rd,Trlr 108,Germantown,MD,20876,3,3,3,1,0,0,1,{},"{""Q3"":[""1/3/2023""]}"
 No,FALSE,19515 Frederick Rd,Trlr 88,20876,19515 Frederick Rd,Tlr 88,Germantown,MD,20876,7,7,7,1,0,0,1,{},"{""Q3"":[""1/7/2023""]}"
 No,FALSE,19515 Frederick Rd,Trlr 180,20876,19515 Frederick Rd,Trl 180,Germantown,MD,20876,8,8,8,1,0,0,1,{},"{""Q3"":[""1/8/2023""]}"
 Yes,FALSE,497 Quince Orchard Rd,,20878,497 Quince Orchard RD Motel 6,118,Gaithersburg,MD,20878,10,10,10,1,0,0,1,{},"{""Q3"":[""1/10/2023""]}"
-Yes,FALSE,722 Clopper Rd,Apt 24,20878,722 Clopper Rd,#24,Gaithersburg,MD,20878,4,4,4,1,0,0,1,{},"{""Q3"":[""1/4/2023""]}"
-Yes,FALSE,722 Clopper Rd,Apt 24,20878,722 Clopper Rd,# 24,Gaithersburg,MD,20878,5,5,5,1,0,0,1,{},"{""Q3"":[""1/5/2023""]}"
 Yes,FALSE,858 W Side Dr,,20878,858 W SIDE DR,Room 2,Gaithersburg,MD,20878,9,9,9,1,0,0,1,{},"{""Q3"":[""1/9/2023""]}"
-Yes,FALSE,949 Clopper Rd,Apt A4,20878,949 Clopper Road,4A,Gaithersburg,MD,20878,6,6,6,1,0,0,1,{},"{""Q3"":[""1/6/2023""]}"

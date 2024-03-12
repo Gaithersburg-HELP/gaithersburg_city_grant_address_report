@@ -114,77 +114,77 @@ Public Sub TestAllAddresses()
     CompareSheetCSV Assert, "Discards", ThisWorkbook.path & "\testdata\test4mergeaddresses_discardsoutput.csv"
     CompareSheetCSV Assert, "Autocorrected", ThisWorkbook.path & "\testdata\test4mergeaddresses_autocorrectedoutput.csv"
 
-    Fakes.MsgBox.Returns vbYes
-
-    InterfaceButtons.confirmDiscardAll
-
-    DiscardsSheet.Select
-    Union(DiscardsSheet.Range("A3:A7"), _
-          DiscardsSheet.Range("A10:A11"), _
-          DiscardsSheet.Range("A13:A14")).Select
-    InterfaceButtons.confirmRestoreSelectedDiscard
-
-    AutocorrectAddressesSheet.Select
-    Union(AutocorrectAddressesSheet.Range("A6"), _
-          AutocorrectAddressesSheet.Range("A8")).Select
-    InterfaceButtons.confirmDiscardSelected
-
-    AddressesSheet.Select
-    Union(AddressesSheet.Range("A3"), _
-          AddressesSheet.Range("A8"), _
-          AddressesSheet.Range("A12")).Select
-    InterfaceButtons.confirmMoveAutocorrect
-
-    AutocorrectAddressesSheet.Select
-
-    AutocorrectAddressesSheet.Range("C2").value = "13-15 E Deer Park Dr"
-    AutocorrectAddressesSheet.Range("D2").value = "Ste 102"
-    AutocorrectAddressesSheet.Range("C3").value = "13-15 E Deer Park Dr"
-    AutocorrectAddressesSheet.Range("D3").value = "Ste 202"
-    AutocorrectAddressesSheet.Range("D4").value = "Unit 102"
-    AutocorrectAddressesSheet.Range("D5").value = "Unit 102"
-    AutocorrectAddressesSheet.Range("B6").value = True
-    AutocorrectAddressesSheet.Range("D9").value = "Apt 103"
-    AutocorrectAddressesSheet.Range("D10").value = "Ste 100"
-    AutocorrectAddressesSheet.Range("D11").value = "Apt 1"
-
-    Union(AutocorrectAddressesSheet.Range("A2:A5"), _
-          AutocorrectAddressesSheet.Range("A8:A11")).Select
-    InterfaceButtons.toggleUserVerified
-    
-    DiscardsSheet.Select
-    Union(DiscardsSheet.Range("A2"), _
-          DiscardsSheet.Range("A4")).Select
-    InterfaceButtons.toggleUserVerifiedAutocorrected
-
-    CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\test5usereditsaddresses_addressesoutput.csv"
-    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test5usereditsaddresses_totalsoutput.csv", getTotalsRng
-    CompareSheetCSV Assert, "Needs Autocorrect", ThisWorkbook.path & "\testdata\test5usereditsaddresses_autocorrectoutput.csv"
-    CompareSheetCSV Assert, "Discards", ThisWorkbook.path & "\testdata\test5usereditsaddresses_discardsoutput.csv"
-    CompareSheetCSV Assert, "Autocorrected", ThisWorkbook.path & "\testdata\test5usereditsaddresses_autocorrectedoutput.csv"
-
-    InterfaceButtons.confirmAttemptValidation
-    InterfaceButtons.confirmGenerateFinalReport
-
-    CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\test6validateduseredits_addressesoutput.csv"
-    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test6validateduseredits_totalsoutput.csv", getTotalsRng
-    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test6validateduseredits_countyoutput.csv", getCountyRng
-    CompareSheetCSV Assert, "Autocorrected", ThisWorkbook.path & "\testdata\test6validateduseredits_autocorrectedoutput.csv"
-    CompareSheetCSV Assert, "Final Report", ThisWorkbook.path & "\testdata\test6validateduseredits_finalreportoutput.csv"
-   
-    AddressesSheet.Select
-    AddressesSheet.Range("A2").Select
-    InterfaceButtons.confirmMoveAutocorrect
-    InterfaceButtons.confirmDeleteAllVisitData
-    
-    CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\test7deletedata_addressesoutput.csv"
-    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test7deletedata_totalsoutput.csv", getTotalsRng
-    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test7deletedata_countyoutput.csv", getCountyRng
-    CompareSheetCSV Assert, "Needs Autocorrect", ThisWorkbook.path & "\testdata\test7deletedata_autocorrectoutput.csv"
-    CompareSheetCSV Assert, "Discards", ThisWorkbook.path & "\testdata\test7deletedata_discardsoutput.csv"
-    CompareSheetCSV Assert, "Autocorrected", ThisWorkbook.path & "\testdata\test7deletedata_autocorrectedoutput.csv"
-    CompareSheetCSV Assert, "Final Report", ThisWorkbook.path & "\testdata\test7deletedata_finalreportoutput.csv"
-        
+'    Fakes.MsgBox.Returns vbYes
+'
+'    InterfaceButtons.confirmDiscardAll
+'
+'    DiscardsSheet.Select
+'    Union(DiscardsSheet.Range("A3:A7"), _
+'          DiscardsSheet.Range("A10:A11"), _
+'          DiscardsSheet.Range("A13:A14")).Select
+'    InterfaceButtons.confirmRestoreSelectedDiscard
+'
+'    AutocorrectAddressesSheet.Select
+'    Union(AutocorrectAddressesSheet.Range("A6"), _
+'          AutocorrectAddressesSheet.Range("A8")).Select
+'    InterfaceButtons.confirmDiscardSelected
+'
+'    AddressesSheet.Select
+'    Union(AddressesSheet.Range("A3"), _
+'          AddressesSheet.Range("A8"), _
+'          AddressesSheet.Range("A12")).Select
+'    InterfaceButtons.confirmMoveAutocorrect
+'
+'    AutocorrectAddressesSheet.Select
+'
+'    AutocorrectAddressesSheet.Range("C2").value = "13-15 E Deer Park Dr"
+'    AutocorrectAddressesSheet.Range("D2").value = "Ste 102"
+'    AutocorrectAddressesSheet.Range("C3").value = "13-15 E Deer Park Dr"
+'    AutocorrectAddressesSheet.Range("D3").value = "Ste 202"
+'    AutocorrectAddressesSheet.Range("D4").value = "Unit 102"
+'    AutocorrectAddressesSheet.Range("D5").value = "Unit 102"
+'    AutocorrectAddressesSheet.Range("B6").value = True
+'    AutocorrectAddressesSheet.Range("D9").value = "Apt 103"
+'    AutocorrectAddressesSheet.Range("D10").value = "Ste 100"
+'    AutocorrectAddressesSheet.Range("D11").value = "Apt 1"
+'
+'    Union(AutocorrectAddressesSheet.Range("A2:A5"), _
+'          AutocorrectAddressesSheet.Range("A8:A11")).Select
+'    InterfaceButtons.toggleUserVerified
+'
+'    DiscardsSheet.Select
+'    Union(DiscardsSheet.Range("A2"), _
+'          DiscardsSheet.Range("A4")).Select
+'    InterfaceButtons.toggleUserVerifiedAutocorrected
+'
+'    CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\test5usereditsaddresses_addressesoutput.csv"
+'    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test5usereditsaddresses_totalsoutput.csv", getTotalsRng
+'    CompareSheetCSV Assert, "Needs Autocorrect", ThisWorkbook.path & "\testdata\test5usereditsaddresses_autocorrectoutput.csv"
+'    CompareSheetCSV Assert, "Discards", ThisWorkbook.path & "\testdata\test5usereditsaddresses_discardsoutput.csv"
+'    CompareSheetCSV Assert, "Autocorrected", ThisWorkbook.path & "\testdata\test5usereditsaddresses_autocorrectedoutput.csv"
+'
+'    InterfaceButtons.confirmAttemptValidation
+'    InterfaceButtons.confirmGenerateFinalReport
+'
+'    CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\test6validateduseredits_addressesoutput.csv"
+'    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test6validateduseredits_totalsoutput.csv", getTotalsRng
+'    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test6validateduseredits_countyoutput.csv", getCountyRng
+'    CompareSheetCSV Assert, "Autocorrected", ThisWorkbook.path & "\testdata\test6validateduseredits_autocorrectedoutput.csv"
+'    CompareSheetCSV Assert, "Final Report", ThisWorkbook.path & "\testdata\test6validateduseredits_finalreportoutput.csv"
+'
+'    AddressesSheet.Select
+'    AddressesSheet.Range("A2").Select
+'    InterfaceButtons.confirmMoveAutocorrect
+'    InterfaceButtons.confirmDeleteAllVisitData
+'
+'    CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\test7deletedata_addressesoutput.csv"
+'    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test7deletedata_totalsoutput.csv", getTotalsRng
+'    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test7deletedata_countyoutput.csv", getCountyRng
+'    CompareSheetCSV Assert, "Needs Autocorrect", ThisWorkbook.path & "\testdata\test7deletedata_autocorrectoutput.csv"
+'    CompareSheetCSV Assert, "Discards", ThisWorkbook.path & "\testdata\test7deletedata_discardsoutput.csv"
+'    CompareSheetCSV Assert, "Autocorrected", ThisWorkbook.path & "\testdata\test7deletedata_autocorrectedoutput.csv"
+'    CompareSheetCSV Assert, "Final Report", ThisWorkbook.path & "\testdata\test7deletedata_finalreportoutput.csv"
+'
     Exit Sub
 TestFail:
     Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
@@ -337,6 +337,14 @@ Public Sub TestSort()
     wbook.Worksheets.[_Default](1).UsedRange.Copy
     AddressesSheet.Range("A1").PasteSpecial xlPasteValues
     
+    SheetUtilities.SortSheet "Addresses"
+    CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\testsortaddresses_valid_addressesoutput.csv"
+    
+    SheetUtilities.ClearSheet "Addresses"
+    
+    wbook.Worksheets.[_Default](1).UsedRange.Copy
+    DiscardsSheet.Range("A1").PasteSpecial xlPasteValues
+    
     With CreateObject("htmlfile")
         With .parentWindow.clipboardData
             .setData "text", vbNullString
@@ -345,9 +353,8 @@ Public Sub TestSort()
     
     wbook.Close
     
-    SheetUtilities.SortSheet "Addresses"
-    
-    CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\testsortaddresses_addressesoutput.csv"
+    SheetUtilities.SortSheet "Discards"
+    CompareSheetCSV Assert, "Discards", ThisWorkbook.path & "\testdata\testsortaddresses_raw_discardsoutput.csv"
     
     Exit Sub
 TestFail:

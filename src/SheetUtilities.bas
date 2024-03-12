@@ -326,6 +326,13 @@ Public Sub DisableAllFilters()
 End Sub
 
 Public Sub SortRange(ByVal rng As Range, ByVal sortOnValidFirst As Boolean)
+    If rng.rows.count <= 1 Then
+        Exit Sub
+    End If
+    
+    ' temporary sort key column
+    rng.columns.Item(1).EntireColumn.Insert Shift:=xlToRight
+    
     Dim addressKey As String
     If sortOnValidFirst Then
         addressKey = "C1"
@@ -333,17 +340,28 @@ Public Sub SortRange(ByVal rng As Range, ByVal sortOnValidFirst As Boolean)
         addressKey = "F1"
     End If
     
-    rng.Sort _
-        key1:=rng.Range("B1"), _
+    Dim row As Variant
+    For Each row In rng.rows
+        ' insert second word of address into temporary sort column
+        row.offset(0, -1).Cells(1, 1).value = LWordTrim(LWordTrim(row.Range(addressKey).value)(1))(0)
+    Next row
+    
+    Dim rngWithSortCol As Range
+    Set rngWithSortCol = rng.Resize(ColumnSize:=rng.columns.count + 1).offset(0, -1)
+    
+    rngWithSortCol.Sort _
+        key1:=rngWithSortCol.Cells.Item(1, 1), _
         key2:=rng.Range(addressKey), _
-        Order1:=xlDescending, Order2:=xlAscending, Header:=xlNo
+        Order1:=xlAscending, Order2:=xlAscending, Header:=xlNo
+        
+    rngWithSortCol.columns.Item(1).EntireColumn.Delete
 End Sub
 
 Public Sub SortSheet(ByVal sheetName As String)
     Dim sortOnValidFirst As Boolean
     
     Select Case sheetName
-    Case "Addresses", "Autocorrected", "Final Report"
+    Case "Addresses", "Autocorrected"
         sortOnValidFirst = True
     Case "Needs Autocorrect", "Discards"
         sortOnValidFirst = False
@@ -426,7 +444,6 @@ Public Sub PrintJson(ByRef jsonResult As Scripting.Dictionary)
     Debug.Print ("}")
 End Sub
 
-
 ' Trims off first word including space afterwards
 ' Returns [trimmed first word, trimmed string (blank if only one word)]
 Public Function LWordTrim(ByVal str As String) As String()
@@ -440,3 +457,5 @@ Public Function LWordTrim(ByVal str As String) As String()
         LWordTrim = Split(str & "|", "|")
     End If
 End Function
+
+

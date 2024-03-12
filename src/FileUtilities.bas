@@ -53,9 +53,10 @@ Public Sub sortWorkbooks()
         
         Dim rng As Range
         Set rng = wbook.Worksheets.[_Default](1).UsedRange
-        Set rng = rng.Resize(rng.rows.count - 1).offset(1)
-        
-        SheetUtilities.SortRange rng, True ' False
+        If rng.rows.count > 1 Then
+            Set rng = rng.Resize(rng.rows.count - 1).offset(1, 0)
+            SheetUtilities.SortRange rng, True ' False
+        End If
         wbook.Save
         wbook.Close
     Next selectedFile
