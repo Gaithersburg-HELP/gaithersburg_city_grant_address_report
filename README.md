@@ -50,17 +50,34 @@ To print this documentation, click [here](README.md) and print that page.
 5) You can generate a final report and county totals now (see [here](#generating-totals-and-final-report)), or continue with editing addresses by hand.
 ## Manually validating addresses
 ### Editing
-1) All user editing should be done in the "Validated" fields in the "Needs Autocorrect" sheet. Go through each address and type in a valid address for the record in the corresponding "Validated" field (see [Tips for validating addresses](#Tips-for-validating-addresses). As you do so, the "User Verified" field will be set to "True" for that record. If you accidentally edit a record, click "Toggle User Verified" to set the record back to "False".
+1) All user editing should be done in the "Validated" fields in the "Needs Autocorrect" sheet. Go through each address and type in a valid address for the record in the corresponding "Validated" field (see [Tips for validating addresses](#Tips-for-validating-addresses)). As you do so, the "User Verified" field will be set to "True" for that record. If you accidentally edit a record, click "Toggle User Verified" to set the record back to "False".
 2) Click "Attempt Validation". All "True" "User Verified" records will be validated again against the Gaithersburg database using the user input address. You don't have to correct all records before clicking "Attempt Validation".
 3) Select any records which cannot be corrected and click "Discard selected" to move those records to the "Discards" sheet. Alternatively, you can click "Discard All" to discard all remaining records in the "Needs Autocorrect" sheet.
 4) To fix accidentally discarded addresses, select them in the "Discards" sheet and click "Restore selected discards". They will be moved back to the "Needs Autocorrect" sheet.
 5) To fix records incorrectly marked as "Yes" or "No, select them in the "Addresses" sheet and click "Move to needs autocorrect". They will be moved back to the "Needs Autocorrect" sheet.
 6) For additional corrections, see [Tips for editing](#Tips-for-editing)
-7) See [here](#generating-totals-and-final-report)) to generate the final report and county totals
+7) See [here](#generating-totals-and-final-report) to generate the final report and county totals
 ### Tips for validating addresses
-1)
+1) Check if the address is similar to any Gaithersburg street names. Click "Open List of Gaithersburg Streets" in the "Needs Autocorrect" sheet to get the list. You can use Ctrl-F in the browser to look for similar street names. Discard if not in the list.
+2) Check for typos by selecting record and execute the LookupInCity macro Ctrl+Shift+L to look up that record via the Gaithersburg City address search page, in a browser window. Delete some characters to find similar addresses (e.g. “3 Summit” instead of “3A S Summit St”)
+    * A common error is the unit letter being in the unit number instead of in the address, e.g. 425 N Frederick Ave Unit 1C should be 425C N Frederick Ave Unit 1
+    * Two streets with apostrophes exist, O’Neill and Odend’hal
+    * You can click on the address in the City address search page to see a map where Gaithersburg borders are highlighted in red and house numbers are visible.
+3) You can also check for typos in Google Maps, and check the apartment range by typing into the USPS lookup page with no apartment number.
+4) Look at the keyboard for possible typos, e.g. 419 was entered instead of 119
+5) If unable to validate unit type and number but you can validate the address, the XLSM file will accept it if "User Verified" is set to "True" and the "Validated" unit type and number fields are blank before clicking "Attempt Validation"
 ### Tips for editing
-1)
-2) All sheets are protected from editing except for the "Validated" fields in the "Needs Autocorrect". If for some reason you need to edit something, click the "Review" tab on the menu and click "Unprotect Sheet". When the workbook is saved all sheets will be reprotected.
+1) To change multiple addresses, you can filter on the addresses you want to change. You can fill on the filtered list by clicking and dragging on the bottom right corner of the cell to e.g. change multiple rows to the same value. This doesn’t affect hidden filtered rows.
+    * You must disable the filters before clicking any buttons, the XLSM will check for enabled filters before allowing further changes.
+2) All sheets are protected from editing except for the "Validated" fields in the "Needs Autocorrect" sheet and the rows of pasted records in the "Interface" sheet. If for some reason you need to edit something, click the "Review" tab on the menu and click "Unprotect Sheet". When the workbook is saved all sheets will be reprotected.
 ## Generating totals and final report ##
-1) The total counts for addresses can be seen on the "Interface" sheet. The top right quarterly totals count valid Gaithersburg addresses only. The county totals count all addresses, both valid, invalid, discarded, not yet autocorrected, etc.
+1) Confirm that the XLSM only has the tracking methods that you want to report on. Check the "Addresses", "Needs Autocorrect", "Discards" columns to the right of "Rx Total".
+    * If there is an extra tracking method, you can click "Delete All Visit Data" and then reimport all of the visits. 
+2) The total counts for addresses can be seen on the "Interface" sheet. The top right quarterly totals count valid Gaithersburg addresses only. The county totals count all addresses, both valid, invalid, discarded, not yet autocorrected, etc.
+3) On the "Interface" sheet, click "Generate Final Report". This will be output to the "Final Report" sheet. This outputs every address per unique guest ID, sorted by street name.
+4) Right-click the "Final Report" sheet and select "Move or copy". Select "(new book)" and check the “Create a copy” box.  
+5) Save the new workbook as the final grant report to be sent, named City FYnn Qn [Service] GHELP Address Listings.xlsx, for example City FY18 Q3 Food GHELP Address Listings.xlsx.
+6) On the "Interface" sheet, click "Copy selected zip totals code and open county totals site". This will open the county totals form in the browser.
+7) Under "Select your organization", select the organization. Wait for the top left corner to say "Saved".
+7) In the browser, hit F12 to open developer tools. Select the "Console" tab. Paste using Ctrl-V into the console and hit Enter. This will refresh the page and all values will be filled in. 
+    ![Paste in developer console](readme/5countypaste.png)
