@@ -1,5 +1,7 @@
 ﻿'@Folder "City_Grant_Address_Report.Excel"
+Option Explicit
 
+'@Ignore ParameterNotUsed, ParameterCanBeByVal
 Private Sub Workbook_BeforeSave(ByVal SaveAsUI As Boolean, ByRef Cancel As Boolean)
     InterfaceButtons.MacroExit ActiveSheet
 End Sub

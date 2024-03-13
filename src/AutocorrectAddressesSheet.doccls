@@ -1,6 +1,7 @@
 ﻿'@Folder "City_Grant_Address_Report.Excel"
 Option Explicit
 
+'@Ignore EncapsulatePublicField
 Public macroIsRunning As Boolean
 
 Private Sub Worksheet_Change(ByVal Target As Range)

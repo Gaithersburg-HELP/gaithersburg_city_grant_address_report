@@ -4,7 +4,7 @@ Option Explicit
 '@Folder("City_Grant_Address_Report.src")
 
 ' Returns false if user has a filter enabled
-Public Function MacroEntry(wsheetToReturn As Worksheet) As Boolean
+Public Function MacroEntry(ByVal wsheetToReturn As Worksheet) As Boolean
     
     Dim i As Long
     For i = 1 To ThisWorkbook.Sheets.count
@@ -28,7 +28,7 @@ Public Function MacroEntry(wsheetToReturn As Worksheet) As Boolean
 End Function
 
 ' NOTE change AutocorrectAddressesSheet when this changes
-Public Sub MacroExit(wsheetToReturn As Worksheet)
+Public Sub MacroExit(ByVal wsheetToReturn As Worksheet)
     Dim i As Long
     For i = 1 To ThisWorkbook.Sheets.count
         Dim wsheet As Worksheet

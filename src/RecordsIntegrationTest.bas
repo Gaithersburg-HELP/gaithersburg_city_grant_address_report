@@ -1,4 +1,5 @@
 Attribute VB_Name = "RecordsIntegrationTest"
+'@IgnoreModule FunctionReturnValueDiscarded
 '@TestModule
 '@Folder "City_Grant_Address_Report.test"
 
@@ -419,3 +420,4 @@ Public Sub TestSort()
 TestFail:
     Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
 End Sub
+
