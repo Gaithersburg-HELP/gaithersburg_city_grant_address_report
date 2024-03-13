@@ -64,8 +64,9 @@ To print this documentation, click [here](README.md) and print that page.
     * Two streets with apostrophes exist, O’Neill and Odend’hal
     * You can click on the address in the City address search page to see a map where Gaithersburg borders are highlighted in red and house numbers are visible.
 3) You can also check for typos in Google Maps, and check the apartment range by typing into the USPS lookup page with no apartment number.
-4) Look at the keyboard for possible typos, e.g. 419 was entered instead of 119
-5) If unable to validate unit type and number but you can validate the address, the XLSM file will accept it if "User Verified" is set to "True" and the "Validated" unit type and number fields are blank before clicking "Attempt Validation"
+    * In the USPS website, the DPV Confirmation will be Y for a valid address, and a different letter if invalid.
+5) Look at the keyboard for possible typos, e.g. 419 was entered instead of 119
+6) If unable to validate unit type and number but you can validate the address, the XLSM file will accept it if "User Verified" is set to "True" and the "Validated" unit type and number fields are blank before clicking "Attempt Validation"
 ### Tips for editing
 1) To change multiple addresses, you can filter on the addresses you want to change. You can fill on the filtered list by clicking and dragging on the bottom right corner of the cell to e.g. change multiple rows to the same value. This doesn’t affect hidden filtered rows.
     * You must disable the filters before clicking any buttons, the XLSM will check for enabled filters before allowing further changes.
