@@ -4,10 +4,12 @@ Option Explicit
 Private Sub Worksheet_Change(ByVal Target As Range)
     Dim KeyCells As Range
 
-    ' TODO lock all cells. on user modification of validated address cells, set In City to Not Yet Autocorrected and User Verified to True
-    Set KeyCells = Range("A1:C10")
+    Set KeyCells = Range("C:E")
 
-    If Not Application.Intersect(KeyCells, Range(Target.address)) Is Nothing Then
-        'MsgBox Target.row & " " & Target.Column
+    If Not (Application.Intersect(KeyCells, Target) Is Nothing) Then
+        Dim row As Variant
+        For Each row In Target.rows
+            Me.rows.Item(row.row).Cells(1, 2).value = True
+        Next row
     End If
 End Sub
