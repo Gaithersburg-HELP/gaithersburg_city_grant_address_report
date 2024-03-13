@@ -330,9 +330,6 @@ Public Sub SortRange(ByVal rng As Range, ByVal sortOnValidFirst As Boolean)
         Exit Sub
     End If
     
-    ' temporary sort key column
-    rng.columns.Item(1).EntireColumn.Insert Shift:=xlToRight
-    
     Dim addressKey As String
     If sortOnValidFirst Then
         addressKey = "C1"
@@ -342,20 +339,22 @@ Public Sub SortRange(ByVal rng As Range, ByVal sortOnValidFirst As Boolean)
     
     Dim row As Variant
     For Each row In rng.rows
-        ' insert second word of address into temporary sort column
-        row.offset(0, -1).Cells(1, 1).value = LWordTrim(LWordTrim(row.Range(addressKey).value)(1))(0)
+        ' insert second word of address into temporary sort column to right of data
+        ' NOTE don't use column to left of data, when tests fail then sometimes this
+        ' column doesn't get deleted
+        row.offset(0, 1).Cells(1, rng.columns.count).value = LWordTrim(LWordTrim(row.Range(addressKey).value)(1))(0)
     Next row
     
     Dim rngWithSortCol As Range
-    Set rngWithSortCol = rng.Resize(ColumnSize:=rng.columns.count + 1).offset(0, -1)
+    Set rngWithSortCol = rng.Resize(ColumnSize:=rng.columns.count + 1)
 
     '@Ignore ImplicitDefaultMemberAccess
     rngWithSortCol.Sort _
-        key1:=rngWithSortCol.Cells.Item(1, 1), _
+        key1:=rngWithSortCol.Cells.Item(1, rngWithSortCol.columns.count), _
         key2:=rng.Range(addressKey), _
         Order1:=xlAscending, Order2:=xlAscending, Header:=xlNo
         
-    rngWithSortCol.columns.Item(1).EntireColumn.Delete
+    rngWithSortCol.columns(rngWithSortCol.columns.count).EntireColumn.Clear
 End Sub
 
 Public Sub SortSheet(ByVal sheetName As String)
