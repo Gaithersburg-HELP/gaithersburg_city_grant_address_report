@@ -79,5 +79,5 @@ To print this documentation, click [here](README.md) and print that page.
 5) Save the new workbook as the final grant report to be sent, named City FYnn Qn [Service] GHELP Address Listings.xlsx, for example City FY18 Q3 Food GHELP Address Listings.xlsx.
 6) On the "Interface" sheet, click "Copy selected zip totals code and open county totals site". This will open the county totals form in the browser.
 7) Under "Select your organization", select the organization. Wait for the top left corner to say "Saved".
-7) In the browser, hit F12 to open developer tools. Select the "Console" tab. Paste using Ctrl-V into the console and hit Enter. This will refresh the page and all values will be filled in. 
+7) In the browser, hit F12 to open developer tools. Select the "Console" tab. Paste using Ctrl-V into the console and hit Enter. This will refresh the page and all values will be filled in. Double check the zip code total values for e.g. 20878, 20877, 20879, since this code will break if the form gets updated.
     ![Paste in developer console](readme/5countypaste.png)
