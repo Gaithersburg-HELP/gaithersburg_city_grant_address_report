@@ -3,21 +3,29 @@ Option Explicit
 
 '@Folder("City_Grant_Address_Report.src")
 
-Public Sub MacroEntry(wsheetToReturn As Worksheet)
-    AutocorrectAddressesSheet.macroIsRunning = True
+' Returns false if user has a filter enabled
+Public Function MacroEntry(wsheetToReturn As Worksheet) As Boolean
     
     Dim i As Long
     For i = 1 To ThisWorkbook.Sheets.count
         Dim wsheet As Worksheet
         Set wsheet = ThisWorkbook.Sheets.[_Default](i)
         
+        If wsheet.FilterMode = True Then
+            MsgBox "Disable filter on " & wsheet.Name & " and try again"
+            MacroEntry = False
+            Exit Function
+        End If
+        
         ThisWorkbook.Sheets.[_Default](i).AutoFilterMode = False
         
         wsheet.Unprotect
     Next
     
+    AutocorrectAddressesSheet.macroIsRunning = True
     wsheetToReturn.Activate
-End Sub
+    MacroEntry = True
+End Function
 
 ' NOTE change AutocorrectAddressesSheet when this changes
 Public Sub MacroExit(wsheetToReturn As Worksheet)
@@ -82,7 +90,7 @@ End Function
 
 '@EntryPoint
 Public Sub PasteRecords()
-    MacroEntry ThisWorkbook.ActiveSheet
+    If Not MacroEntry(ThisWorkbook.ActiveSheet) Then Exit Sub
     
     InterfaceSheet.Activate
     Application.ScreenUpdating = False
@@ -104,7 +112,7 @@ Public Sub confirmAddRecords()
         Exit Sub
     End If
     
-    MacroEntry ThisWorkbook.ActiveSheet
+    If Not MacroEntry(ThisWorkbook.ActiveSheet) Then Exit Sub
     
     Records.addRecords
     
@@ -121,7 +129,7 @@ Public Sub confirmAttemptValidation()
         Exit Sub
     End If
     
-    MacroEntry ThisWorkbook.ActiveSheet
+    If Not MacroEntry(ThisWorkbook.ActiveSheet) Then Exit Sub
     
     autocorrect.attemptValidation
     
@@ -136,7 +144,7 @@ Public Sub confirmGenerateFinalReport()
         Exit Sub
     End If
     
-    MacroEntry ThisWorkbook.ActiveSheet
+    If Not MacroEntry(ThisWorkbook.ActiveSheet) Then Exit Sub
     
     GenerateReport.generateFinalReport
     
@@ -151,7 +159,7 @@ Public Sub confirmDeleteAllVisitData()
         Exit Sub
     End If
     
-    MacroEntry ThisWorkbook.ActiveSheet
+    If Not MacroEntry(ThisWorkbook.ActiveSheet) Then Exit Sub
     
     SheetUtilities.getTotalsRng.value = 0
     SheetUtilities.getCountyRng.value = 0
@@ -179,7 +187,7 @@ End Sub
 '        Exit Sub
 '    End If
 '
-'    MacroEntry ThisWorkbook.ActiveSheet
+'    If Not MacroEntry(ThisWorkbook.ActiveSheet) Then Exit Sub
 '
 '
 '    Dim addressServices() As String
@@ -244,7 +252,7 @@ Public Sub confirmDiscardAll()
         Exit Sub
     End If
     
-    MacroEntry ThisWorkbook.ActiveSheet
+    If Not MacroEntry(ThisWorkbook.ActiveSheet) Then Exit Sub
     
     Dim autocorrect As Scripting.Dictionary
     Set autocorrect = Records.loadAddresses("Needs Autocorrect")
@@ -321,7 +329,7 @@ End Sub
 
 '@EntryPoint
 Public Sub confirmDiscardSelected()
-    MacroEntry ThisWorkbook.ActiveSheet
+    If Not MacroEntry(ThisWorkbook.ActiveSheet) Then Exit Sub
     
     moveSelectedRows "Needs Autocorrect", "Discards", False
     
@@ -330,7 +338,7 @@ End Sub
 
 '@EntryPoint
 Public Sub confirmRestoreSelectedDiscard()
-    MacroEntry ThisWorkbook.ActiveSheet
+    If Not MacroEntry(ThisWorkbook.ActiveSheet) Then Exit Sub
     
     moveSelectedRows "Discards", "Needs Autocorrect", True
     
@@ -339,7 +347,7 @@ End Sub
 
 '@EntryPoint
 Public Sub confirmMoveAutocorrect()
-    MacroEntry ThisWorkbook.ActiveSheet
+    If Not MacroEntry(ThisWorkbook.ActiveSheet) Then Exit Sub
     
     moveSelectedRows "Addresses", "Needs Autocorrect", True
     SheetUtilities.getFinalReportRng.Clear
@@ -350,7 +358,7 @@ End Sub
 
 '@EntryPoint
 Public Sub toggleUserVerified()
-    MacroEntry ThisWorkbook.ActiveSheet
+    If Not MacroEntry(ThisWorkbook.ActiveSheet) Then Exit Sub
     
     Dim rows As Collection
     Set rows = getUniqueSelection(True, 2)
@@ -368,7 +376,7 @@ End Sub
 
 '@EntryPoint
 Public Sub toggleUserVerifiedAutocorrected()
-    MacroEntry ThisWorkbook.ActiveSheet
+    If Not MacroEntry(ThisWorkbook.ActiveSheet) Then Exit Sub
     
     Dim rows As Collection
     Set rows = getUniqueSelection(True, 2)
@@ -409,7 +417,7 @@ End Sub
 
 '@EntryPoint
 Public Sub ImportRecords()
-    MacroEntry ThisWorkbook.ActiveSheet
+    If Not MacroEntry(ThisWorkbook.ActiveSheet) Then Exit Sub
     
     Dim wbook As Workbook
     Set wbook = FileUtilities.getWorkbook()
