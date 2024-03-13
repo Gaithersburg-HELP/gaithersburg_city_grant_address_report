@@ -206,6 +206,38 @@ Public Sub TestAllAddresses()
     CompareSheetCSV Assert, "Autocorrected", ThisWorkbook.path & "\testdata\test7deletedata_autocorrectedoutput.csv"
     CompareSheetCSV Assert, "Final Report", ThisWorkbook.path & "\testdata\test7deletedata_finalreportoutput.csv"
 
+'    AddressesSheet.Select
+'    AddressesSheet.Range("A2").Select
+'    InterfaceButtons.confirmMoveAutocorrect
+'
+'    AutocorrectAddressesSheet.Select
+'    AutocorrectAddressesSheet.Range("A2").Select
+'    InterfaceButtons.toggleUserVerified
+'    InterfaceButtons.confirmDiscardSelected
+'    InterfaceButtons.confirmDiscardAll
+'
+'    DiscardsSheet.Select
+'    DiscardsSheet.Range("A2").Select
+'    InterfaceButtons.confirmRestoreSelectedDiscard
+'
+'    AutocorrectedAddressesSheet.Select
+'    AutocorrectedAddressesSheet.Range("A2").Select
+'    InterfaceButtons.toggleUserVerifiedAutocorrected
+'
+'    InterfaceSheet.Select
+'    PasteTestRecords testExtraAddressesArr
+'
+'    InterfaceButtons.confirmAddRecords
+'    InterfaceButtons.confirmAttemptValidation
+'    InterfaceButtons.confirmGenerateFinalReport
+'
+'    CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\test8noservices_addressesoutput.csv"
+'    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test8noservices_totalsoutput.csv", getTotalsRng
+'    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test8noservices_countyoutput.csv", getCountyRng
+'    CompareSheetCSV Assert, "Needs Autocorrect", ThisWorkbook.path & "\testdata\test8noservices_autocorrectoutput.csv"
+'    CompareSheetCSV Assert, "Discards", ThisWorkbook.path & "\testdata\test8noservices_discardsoutput.csv"
+'    CompareSheetCSV Assert, "Autocorrected", ThisWorkbook.path & "\testdata\test8noservices_autocorrectedoutput.csv"
+'    CompareSheetCSV Assert, "Final Report", ThisWorkbook.path & "\testdata\test8noservices_finalreportoutput.csv"
     Exit Sub
 TestFail:
     Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description

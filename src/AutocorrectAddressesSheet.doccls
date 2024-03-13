@@ -24,3 +24,4 @@ Private Sub Worksheet_Change(ByVal Target As Range)
         Me.Protect AllowFormattingColumns:=True, AllowFormattingRows:=True, AllowSorting:=True, AllowFiltering:=True
     End If
 End Sub
+

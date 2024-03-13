@@ -132,7 +132,7 @@ Public Function uniqueCountyZipCols() As Scripting.Dictionary
     Set uniqueCountyZipCols = cols
 End Function
 
-
+' Assumes services exist!
 Public Function serviceFirstCell(ByVal sheetName As String) As String
     serviceFirstCell = ThisWorkbook.Worksheets.[_Default](sheetName) _
                          .Range("A1").offset(0, firstServiceColumn - 1).address
@@ -190,21 +190,43 @@ Public Function getFinalReportRng() As Range
     Set getFinalReportRng = getRng("Final Report", "A2", "M2")
 End Function
 
+' Returns null if all services deleted
 Private Function getServiceHeaderLastCell(ByVal sheetName As String) As String
-    getServiceHeaderLastCell = ThisWorkbook.Worksheets.[_Default](sheetName) _
+    Dim lastCellAddr As String
+    
+    lastCellAddr = ThisWorkbook.Worksheets.[_Default](sheetName) _
                                       .Range("A1").offset(0, firstServiceColumn - 2) _
                                       .End(xlToRight).address
+    If lastCellAddr = "$XFD$1" Then
+        getServiceHeaderLastCell = vbNullString
+    Else
+        getServiceHeaderLastCell = lastCellAddr
+    End If
 End Function
 
 Public Function getServiceHeaderRng(ByVal sheetName As String) As Range
-    Set getServiceHeaderRng = ThisWorkbook.Worksheets.[_Default](sheetName) _
-                                    .Range(serviceFirstCell(sheetName), getServiceHeaderLastCell(sheetName))
+    Dim lastCellAddr As String
+    lastCellAddr = getServiceHeaderLastCell(sheetName)
+    
+    If lastCellAddr = vbNullString Then
+        Set getServiceHeaderRng = Nothing
+    Else
+        Set getServiceHeaderRng = ThisWorkbook.Worksheets.[_Default](sheetName) _
+                                    .Range(serviceFirstCell(sheetName), lastCellAddr)
+    End If
 End Function
 
 ' Returns zero based service array
+' If no services returns array with vbNullString at index 0
 Public Function loadServiceNames(ByVal sheetName As String) As String()
     Dim servicesRng As Range
     Set servicesRng = SheetUtilities.getServiceHeaderRng(sheetName)
+    
+    If servicesRng Is Nothing Then
+        loadServiceNames = Split(vbNullString, vbNullString)
+        Exit Function
+    End If
+    
     ReDim services(servicesRng.count - 1) As String
     Dim i As Long
     i = 1
@@ -217,13 +239,27 @@ Public Function loadServiceNames(ByVal sheetName As String) As String()
 End Function
 
 Public Function getAddressRng(ByVal sheetName As String) As Range
-    Set getAddressRng = getRng(sheetName, "A2", getServiceHeaderLastCell(sheetName))
+    Dim lastCellAddr As String
+    lastCellAddr = getServiceHeaderLastCell(sheetName)
+    
+    If lastCellAddr = vbNullString Then
+        lastCellAddr = rxFirstCell(sheetName)
+    End If
+    
+    Set getAddressRng = getRng(sheetName, "A2", lastCellAddr)
 End Function
 
 Public Function getAddressVisitDataRng(ByVal sheetName As String) As Range
-    Set getAddressVisitDataRng = Application.Union(getRng(sheetName, rxFirstCell(sheetName), rxFirstCell(sheetName)), _
+    Dim lastCellAddr As String
+    lastCellAddr = getServiceHeaderLastCell(sheetName)
+    
+    If lastCellAddr = vbNullString Then
+        Set getAddressVisitDataRng = getRng(sheetName, rxFirstCell(sheetName), rxFirstCell(sheetName))
+    Else
+        Set getAddressVisitDataRng = Application.Union(getRng(sheetName, rxFirstCell(sheetName), rxFirstCell(sheetName)), _
                                                    getRng(sheetName, serviceFirstCell(sheetName), _
-                                                          getServiceHeaderLastCell(sheetName)))
+                                                          lastCellAddr))
+    End If
 End Function
 
 Public Function sheetToCSVArray(ByVal sheetName As String, Optional ByVal rng As Range = Nothing) As String()
@@ -275,6 +311,8 @@ Public Sub ClearEmptyServices(ByVal sheetName As String)
     Dim servicesRng As Range
     Set servicesRng = getServiceHeaderRng(sheetName)
     
+    If servicesRng Is Nothing Then Exit Sub
+    
     Dim max As Long
     max = ThisWorkbook.Worksheets.[_Default](sheetName).rows.count
     
@@ -302,7 +340,10 @@ End Sub
 Public Sub ClearSheet(ByVal sheetName As String)
     getAddressRng(sheetName).Clear
     getAddressVisitDataRng(sheetName).Clear
-    getServiceHeaderRng(sheetName).Clear
+    
+    Dim serviceRng As Range
+    Set serviceRng = getServiceHeaderRng(sheetName)
+    If Not (serviceRng Is Nothing) Then serviceRng.Clear
 End Sub
 
 Public Sub ClearAll()
@@ -314,13 +355,6 @@ Public Sub ClearAll()
     Dim i As Long
     For i = 3 To ThisWorkbook.Sheets.count
         ClearSheet ThisWorkbook.Sheets.[_Default](i).Name
-    Next
-End Sub
-
-Public Sub DisableAllFilters()
-    Dim i As Long
-    For i = 1 To ThisWorkbook.Sheets.count
-        ThisWorkbook.Sheets.[_Default](i).AutoFilterMode = False
     Next
 End Sub
 
@@ -353,7 +387,7 @@ Public Sub SortRange(ByVal rng As Range, ByVal sortOnValidFirst As Boolean)
         key2:=rng.Range(addressKey), _
         Order1:=xlAscending, Order2:=xlAscending, Header:=xlNo
         
-    rngWithSortCol.columns(rngWithSortCol.columns.count).EntireColumn.Clear
+    rngWithSortCol.columns.Item(rngWithSortCol.columns.count).EntireColumn.Clear
 End Sub
 
 Public Sub SortSheet(ByVal sheetName As String)

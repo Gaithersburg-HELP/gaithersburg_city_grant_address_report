@@ -132,8 +132,10 @@ Public Sub writeAddress(ByVal sheetName As String, ByVal record As RecordTuple)
         i = SheetUtilities.firstServiceColumn
         Dim service As Variant
         For Each service In services
-            serviceCols.Add service, i
-            i = i + 1
+            If service <> vbNullString Then
+                serviceCols.Add service, i
+                i = i + 1
+            End If
         Next
     End If
 
