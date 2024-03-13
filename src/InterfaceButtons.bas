@@ -3,6 +3,41 @@ Option Explicit
 
 '@Folder("City_Grant_Address_Report.src")
 
+Public Sub MacroEntry(wsheetToReturn As Worksheet)
+    AutocorrectAddressesSheet.macroIsRunning = True
+    
+    Dim i As Long
+    For i = 1 To ThisWorkbook.Sheets.count
+        Dim wsheet As Worksheet
+        Set wsheet = ThisWorkbook.Sheets.[_Default](i)
+        
+        ThisWorkbook.Sheets.[_Default](i).AutoFilterMode = False
+        
+        wsheet.Unprotect
+    Next
+    
+    wsheetToReturn.Activate
+End Sub
+
+' NOTE change AutocorrectAddressesSheet when this changes
+Public Sub MacroExit(wsheetToReturn As Worksheet)
+    Dim i As Long
+    For i = 1 To ThisWorkbook.Sheets.count
+        Dim wsheet As Worksheet
+        Set wsheet = ThisWorkbook.Sheets.[_Default](i)
+        
+        wsheet.Unprotect
+        wsheet.AutoFilterMode = False
+        
+        If i <> 1 Then wsheet.UsedRange.AutoFilter
+        
+        wsheet.Protect AllowFormattingColumns:=True, AllowFormattingRows:=True, AllowSorting:=True, AllowFiltering:=True
+    Next
+    
+    wsheetToReturn.Activate
+    AutocorrectAddressesSheet.macroIsRunning = False
+End Sub
+
 ' Returns Nothing if error occurred
 Private Function getUniqueSelection(ByVal returnRows As Boolean, ByVal min As Long) As Collection
     Dim uniques As Collection
@@ -47,8 +82,7 @@ End Function
 
 '@EntryPoint
 Public Sub PasteRecords()
-    SheetUtilities.DisableAllFilters
-    
+    MacroEntry ThisWorkbook.ActiveSheet
     
     InterfaceSheet.Activate
     Application.ScreenUpdating = False
@@ -58,6 +92,8 @@ Public Sub PasteRecords()
     
     ActiveSheet.Cells(1, 1).Select
     Application.ScreenUpdating = True
+    
+    MacroExit ThisWorkbook.ActiveSheet
 End Sub
 
 '@EntryPoint
@@ -68,10 +104,11 @@ Public Sub confirmAddRecords()
         Exit Sub
     End If
     
-    SheetUtilities.DisableAllFilters
-    
+    MacroEntry ThisWorkbook.ActiveSheet
     
     Records.addRecords
+    
+    MacroExit ThisWorkbook.ActiveSheet
 End Sub
 
 '@EntryPoint
@@ -84,10 +121,11 @@ Public Sub confirmAttemptValidation()
         Exit Sub
     End If
     
-    SheetUtilities.DisableAllFilters
-    
+    MacroEntry ThisWorkbook.ActiveSheet
     
     autocorrect.attemptValidation
+    
+    MacroExit ThisWorkbook.ActiveSheet
 End Sub
 
 '@EntryPoint
@@ -98,10 +136,11 @@ Public Sub confirmGenerateFinalReport()
         Exit Sub
     End If
     
-    SheetUtilities.DisableAllFilters
-    
+    MacroEntry ThisWorkbook.ActiveSheet
     
     GenerateReport.generateFinalReport
+    
+    MacroExit ThisWorkbook.ActiveSheet
 End Sub
 
 '@EntryPoint
@@ -112,7 +151,7 @@ Public Sub confirmDeleteAllVisitData()
         Exit Sub
     End If
     
-    SheetUtilities.DisableAllFilters
+    MacroEntry ThisWorkbook.ActiveSheet
     
     SheetUtilities.getTotalsRng.value = 0
     SheetUtilities.getCountyRng.value = 0
@@ -125,6 +164,8 @@ Public Sub confirmDeleteAllVisitData()
     SheetUtilities.getRng("Discards", "A2", "A2").offset(0, SheetUtilities.firstServiceColumn - 2).value = "{}"
     SheetUtilities.getAddressVisitDataRng("Autocorrected").Clear
     SheetUtilities.getRng("Autocorrected", "A2", "A2").offset(0, SheetUtilities.firstServiceColumn - 2).value = "{}"
+
+    MacroExit ThisWorkbook.ActiveSheet
 End Sub
 
 'Public Sub confirmDeleteService()
@@ -138,7 +179,7 @@ End Sub
 '        Exit Sub
 '    End If
 '
-'    SheetUtilities.DisableAllFilters
+'    MacroEntry ThisWorkbook.ActiveSheet
 '
 '
 '    Dim addressServices() As String
@@ -191,6 +232,8 @@ End Sub
 '    SheetUtilities.getFinalReportRng.Clear
 '    Records.computeTotals
 '    Records.computeCountyTotals
+'
+'    MacroExit ThisWorkbook.ActiveSheet
 'End Sub
 
 '@EntryPoint
@@ -201,8 +244,7 @@ Public Sub confirmDiscardAll()
         Exit Sub
     End If
     
-    SheetUtilities.DisableAllFilters
-    
+    MacroEntry ThisWorkbook.ActiveSheet
     
     Dim autocorrect As Scripting.Dictionary
     Set autocorrect = Records.loadAddresses("Needs Autocorrect")
@@ -214,6 +256,8 @@ Public Sub confirmDiscardAll()
     
     SheetUtilities.ClearSheet "Needs Autocorrect"
     SheetUtilities.SortSheet "Discards"
+    
+    MacroExit ThisWorkbook.ActiveSheet
 End Sub
 
 Private Function findRow(ByVal sheetName As String, ByVal key As String) As Range
@@ -228,9 +272,6 @@ Private Sub moveSelectedRows(ByVal sourceSheet As String, ByVal destSheet As Str
     If rows Is Nothing Then
         Exit Sub
     End If
-    
-    SheetUtilities.DisableAllFilters
-    
     
     Dim confirmResponse As VbMsgBoxResult
     confirmResponse = MsgBox("Are you sure you wish to move the selected record(s) from " & _
@@ -280,23 +321,37 @@ End Sub
 
 '@EntryPoint
 Public Sub confirmDiscardSelected()
+    MacroEntry ThisWorkbook.ActiveSheet
+    
     moveSelectedRows "Needs Autocorrect", "Discards", False
+    
+    MacroExit ThisWorkbook.ActiveSheet
 End Sub
 
 '@EntryPoint
 Public Sub confirmRestoreSelectedDiscard()
+    MacroEntry ThisWorkbook.ActiveSheet
+    
     moveSelectedRows "Discards", "Needs Autocorrect", True
+    
+    MacroExit ThisWorkbook.ActiveSheet
 End Sub
 
 '@EntryPoint
 Public Sub confirmMoveAutocorrect()
+    MacroEntry ThisWorkbook.ActiveSheet
+    
     moveSelectedRows "Addresses", "Needs Autocorrect", True
     SheetUtilities.getFinalReportRng.Clear
     Records.computeTotals
+    
+    MacroExit ThisWorkbook.ActiveSheet
 End Sub
 
 '@EntryPoint
 Public Sub toggleUserVerified()
+    MacroEntry ThisWorkbook.ActiveSheet
+    
     Dim rows As Collection
     Set rows = getUniqueSelection(True, 2)
     
@@ -307,10 +362,14 @@ Public Sub toggleUserVerified()
         AutocorrectAddressesSheet.Cells.Item(row, 2).value = _
             Not AutocorrectAddressesSheet.Cells.Item(row, 2).value
     Next row
+    
+    MacroExit ThisWorkbook.ActiveSheet
 End Sub
 
 '@EntryPoint
 Public Sub toggleUserVerifiedAutocorrected()
+    MacroEntry ThisWorkbook.ActiveSheet
+    
     Dim rows As Collection
     Set rows = getUniqueSelection(True, 2)
     
@@ -344,7 +403,54 @@ Public Sub toggleUserVerifiedAutocorrected()
         End If
         
     Next row
+    
+    MacroExit ThisWorkbook.ActiveSheet
 End Sub
+
+'@EntryPoint
+Public Sub ImportRecords()
+    MacroEntry ThisWorkbook.ActiveSheet
+    
+    Dim wbook As Workbook
+    Set wbook = FileUtilities.getWorkbook()
+    
+    If wbook Is Nothing Then
+        Exit Sub
+    End If
+    
+    SheetUtilities.ClearAll
+    
+    wbook.Worksheets.[_Default]("Interface").UsedRange.Copy
+    InterfaceSheet.Range("A1").PasteSpecial xlPasteValues
+    
+    wbook.Worksheets.[_Default]("Final Report").UsedRange.Copy
+    FinalReportSheet.Range("A1").PasteSpecial xlPasteValues
+    
+    wbook.Worksheets.[_Default]("Addresses").UsedRange.Copy
+    AddressesSheet.Range("A1").PasteSpecial xlPasteValues
+    
+    wbook.Worksheets.[_Default]("Needs Autocorrect").UsedRange.Copy
+    AutocorrectAddressesSheet.Range("A1").PasteSpecial xlPasteValues
+    
+    wbook.Worksheets.[_Default]("Discards").UsedRange.Copy
+    DiscardsSheet.Range("A1").PasteSpecial xlPasteValues
+    
+    wbook.Worksheets.[_Default]("Autocorrected").UsedRange.Copy
+    AutocorrectedAddressesSheet.Range("A1").PasteSpecial xlPasteValues
+    
+    With CreateObject("htmlfile")
+        With .parentWindow.clipboardData
+            .setData "text", vbNullString
+        End With
+    End With
+    
+    InterfaceSheet.Range("A1").value = "version 3"
+    
+    wbook.Close
+    
+    MacroExit ThisWorkbook.ActiveSheet
+End Sub
+
 
 '@EntryPoint
 Public Sub OpenGaithersburgStreets()
@@ -478,46 +584,6 @@ Public Sub CopyAndOpenCountyTotalsSite()
         End With
     End With
     ThisWorkbook.FollowHyperlink address:="https://survey123.arcgis.com/share/43a57395fe8c4ae5ade7b3bf1e2b8313"
-End Sub
-
-'@EntryPoint
-Public Sub ImportRecords()
-    Dim wbook As Workbook
-    Set wbook = FileUtilities.getWorkbook()
-    
-    If wbook Is Nothing Then
-        Exit Sub
-    End If
-    
-    SheetUtilities.ClearAll
-    
-    wbook.Worksheets.[_Default]("Interface").UsedRange.Copy
-    InterfaceSheet.Range("A1").PasteSpecial xlPasteValues
-    
-    wbook.Worksheets.[_Default]("Final Report").UsedRange.Copy
-    FinalReportSheet.Range("A1").PasteSpecial xlPasteValues
-    
-    wbook.Worksheets.[_Default]("Addresses").UsedRange.Copy
-    AddressesSheet.Range("A1").PasteSpecial xlPasteValues
-    
-    wbook.Worksheets.[_Default]("Needs Autocorrect").UsedRange.Copy
-    AutocorrectAddressesSheet.Range("A1").PasteSpecial xlPasteValues
-    
-    wbook.Worksheets.[_Default]("Discards").UsedRange.Copy
-    DiscardsSheet.Range("A1").PasteSpecial xlPasteValues
-    
-    wbook.Worksheets.[_Default]("Autocorrected").UsedRange.Copy
-    AutocorrectedAddressesSheet.Range("A1").PasteSpecial xlPasteValues
-    
-    With CreateObject("htmlfile")
-        With .parentWindow.clipboardData
-            .setData "text", vbNullString
-        End With
-    End With
-    
-    InterfaceSheet.Range("A1").value = "version 3"
-    
-    wbook.Close
 End Sub
 
 ' This macro subroutine may be used to double-check

@@ -229,7 +229,6 @@ End Function
 Public Function sheetToCSVArray(ByVal sheetName As String, Optional ByVal rng As Range = Nothing) As String()
     ' From https://stackoverflow.com/a/37038840/13342792
     Dim CurrentWB As Workbook
-     
     Set CurrentWB = ThisWorkbook
     
     If rng Is Nothing Then
@@ -240,7 +239,8 @@ Public Function sheetToCSVArray(ByVal sheetName As String, Optional ByVal rng As
     
     Dim TempWB As Workbook
     Set TempWB = Application.Workbooks.Add(1)
-    TempWB.Sheets.[_Default](1).Range("A1").PasteSpecial xlPasteValues
+    ' NOTE following method sometimes fails (race condition?) if doing this in a new app
+    TempWB.Sheets.[_Default](1).Range("A1").PasteSpecial Paste:=xlPasteValues
     
     Dim MyFileName As String
     MyFileName = CurrentWB.path & "\test_" & sheetName & Format$(Time, "hh-mm-ss") & ".csv"
@@ -249,7 +249,6 @@ Public Function sheetToCSVArray(ByVal sheetName As String, Optional ByVal rng As
     TempWB.SaveAs Filename:=MyFileName, FileFormat:=xlCSV, CreateBackup:=False, Local:=True
     TempWB.Close SaveChanges:=False
     Application.DisplayAlerts = True
-    
     
     sheetToCSVArray = getCSV(MyFileName)
     Kill (MyFileName)

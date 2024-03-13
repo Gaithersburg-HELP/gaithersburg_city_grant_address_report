@@ -1,15 +1,26 @@
 ﻿'@Folder "City_Grant_Address_Report.Excel"
 Option Explicit
 
+Public macroIsRunning As Boolean
+
 Private Sub Worksheet_Change(ByVal Target As Range)
     Dim KeyCells As Range
 
     Set KeyCells = Range("C:E")
 
-    If Not (Application.Intersect(KeyCells, Target) Is Nothing) Then
+    If (Not macroIsRunning) And _
+       (Not (Application.Intersect(KeyCells, Target) Is Nothing)) Then
+        
+        Me.Unprotect
+        
         Dim row As Variant
         For Each row In Target.rows
-            Me.rows.Item(row.row).Cells(1, 2).value = True
+            If rows.Item(row.row).Cells(1, 1).value <> vbNullString Then
+                Me.rows.Item(row.row).Cells(1, 2).value = True
+            End If
         Next row
+        
+        ' NOTE change when MacroExit changes
+        Me.Protect AllowFormattingColumns:=True, AllowFormattingRows:=True, AllowSorting:=True, AllowFiltering:=True
     End If
 End Sub

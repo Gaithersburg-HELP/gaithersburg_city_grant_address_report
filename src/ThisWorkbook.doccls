@@ -1,1 +1,5 @@
 ﻿'@Folder "City_Grant_Address_Report.Excel"
+
+Private Sub Workbook_BeforeSave(ByVal SaveAsUI As Boolean, ByRef Cancel As Boolean)
+    InterfaceButtons.MacroExit ActiveSheet
+End Sub
