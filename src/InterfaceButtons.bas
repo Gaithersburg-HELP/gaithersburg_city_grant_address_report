@@ -95,9 +95,9 @@ Public Sub PasteRecords()
     InterfaceSheet.Activate
     Application.ScreenUpdating = False
     
-    getBlankRow("Interface").Cells.Item(1, 1).PasteSpecial (xlPasteValues)
+    getBlankRow("Interface").Cells.Item(1, 1).PasteSpecial Paste:=xlPasteValues
     
-    InterfaceSheet.Cells(1, 1).Select
+    InterfaceSheet.Cells.Item(1, 1).Select
     Application.ScreenUpdating = True
     
     MacroExit InterfaceSheet
