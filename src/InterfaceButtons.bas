@@ -90,18 +90,17 @@ End Function
 
 '@EntryPoint
 Public Sub PasteRecords()
-    If Not MacroEntry(ThisWorkbook.ActiveSheet) Then Exit Sub
+    ' NOTE not using MacroEntry here, it disables PasteSpecial for some reason
     
     InterfaceSheet.Activate
     Application.ScreenUpdating = False
     
-    getBlankRow("Interface").Cells.Item(1, 1).Select
-    ActiveCell.PasteSpecial (xlPasteValues)
+    getBlankRow("Interface").Cells.Item(1, 1).PasteSpecial (xlPasteValues)
     
-    ActiveSheet.Cells(1, 1).Select
+    InterfaceSheet.Cells(1, 1).Select
     Application.ScreenUpdating = True
     
-    MacroExit ThisWorkbook.ActiveSheet
+    MacroExit InterfaceSheet
 End Sub
 
 '@EntryPoint
