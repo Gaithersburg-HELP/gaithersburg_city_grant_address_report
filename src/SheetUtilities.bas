@@ -270,6 +270,7 @@ Public Function sheetToCSVArray(ByVal sheetName As String, Optional ByVal rng As
     Set CurrentWB = ThisWorkbook
     
     If rng Is Nothing Then
+        ThisWorkbook.Worksheets.[_Default](sheetName).Unprotect
         ThisWorkbook.Worksheets.[_Default](sheetName).UsedRange.Copy
     Else
         rng.Copy
@@ -278,6 +279,7 @@ Public Function sheetToCSVArray(ByVal sheetName As String, Optional ByVal rng As
     Dim TempWB As Workbook
     Set TempWB = Application.Workbooks.Add(1)
     ' NOTE following method sometimes fails (race condition?) if doing this in a new app
+    ' or possibly started happening after protecting sheets or Application.Visible
     TempWB.Sheets.[_Default](1).Range("A1").PasteSpecial Paste:=xlPasteValues
     
     Dim MyFileName As String

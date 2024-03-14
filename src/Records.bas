@@ -407,11 +407,11 @@ Public Sub computeCountyTotals()
         incrementCountyTotal addresses.Item(key)
     Next key
     
-    Dim autocorrect As Scripting.Dictionary
-    Set autocorrect = Records.loadAddresses("Needs Autocorrect")
+    Dim Autocorrect As Scripting.Dictionary
+    Set Autocorrect = Records.loadAddresses("Needs Autocorrect")
     
-    For Each key In autocorrect.Keys
-        incrementCountyTotal autocorrect.Item(key)
+    For Each key In Autocorrect.Keys
+        incrementCountyTotal Autocorrect.Item(key)
     Next key
     
     Dim discards As Scripting.Dictionary

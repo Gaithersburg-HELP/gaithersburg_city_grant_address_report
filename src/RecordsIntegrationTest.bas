@@ -15,9 +15,9 @@ Private Sub ModuleInitialize()
     'this method runs once per module.
     Set Assert = CreateObject("Rubberduck.AssertClass")
     Set Fakes = CreateObject("Rubberduck.FakesProvider")
-
-    Application.Visible = False
-    Application.ScreenUpdating = False
+    
+    ' ScreenUpdating, Visible result in buggy behavior, don't turn on
+    
     MacroEntry InterfaceSheet
 End Sub
 
@@ -28,21 +28,19 @@ Private Sub ModuleCleanup()
     Set Fakes = Nothing
     
     MacroExit InterfaceSheet
-    Application.ScreenUpdating = True
-    Application.Visible = True
 End Sub
 
 '@TestInitialize
 Private Sub TestInitialize()
     ClearAll
-    autocorrect.printRemainingRequests 8000
+    Autocorrect.printRemainingRequests 8000
 End Sub
 
 '@TestCleanup
 Private Sub TestCleanup()
     MacroEntry InterfaceSheet
     ClearAll
-    autocorrect.printRemainingRequests 8000
+    Autocorrect.printRemainingRequests 8000
 End Sub
 
 Private Sub PasteTestRecords(ByRef addressArr() As String)
@@ -110,7 +108,7 @@ Public Sub TestAllAddresses()
     CompareSheetCSV Assert, "Discards", ThisWorkbook.path & "\testdata\test3autocorrectaddresses_discardsoutput.csv"
     CompareSheetCSV Assert, "Autocorrected", ThisWorkbook.path & "\testdata\test3autocorrectaddresses_autocorrectedoutput.csv"
 
-    Assert.IsTrue autocorrect.getRemainingRequests = 7980
+    Assert.IsTrue Autocorrect.getRemainingRequests = 7980
 
 
     Dim testMergeAutocorrectedAddressesArr() As String

@@ -6,7 +6,7 @@ Public Enum addressKey
     streetAddress = -1 ' StreetNum + PrefixedStreetName + StreetType + Postfix
     Full = 0 ' StreetAddress + UnitType + UnitNum
     streetNum = 1
-    PrefixedStreetname = 2 ' No postfix
+    PrefixedStreetname = 2 ' Prefix + Street Name only, no StreetType or Postfix
     StreetType = 3
     Postfix = 4
     unitType = 5

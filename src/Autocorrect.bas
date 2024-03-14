@@ -155,33 +155,24 @@ Public Sub attemptValidation()
                     autocorrected.Add recordToAutocorrect.key, recordToAutocorrect
                 End If
             End If
-        ElseIf isDPVConfirmed Then
-            ' Gaithersburg database does not match USPS database on multiple addresses such as:
-            ' - 110-150 Chevy Chase St Unit 102 > should be Apt 102
-            ' - 25 Chestnut St Unit A > should be Ste A
-            ' so double check by searching without unit
-            Set gburgAddress = Lookup.gburgQuery(recordToAutocorrect.GburgFormatValidAddress.Item(addressKey.streetAddress))
-            If gburgAddress.Item(addressKey.Full) <> vbNullString Then
-                recordToAutocorrect.SetValidAddress gburgAddress
-                recordToAutocorrect.SetInCity InCityCode.FailedAutocorrectInCity
-            Else
-                recordToAutocorrect.SetInCity InCityCode.ValidNotInCity
-            
-                addresses.Add recordToAutocorrect.key, recordToAutocorrect
-                addressesToAutocorrect.Remove recordToAutocorrect.key
-                ' TODO rewrite code so that record has flag for which dictionaries it belongs in
-                If recordToAutocorrect.isAutocorrected Then
-                    autocorrected.Add recordToAutocorrect.key, recordToAutocorrect
-                End If
-            End If
         ElseIf receivedValidation Then
             If Lookup.possibleInGburgQuery(minLongitude, minLatitude, maxLongitude, maxLatitude) Then
+                ' Gaithersburg database does not match USPS database on multiple addresses such as:
+                ' - 110-150 Chevy Chase St Unit 102 > should be Apt 102
+                ' - 25 Chestnut St Unit A > should be Ste A
+                ' - 319 N Summit Dr > should be Ave
+                ' - USPS returns 738 Quince Orch instead of Quince Orchard for some reason
                 recordToAutocorrect.SetInCity InCityCode.FailedAutocorrectInCity
             Else
-                recordToAutocorrect.SetInCity InCityCode.FailedAutocorrectNotInCity
+                If isDPVConfirmed Then
+                    recordToAutocorrect.SetInCity InCityCode.ValidNotInCity
+                    addresses.Add recordToAutocorrect.key, recordToAutocorrect
+                Else
+                    recordToAutocorrect.SetInCity InCityCode.FailedAutocorrectNotInCity
+                    discards.Add recordToAutocorrect.key, recordToAutocorrect
+                End If
                 
                 addressesToAutocorrect.Remove recordToAutocorrect.key
-                discards.Add recordToAutocorrect.key, recordToAutocorrect
                 ' TODO rewrite code so that record has flag for which dictionaries it belongs in
                 If recordToAutocorrect.isAutocorrected Then
                     autocorrected.Add recordToAutocorrect.key, recordToAutocorrect

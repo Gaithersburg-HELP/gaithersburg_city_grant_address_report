@@ -130,7 +130,7 @@ Public Sub confirmAttemptValidation()
     
     If Not MacroEntry(ThisWorkbook.ActiveSheet) Then Exit Sub
     
-    autocorrect.attemptValidation
+    Autocorrect.attemptValidation
     
     MacroExit ThisWorkbook.ActiveSheet
 End Sub
@@ -253,12 +253,12 @@ Public Sub confirmDiscardAll()
     
     If Not MacroEntry(ThisWorkbook.ActiveSheet) Then Exit Sub
     
-    Dim autocorrect As Scripting.Dictionary
-    Set autocorrect = Records.loadAddresses("Needs Autocorrect")
+    Dim Autocorrect As Scripting.Dictionary
+    Set Autocorrect = Records.loadAddresses("Needs Autocorrect")
     
     Dim key As Variant
-    For Each key In autocorrect.Keys()
-        Records.writeAddress "Discards", autocorrect.Item(key)
+    For Each key In Autocorrect.Keys()
+        Records.writeAddress "Discards", Autocorrect.Item(key)
     Next key
     
     SheetUtilities.ClearSheet "Needs Autocorrect"
