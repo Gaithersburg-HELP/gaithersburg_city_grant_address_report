@@ -1,0 +1,8 @@
+In City,User Verified,Validated Address,Validated Unit Type and No.,Validated Zip Code,Raw Address,Raw Unit Type With Number,Raw City,Raw State,Raw Zipcode,Guest ID,First Name,Last Name,Household Total,0 to 1,2 to 17,18+,Rx Total,Food
+Possible but failed autocorrection,FALSE,,,20874,19718 Circle,,Darnestown,MD,20874,Napster Rainman,Rainman,Napster,5,0,0,5,{},
+Yes,TRUE,13-15 E Deer Park Dr,Ste 102,20877,13 E Deer Pk Dr,102,Gaithersburg,MD,20877,GraphQL Oxidation,GraphQL,Oxidation,4,0,0,4,{},
+Failed autocorrection and geocoded not in city,FALSE,,,20877,501 Fck Ave,,Hyattsville,MD,20877,Shrimp Lobster,Shrimp,Lobster,4,0,0,4,{},
+Possible but failed autocorrection,FALSE,,,20878,501 Fck Ave,,,,,Mango Dragonfruit,Mango,Dragonfruit,4,0,0,4,{},
+Failed autocorrection and geocoded not in city,FALSE,18235 Lost Knife Cir,,20886,18235 Lost Knife,,Gaithersburg,MD,20886,Cherry Rose,Cherry,Rose,4,0,0,4,"{""Q3"":{""1/5/2023"":10}}","{""Q3"":[""1/5/2023""]}"
+Failed autocorrection and geocoded not in city,FALSE,,,20850,200 N Ho,,Rockville,MD,20850,Rapier Human,Human,Rapier,4,0,0,4,{},
+Not correctable,FALSE,,,,13308,,Germantown,MD,20874,Panoply Toilet Seat,Toilet Seat,Panoply,4,1,1,2,{},
