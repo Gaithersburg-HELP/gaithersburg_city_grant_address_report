@@ -55,8 +55,9 @@ To print this documentation, click [here](README.md) and print that page.
 3) Select any records which cannot be corrected and click "Discard selected" to move those records to the "Discards" sheet. Alternatively, you can click "Discard All" to discard all remaining records in the "Needs Autocorrect" sheet.
 4) To fix accidentally discarded addresses, select them in the "Discards" sheet and click "Restore selected discards". They will be moved back to the "Needs Autocorrect" sheet.
 5) To fix records incorrectly marked as "Yes" or "No, select them in the "Addresses" sheet and click "Move to needs autocorrect". They will be moved back to the "Needs Autocorrect" sheet.
-6) For additional corrections, see [Tips for editing](#Tips-for-editing)
-7) See [here](#generating-totals-and-final-report) to generate the final report and county totals
+6) If verifying Autocorrected addresses, you can toggle records as verified so you know which ones you have verified as correct
+7) For additional corrections, see [Tips for editing](#Tips-for-editing)
+8) See [here](#generating-totals-and-final-report) to generate the final report and county totals
 ### Tips for validating addresses
 1) Check if the address is similar to any Gaithersburg street names. Click "Open List of Gaithersburg Streets" in the "Needs Autocorrect" sheet to get the list. You can use Ctrl-F in the browser to look for similar street names. Discard if not in the list.
 2) Check for typos by selecting record and execute the LookupInCity macro Ctrl+Shift+L to look up that record via the Gaithersburg City address search page, in a browser window. Delete some characters to find similar addresses (e.g. “3 Summit” instead of “3A S Summit St”)
