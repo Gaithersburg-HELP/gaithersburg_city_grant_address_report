@@ -604,7 +604,8 @@ Private Function getFormattedSplitAddr(ByVal returnRaw As Boolean) As Scripting.
     addr = Replace(addr, "Parkway", "Pkwy")
     addr = Replace(addr, "Place", "Pl")
     addr = Replace(addr, "Road", "Rd")
-    addr = Replace(addr, "Square", "Sq")
+    ' No 'Square' street type in Gaithersburg but it is present in street name
+    'addr = Replace(addr, "Square", "Sq")
     addr = Replace(addr, "Street", "St")
     addr = Replace(addr, "Terrace", "Ter")
     '@Ignore AssignmentNotUsed
