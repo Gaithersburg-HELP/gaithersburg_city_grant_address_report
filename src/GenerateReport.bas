@@ -35,7 +35,7 @@ Public Sub generateFinalReport()
         Dim record As RecordTuple
         Set record = addresses.Item(address)
         
-        If record.InCity = ValidInCity Then writeFinalReportRecord record
+        If record.InCity = ValidInCity And record.visitData.count > 0 Then writeFinalReportRecord record
     Next address
     
     SheetUtilities.SortSheet "Final Report"

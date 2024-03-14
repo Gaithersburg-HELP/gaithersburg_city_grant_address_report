@@ -226,7 +226,7 @@ Public Sub TestAllAddresses()
     InterfaceButtons.toggleUserVerifiedAutocorrected
 
     InterfaceSheet.Select
-    PasteTestRecords testExtraAddressesArr
+    PasteTestRecords testMergeAutocorrectedAddressesArr
 
     InterfaceButtons.confirmAddRecords
     InterfaceButtons.confirmAttemptValidation

@@ -223,7 +223,9 @@ Public Function loadServiceNames(ByVal sheetName As String) As String()
     Set servicesRng = SheetUtilities.getServiceHeaderRng(sheetName)
     
     If servicesRng Is Nothing Then
-        loadServiceNames = Split(vbNullString, vbNullString)
+        Dim nullReturn(0) As String
+        nullReturn(0) = vbNullString
+        loadServiceNames = nullReturn
         Exit Function
     End If
     

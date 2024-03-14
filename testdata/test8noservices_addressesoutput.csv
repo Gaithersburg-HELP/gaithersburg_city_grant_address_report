@@ -1,6 +1,6 @@
 In City,User Verified,Validated Address,Validated Unit Type and No.,Validated Zip Code,Raw Address,Raw Unit Type With Number,Raw City,Raw State,Raw Zipcode,Guest ID,First Name,Last Name,Household Total,0 to 1,2 to 17,18+,Rx Total,7,Food
-Yes,FALSE,150 Chevy Chase St,Unit 102,20878,150 Chevy Chase St,Unt 102,Gaithersburg,MD,20878,1003,Bobby,Hill,2,0,0,2,{},,
 Yes,FALSE,150 Chevy Chase St,Unit 102,20878,150 Chevy Chase St,102,Gaithersburg,MD,20878,Hannibal Cannibal,Hannibal,Cannibal,3,0,0,3,{},,
+Yes,FALSE,150 Chevy Chase St,Unit 102,20878,150 Chevy Chase St,Unt 102,Gaithersburg,MD,20878,1003,Bobby,Hill,2,0,0,2,{},,
 Yes,FALSE,405 Christopher Ave,Apt T3,20879,405 CHRISTOPHER AVE,T3,Gaithersburg,MD,20879,2260,Thirst,Hunger,1,0,0,1,{},,
 Yes,TRUE,409 Christopher Ave,Apt T3,20879,409 Christopher Ave,T3 RM 1,Gaithersburg,MD,20879,1002,O'Hanna,Mulligan,2,0,0,2,{},,
 Yes,TRUE,13-15 E Deer Park Dr,Ste 202,20877,13-15 E Deer Park Dr,202,Gaithersburg,MD,20877,6012,Regret,Much,9,0,0,9,{},,
