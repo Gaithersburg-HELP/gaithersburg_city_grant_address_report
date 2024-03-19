@@ -101,6 +101,11 @@ Public Function loadAddresses(ByVal sheetName As String) As Scripting.Dictionary
         Exit Function
     End If
     
+    Dim appStatus As Variant
+    If Application.StatusBar = False Then appStatus = False Else appStatus = Application.StatusBar
+    
+    Application.StatusBar = "Loading address 1 of " & getBlankRow(sheetName).row
+    
     Dim i As Long
     i = 2
     Do While i < getBlankRow(sheetName).row
@@ -112,7 +117,11 @@ Public Function loadAddresses(ByVal sheetName As String) As Scripting.Dictionary
         
         addresses.Add record.key, record
         i = i + 1
+        
+        Application.StatusBar = "Loading address " & i & " of " & getBlankRow(sheetName).row
     Loop
+    
+    Application.StatusBar = appStatus
 
     Set loadAddresses = addresses
 End Function
@@ -181,10 +190,22 @@ End Sub
 
 Public Sub writeAddresses(ByVal sheetName As String, ByVal addresses As Scripting.Dictionary)
     ClearSheet sheetName
+    
+    Dim appStatus As Variant
+    If Application.StatusBar = False Then appStatus = False Else appStatus = Application.StatusBar
+    
+    Dim i As Long
+    Application.StatusBar = "Writing address 1 of " & UBound(addresses.Keys) + 1
+    
     Dim key As Variant
     For Each key In addresses.Keys
         writeAddress sheetName, addresses.Item(key)
+        Application.StatusBar = "Writing address " & i & " of " & UBound(addresses.Keys) + 1
+        i = i + 1
     Next key
+    
+    Application.StatusBar = appStatus
+    
 End Sub
 
 Private Sub incrementCountyTotal(ByVal record As RecordTuple)
