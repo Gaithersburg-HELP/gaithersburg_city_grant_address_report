@@ -16,7 +16,7 @@ Public Function getWorkbook() As Workbook
     With fDialog
         .Title = "Select a File"  ' Dialog box title
         .allowMultiSelect = False  ' Allow only single file selection
-        .InitialFileName = ThisWorkbook.path   ' Set a default starting folder
+        .InitialFileName = LibFileTools.GetLocalPath(ThisWorkbook.path)   ' Set a default starting folder
         ' Add file filters if needed (Example)
         .filters.Clear
         .filters.Add "Excel Files", "*.xlsm"
@@ -70,7 +70,7 @@ Public Function getCSV(ByVal path As String) As String()
     Dim fileSO As FileSystemObject
     Dim fileTS As TextStream
     Set fileSO = New FileSystemObject
-    Set fileTS = fileSO.OpenTextFile(path, ForReading, False, TristateUseDefault)
+    Set fileTS = fileSO.OpenTextFile(LibFileTools.GetLocalPath(path), ForReading, False, TristateUseDefault)
     
     Dim fileArr() As String
     fileArr = Split(fileTS.ReadAll, vbNewLine)
@@ -90,7 +90,7 @@ Public Function getAPIKeys() As Scripting.Dictionary
     Set apiKeysDict = CreateObject("Scripting.Dictionary")
         
     Dim apiFileArray() As String
-    apiFileArray = getCSV(ThisWorkbook.path & "\apikeys.csv")
+    apiFileArray = getCSV(LibFileTools.GetLocalPath(ThisWorkbook.path) & "\apikeys.csv")
     
     Dim i As Long
     Dim apiFileArrLine() As String

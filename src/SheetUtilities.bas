@@ -266,8 +266,6 @@ End Function
 
 Public Function sheetToCSVArray(ByVal sheetName As String, Optional ByVal rng As Range = Nothing) As String()
     ' From https://stackoverflow.com/a/37038840/13342792
-    Dim CurrentWB As Workbook
-    Set CurrentWB = ThisWorkbook
     
     If rng Is Nothing Then
         ThisWorkbook.Worksheets.[_Default](sheetName).Unprotect
@@ -283,7 +281,7 @@ Public Function sheetToCSVArray(ByVal sheetName As String, Optional ByVal rng As
     TempWB.Sheets.[_Default](1).Range("A1").PasteSpecial Paste:=xlPasteValues
     
     Dim MyFileName As String
-    MyFileName = CurrentWB.path & "\test_" & sheetName & Format$(Time, "hh-mm-ss") & ".csv"
+    MyFileName = LibFileTools.GetLocalPath(ThisWorkbook.path) & "\test_" & sheetName & Format$(Time, "hh-mm-ss") & ".csv"
     
     Application.DisplayAlerts = False
     TempWB.SaveAs fileName:=MyFileName, FileFormat:=xlCSV, CreateBackup:=False, Local:=True
