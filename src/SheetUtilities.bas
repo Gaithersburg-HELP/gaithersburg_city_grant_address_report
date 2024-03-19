@@ -349,6 +349,7 @@ Public Sub ClearSheet(ByVal sheetName As String)
 End Sub
 
 Public Sub ClearAll()
+    '@Ignore FunctionReturnValueDiscarded
     InterfaceButtons.MacroEntry ThisWorkbook.ActiveSheet
     Application.StatusBar = False
     
