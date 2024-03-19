@@ -451,7 +451,7 @@ Public Sub ImportRecords()
         End With
     End With
     
-    InterfaceSheet.Range("A1").value = "version 3"
+    InterfaceSheet.Range("A1").value = "version 3.2"
     
     wbook.Close
     

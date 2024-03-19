@@ -349,6 +349,9 @@ Public Sub ClearSheet(ByVal sheetName As String)
 End Sub
 
 Public Sub ClearAll()
+    InterfaceButtons.MacroEntry ThisWorkbook.ActiveSheet
+    Application.StatusBar = False
+    
     getPastedRecordsRng.Clear
     getTotalsRng.value = 0
     getCountyRng.value = 0
