@@ -354,6 +354,8 @@ Public Sub ClearAll()
     Application.StatusBar = False
     
     getPastedRecordsRng.Clear
+    InterfaceSheet.columns.Item("A").NumberFormat = "mm/dd/yyyy"
+    
     getTotalsRng.value = 0
     getCountyRng.value = 0
     getFinalReportRng.Clear
