@@ -286,7 +286,7 @@ Public Function sheetToCSVArray(ByVal sheetName As String, Optional ByVal rng As
     MyFileName = CurrentWB.path & "\test_" & sheetName & Format$(Time, "hh-mm-ss") & ".csv"
     
     Application.DisplayAlerts = False
-    TempWB.SaveAs Filename:=MyFileName, FileFormat:=xlCSV, CreateBackup:=False, Local:=True
+    TempWB.SaveAs fileName:=MyFileName, FileFormat:=xlCSV, CreateBackup:=False, Local:=True
     TempWB.Close SaveChanges:=False
     Application.DisplayAlerts = True
     

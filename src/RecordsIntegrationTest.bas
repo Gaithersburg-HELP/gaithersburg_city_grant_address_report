@@ -390,7 +390,7 @@ Public Sub TestSort()
     On Error GoTo TestFail
     
     Dim wbook As Workbook
-    Set wbook = Workbooks.Open(Filename:=ThisWorkbook.path & "\testdata\testsortaddresses.csv")
+    Set wbook = Workbooks.Open(fileName:=ThisWorkbook.path & "\testdata\testsortaddresses.csv")
     
     wbook.Worksheets.[_Default](1).UsedRange.Copy
     AddressesSheet.Range("A1").PasteSpecial xlPasteValues

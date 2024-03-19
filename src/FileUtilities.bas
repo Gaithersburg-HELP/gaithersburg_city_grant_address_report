@@ -15,18 +15,18 @@ Public Function getWorkbook() As Workbook
     ' Customize the FileDialog (optional)
     With fDialog
         .Title = "Select a File"  ' Dialog box title
-        .AllowMultiSelect = False  ' Allow only single file selection
+        .allowMultiSelect = False  ' Allow only single file selection
         .InitialFileName = ThisWorkbook.path   ' Set a default starting folder
         ' Add file filters if needed (Example)
-        .Filters.Clear
-        .Filters.Add "Excel Files", "*.xlsm"
+        .filters.Clear
+        .filters.Add "Excel Files", "*.xlsm"
     End With
 
     ' Show the dialog. If user selects a file:
     If fDialog.Show = -1 Then
         selectedFile = fDialog.SelectedItems.Item(1)  ' Get the selected file's path
         ' Do something with the file, e.g., open it:
-        Set getWorkbook = Workbooks.Open(Filename:=selectedFile)
+        Set getWorkbook = Workbooks.Open(fileName:=selectedFile)
     Else
         Set getWorkbook = Nothing
     End If
@@ -37,10 +37,10 @@ Public Sub sortWorkbooks()
     Dim fDialog As FileDialog
     Set fDialog = Application.FileDialog(msoFileDialogFilePicker)
     With fDialog
-        .AllowMultiSelect = True
+        .allowMultiSelect = True
         .Title = "Select CSVs to Sort"
-        .Filters.Clear
-        .Filters.Add "CSV", "*.csv"
+        .filters.Clear
+        .filters.Add "CSV", "*.csv"
         .Show
     End With
     
