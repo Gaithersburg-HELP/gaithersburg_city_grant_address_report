@@ -22,6 +22,8 @@ Public Function MacroEntry(ByVal wsheetToReturn As Worksheet) As Boolean
         wsheet.Unprotect
     Next
     
+    ' NOTE If program encountered an error, status bar won't be reset, so reset it now
+    Application.StatusBar = False
     AutocorrectAddressesSheet.macroIsRunning = True
     wsheetToReturn.Activate
     MacroEntry = True
@@ -42,6 +44,7 @@ Public Sub MacroExit(ByVal wsheetToReturn As Worksheet)
         wsheet.Protect AllowFormattingColumns:=True, AllowFormattingRows:=True, AllowSorting:=True, AllowFiltering:=True
     Next
     
+    Application.StatusBar = False
     wsheetToReturn.Activate
     AutocorrectAddressesSheet.macroIsRunning = False
 End Sub
