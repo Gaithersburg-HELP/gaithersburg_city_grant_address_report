@@ -418,29 +418,33 @@ Private Sub incrementCountyTotal(ByVal record As RecordTuple)
     Next i
 End Sub
 
-Public Sub computeCountyTotals()
-    getCountyRng.value = 0
+Private Sub loadAddressComputeCountyTotal(ByVal sheetName As String)
+    Dim appStatus As Variant
+    If Application.StatusBar = False Then appStatus = False Else appStatus = Application.StatusBar
     
     Dim addresses As Scripting.Dictionary
-    Set addresses = Records.loadAddresses("Addresses")
+    Set addresses = Records.loadAddresses(sheetName)
+    
+    Dim recordProgress As Long
+    recordProgress = 1
+    Application.StatusBar = "County totaling " & sheetName & " address 1 of " & UBound(addresses.Keys) + 1
+    
     Dim key As Variant
     For Each key In addresses.Keys
         incrementCountyTotal addresses.Item(key)
+        recordProgress = recordProgress + 1
+        Application.StatusBar = "County totaling " & sheetName & " address " & recordProgress & " of " & UBound(addresses.Keys) + 1
     Next key
     
-    Dim Autocorrect As Scripting.Dictionary
-    Set Autocorrect = Records.loadAddresses("Needs Autocorrect")
+    Application.StatusBar = appStatus
+End Sub
+
+Public Sub computeCountyTotals()
+    getCountyRng.value = 0
     
-    For Each key In Autocorrect.Keys
-        incrementCountyTotal Autocorrect.Item(key)
-    Next key
-    
-    Dim discards As Scripting.Dictionary
-    Set discards = Records.loadAddresses("Discards")
-    
-    For Each key In discards.Keys
-        incrementCountyTotal discards.Item(key)
-    Next key
+    loadAddressComputeCountyTotal "Addresses"
+    loadAddressComputeCountyTotal "Needs Autocorrect"
+    loadAddressComputeCountyTotal "Discards"
 End Sub
 
 Public Sub computeTotals()
@@ -455,6 +459,13 @@ Public Sub computeTotals()
     Dim guestIDTotal(1 To 4) As Long
     Dim householdTotal(1 To 4) As Long
     Dim rxTotal(1 To 4) As Double
+    
+    Dim appStatus As Variant
+    If Application.StatusBar = False Then appStatus = False Else appStatus = Application.StatusBar
+    
+    Dim recordProgress As Long
+    recordProgress = 1
+    Application.StatusBar = "Totaling address 1 of " & UBound(addresses.Keys) + 1
     
     Dim key As Variant
     For Each key In addresses.Keys
@@ -484,12 +495,15 @@ Public Sub computeTotals()
                 Next quarter
             Next service
             
+            Dim countedUnduplicated As Boolean
+            countedUnduplicated = False
             Dim i As Long
             For i = 1 To 4
-                If visitCount(i) > 0 Then
+                If Not countedUnduplicated And visitCount(i) > 0 Then
                     uniqueGuestIDTotal(i) = uniqueGuestIDTotal(i) + 1
                     uniqueGuestIDHouseholdTotal(i) = uniqueGuestIDHouseholdTotal(i) + _
                                                      record.householdTotal
+                    countedUnduplicated = True
                 End If
                 guestIDTotal(i) = guestIDTotal(i) + visitCount(i)
                 householdTotal(i) = householdTotal(i) + (visitCount(i) * record.householdTotal)
@@ -500,6 +514,9 @@ Public Sub computeTotals()
                 visitCount(i) = 0
             Next i
         End If
+        
+        recordProgress = recordProgress + 1
+        Application.StatusBar = "Totaling address " & recordProgress & " of " & UBound(addresses.Keys) + 1
     Next key
     
     Dim totalsRng As Range
@@ -512,6 +529,9 @@ Public Sub computeTotals()
         totalsRng.Cells.Item(4, i) = householdTotal(i)
         totalsRng.Cells.Item(5, i) = rxTotal(i)
     Next i
+    
+    Application.StatusBar = appStatus
+    
 End Sub
 
 Public Sub writeAddressesComputeTotals(ByVal addresses As Scripting.Dictionary, _
