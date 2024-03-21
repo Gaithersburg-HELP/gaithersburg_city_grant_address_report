@@ -428,10 +428,10 @@ Public Sub ImportRecords()
         Exit Sub
     End If
     
-    SheetUtilities.ClearAll
+    Dim versionNum As String
+    versionNum = InterfaceSheet.Cells.Item(1, 1).value
     
-    wbook.Worksheets.[_Default]("Interface").UsedRange.Copy
-    InterfaceSheet.Range("A1").PasteSpecial xlPasteValues
+    SheetUtilities.ClearAll
     
     wbook.Worksheets.[_Default]("Final Report").UsedRange.Copy
     FinalReportSheet.Range("A1").PasteSpecial xlPasteValues
@@ -454,7 +454,10 @@ Public Sub ImportRecords()
         End With
     End With
     
-    InterfaceSheet.Range("A1").value = "version 3.2"
+    Records.computeTotals
+    Records.computeCountyTotals
+    
+    InterfaceSheet.Range("A1").value = versionNum
     
     wbook.Close
     
