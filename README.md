@@ -80,9 +80,12 @@ To print this documentation, click [here](README.md) and print that page.
 2) The total counts for addresses can be seen on the "Interface" sheet. The top right quarterly totals count valid Gaithersburg addresses only. The county totals count all addresses, both valid, invalid, discarded, not yet autocorrected, etc.
 3) On the "Interface" sheet, click "Generate Final Report". This will be output to the "Final Report" sheet. This outputs every address per unique guest ID, sorted by street name.
 4) Right-click the "Final Report" sheet and select "Move or copy". Select "(new book)" and check the “Create a copy” box. 
-	![Right click and copy](readme/5finalreport.png)
+	![Right click and copy](readme/5.1finalreport.png)
 5) Save the new workbook as the final grant report to be sent, named City FYnn Qn [Service] GHELP Address Listings.xlsx, for example City FY18 Q3 Food GHELP Address Listings.xlsx.
 6) On the "Interface" sheet, select the month you want to report County totals for. Click "Copy selected zip totals code and open county totals site". This will open the county totals form in the browser.
 7) Under "Select your organization", select the organization. Wait for the top left corner to say "Saved".
-7) In the browser, hit F12 to open developer tools. Select the "Console" tab. Click to the right of the > symbol to set the cursor. Paste using Ctrl-V into the console and hit Enter. If you receive a warning, type in 'allow pasting' without quotes and hit Enter, then paste using Ctrl-V and hit enter. This will refresh the page and all values will be filled in. Double check the zip code total values for e.g. 20878, 20877, 20879, since this code will break if the form gets updated.
-    ![Paste in developer console](readme/5countypaste.png)
+8) In the browser, hit F12 to open developer tools. Select the "Console" tab. Click to the right of the > symbol to set the cursor. Paste using Ctrl-V into the console and hit Enter. If you receive a warning, type in 'allow pasting' without quotes and hit Enter, then paste using Ctrl-V and hit enter. This will refresh the page and all values will be filled in. Double check the zip code total values for e.g. 20878, 20877, 20879, since this code will break if the form gets updated.
+    ![Paste in developer console](readme/5.2countypaste.png)
+9) Fill in the other questions. Save a copy before submitting the form. Note that these instructions will be different depending on what browser you're using. In the browser, hit Ctrl-P to print. In the Printer, select "Save as PDF"/"Microsoft Print to PDF". Scroll down to "More Settings" and click the dropdown. Check the "Background Graphics" checkbox and uncheck the "Headers and Footers" checkbox if it exists. Click "Print". Choose a filename and click "Save". Submit the form.
+	![Save as PDF](readme/5.3savepdfsettings.png)
+	![Background graphics checkbox](readme/5.4backgroundgraphics.png)
