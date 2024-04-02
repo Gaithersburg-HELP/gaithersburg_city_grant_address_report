@@ -24,7 +24,7 @@ To print this documentation, click [here](README.md) and print that page.
 1) Log into your food bank manager and export data as a CSV. The visit data does not need to be quarterly, the XLSM file will automatically sort by quarter. The visit data can also be imported at any time, you don't have to do it all at once at the end of the quarter.
     1) For Gaithersburg HELP Soxbox, log in [here](https://ghp.soxbox.co/login). Go to Visit History Export:
        ![Soxbox Visit History Export](readme/2.1soxbox_visithistoryexport.png)
-    2) Select the dates you wish to export. For instance, to run the county monthly totals for this month, export dates for this month only. Select the preset "city and county grant address v3". Click "Export" and save the CSV file
+    2) Select the preset "city and county grant address v3", then select the dates you wish to export. For example, if you've already processed all the addresses up to but not including February 1, but you want to process addresses from February 1 to 29, select Visit On dates starting on February 1 and ending on February 29. Click "Export" and save the CSV file
        ![city and county grant address v3 preset and date selection](readme/2.2soxbox_preset.png)
 2) Open the exported CSV file. Filter by tracking method or service for the visit data that you want to report on. Select all data except for the header (click on Row 2 to select, then press Shift-End-Down). Ctrl-C to copy.
     * If you forget to import an extra tracking method, you can repeat this step but filter on only the extra tracking method.
@@ -36,12 +36,12 @@ To print this documentation, click [here](README.md) and print that page.
     * Progress is tracked in the status bar in the bottom left. Program is finished when the status bar says "Ready" or when the mouse icon is no longer the spinning busy icon
     * If you need to stop execution, hit Esc. If you stop execution, you will need to start over from step 4.
 6) Addresses matching existing addresses in the "Addresses", "Needs Autocorrect" or "Discards" sheets will be merged. Successfully validated addresses can be seen in the "Addresses" sheet and will be marked with an "In City" code of "Yes". All other addresses will be moved to the "Needs Autocorrect" sheet.
-7) I recommend at least automatically validating addresses first, but you can generate a final report and county totals now (see [here](#generating-totals-and-final-report)), or continue with editing addresses by hand.
+7) I recommend at least automatically validating addresses first, but you can generate a final report and county totals now (see [here](#generating-totals-and-final-report)). Before editing addresses by hand, automatically validate addresses first.
 ## Automatically validating addresses
 1) Google Address Validation requires a [Google Address Validation key](https://developers.google.com/maps/documentation/address-validation/get-api-key). This file expects a file named "apikeys.csv" formatted as "address_key,apikey", placed in the same directory as the XLSM.
 	* If your directory is a OneDrive directory, Right Click both files and set to Always Keep On This Device
 2) This XLSM file attempts to keep usage of the API within the free tier and limits you to 8,000 requests per month. To increase this limit, email me.
-3) On the "Needs Autocorrect" sheet, click "Attempt validation" This will attempt to autocorrect and validate all addresses against Google Address Validation and then against the Gaithersburg database. Addresses returned from this validation will be placed in the "Validated Address", "Validated Unit Type and No.", and "Validated Zip Code" fields.
+3) On the "Needs Autocorrect" sheet, click "Attempt validation" This will attempt to autocorrect and validate all addresses against Google Address Validation if the In City Code is "Not yet autocorrected". Addresses returned from this validation will be placed in the "Validated Address", "Validated Unit Type and No.", and "Validated Zip Code" fields. All addresses are then verified on the "Validated" address fields against the Gaithersburg database. 
     * The same restrictions apply as before while validating addresses (you cannot use excel, progress will be shown in the lower left corner, etc.)
 4) After validation, addresses will show up in either the "Addresses" sheet, the "Needs Autocorrect" sheet, or the "Discards" sheet. Any addresses automatically autocorrected by the XLSM file will additionally show up in the "Autocorrected" sheet.
     * Addresses that were autocorrected and in Gaithersburg will be marked with an "In City" code of "Yes" and be placed in the "Addresses" sheet.
@@ -52,7 +52,7 @@ To print this documentation, click [here](README.md) and print that page.
 5) You can generate a final report and county totals now (see [here](#generating-totals-and-final-report)), or continue with editing addresses by hand.
 ## Manually validating addresses
 ### Editing
-1) All user editing should be done in the "Validated" fields in the "Needs Autocorrect" sheet. Go through each address and type in a valid address for the record in the corresponding "Validated" field (see [Tips for validating addresses](#Tips-for-validating-addresses)). As you do so, the "User Verified" field will be set to "True" for that record. If you accidentally edit a record, click "Toggle User Verified" to set the record back to "False".
+1) Before manually editing addresses, automatically validate addresses first. All user editing should be done in the "Validated" fields in the "Needs Autocorrect" sheet. The "Raw" fields are ignored after automatic validation and should not be edited. Go through each address and type in a valid address for the record in the corresponding "Validated" field (see [Tips for validating addresses](#Tips-for-validating-addresses)). As you do so, the "User Verified" field will be set to "True" for that record. If you accidentally edit a record, click "Toggle User Verified" to set the record back to "False".
 2) Click "Attempt Validation". All "True" "User Verified" records will be validated again against the Gaithersburg database using the user input address. You don't have to correct all records before clicking "Attempt Validation".
 3) Select any records which cannot be corrected and click "Discard selected" to move those records to the "Discards" sheet. Alternatively, you can click "Discard All" to discard all remaining records in the "Needs Autocorrect" sheet.
 4) To fix accidentally discarded addresses, select them in the "Discards" sheet and click "Restore selected discards". They will be moved back to the "Needs Autocorrect" sheet.
@@ -79,9 +79,10 @@ To print this documentation, click [here](README.md) and print that page.
     * If there is an extra tracking method, you can click "Delete All Visit Data" and then reimport all of the visits. 
 2) The total counts for addresses can be seen on the "Interface" sheet. The top right quarterly totals count valid Gaithersburg addresses only. The county totals count all addresses, both valid, invalid, discarded, not yet autocorrected, etc.
 3) On the "Interface" sheet, click "Generate Final Report". This will be output to the "Final Report" sheet. This outputs every address per unique guest ID, sorted by street name.
-4) Right-click the "Final Report" sheet and select "Move or copy". Select "(new book)" and check the “Create a copy” box.  
+4) Right-click the "Final Report" sheet and select "Move or copy". Select "(new book)" and check the “Create a copy” box. 
+	![Right click and copy](readme/5finalreport.png)
 5) Save the new workbook as the final grant report to be sent, named City FYnn Qn [Service] GHELP Address Listings.xlsx, for example City FY18 Q3 Food GHELP Address Listings.xlsx.
 6) On the "Interface" sheet, select the month you want to report County totals for. Click "Copy selected zip totals code and open county totals site". This will open the county totals form in the browser.
 7) Under "Select your organization", select the organization. Wait for the top left corner to say "Saved".
-7) In the browser, hit F12 to open developer tools. Select the "Console" tab. Paste using Ctrl-V into the console and hit Enter. This will refresh the page and all values will be filled in. Double check the zip code total values for e.g. 20878, 20877, 20879, since this code will break if the form gets updated.
+7) In the browser, hit F12 to open developer tools. Select the "Console" tab. Click to the right of the > symbol to set the cursor. Paste using Ctrl-V into the console and hit Enter. If you receive a warning, type in 'allow pasting' without quotes and hit Enter, then paste using Ctrl-V and hit enter. This will refresh the page and all values will be filled in. Double check the zip code total values for e.g. 20878, 20877, 20879, since this code will break if the form gets updated.
     ![Paste in developer console](readme/5countypaste.png)
