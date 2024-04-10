@@ -123,6 +123,10 @@ End Sub
 
 '@EntryPoint
 Public Sub confirmAttemptValidation()
+    ' NOTE this line must be here before calling getRemainingRequests()
+    ' unable to test this with Rubberduck due to MsgBox being a Fake
+    If Not MacroEntry(ThisWorkbook.ActiveSheet) Then Exit Sub
+    
     Dim confirmResponse As VbMsgBoxResult
     confirmResponse = MsgBox("Are you sure you wish to attempt validation? You have " & _
                               CStr(getRemainingRequests()) & " remaining.", _
@@ -130,8 +134,6 @@ Public Sub confirmAttemptValidation()
     If confirmResponse = vbNo Then
         Exit Sub
     End If
-    
-    If Not MacroEntry(ThisWorkbook.ActiveSheet) Then Exit Sub
     
     Autocorrect.attemptValidation
     

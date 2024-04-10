@@ -17,8 +17,6 @@ Private Sub ModuleInitialize()
     Set Fakes = CreateObject("Rubberduck.FakesProvider")
     
     ' ScreenUpdating, Visible result in buggy behavior, don't turn on
-    
-    MacroEntry InterfaceSheet
 End Sub
 
 '@ModuleCleanup
@@ -32,8 +30,10 @@ End Sub
 
 '@TestInitialize
 Private Sub TestInitialize()
+    MacroEntry InterfaceSheet
     ClearAll
     Autocorrect.printRemainingRequests 8000
+    MacroExit InterfaceSheet
 End Sub
 
 '@TestCleanup
@@ -41,6 +41,7 @@ Private Sub TestCleanup()
     MacroEntry InterfaceSheet
     ClearAll
     Autocorrect.printRemainingRequests 8000
+    MacroExit InterfaceSheet
 End Sub
 
 Private Sub PasteTestRecords(ByRef addressArr() As String)
@@ -69,6 +70,8 @@ Public Sub TestAllAddresses()
     Dim testAddressesArr() As String
     testAddressesArr = getCSV(ThisWorkbook.path & "\testdata\test1addresses.csv")
     
+    
+    MacroEntry InterfaceSheet
     PasteTestRecords testAddressesArr
     
     addRecords
@@ -123,29 +126,29 @@ Public Sub TestAllAddresses()
     CompareSheetCSV Assert, "Autocorrected", ThisWorkbook.path & "\testdata\test4mergeaddresses_autocorrectedoutput.csv"
 
     Fakes.MsgBox.Returns vbYes
+    
+    MacroExit InterfaceSheet
+
 
     InterfaceButtons.confirmDiscardAll
-    MacroEntry InterfaceSheet
 
     DiscardsSheet.Select
     Union(DiscardsSheet.Range("A2:A6"), _
           DiscardsSheet.Range("A9:A13")). _
           Select
     InterfaceButtons.confirmRestoreSelectedDiscard
-    MacroEntry InterfaceSheet
     
     AutocorrectAddressesSheet.Select
     Union(AutocorrectAddressesSheet.Range("A4"), _
           AutocorrectAddressesSheet.Range("A7:A8")).Select
     InterfaceButtons.confirmDiscardSelected
-    MacroEntry InterfaceSheet
     
     AddressesSheet.Select
     Union(AddressesSheet.Range("A3"), _
           AddressesSheet.Range("A7"), _
           AddressesSheet.Range("A14")).Select
     InterfaceButtons.confirmMoveAutocorrect
-    MacroEntry InterfaceSheet
+
     
     AutocorrectAddressesSheet.Select
 
@@ -155,21 +158,18 @@ Public Sub TestAllAddresses()
     AutocorrectAddressesSheet.Range("D6").value = "Ste 202"
     AutocorrectAddressesSheet.Range("D2").value = "Unit 102"
     AutocorrectAddressesSheet.Range("D3").value = "Unit 102"
-    AutocorrectAddressesSheet.Range("B7").value = True
     AutocorrectAddressesSheet.Range("D8").value = "Apt 103"
     AutocorrectAddressesSheet.Range("D9").value = "Ste 100"
     AutocorrectAddressesSheet.Range("D11").value = "Apt 1"
 
-    Union(AutocorrectAddressesSheet.Range("A2:A6"), AutocorrectAddressesSheet.Range("A8:A9"), _
-          AutocorrectAddressesSheet.Range("A11")).Select
+
+    Union(AutocorrectAddressesSheet.Range("A4"), AutocorrectAddressesSheet.Range("A7")).Select
     InterfaceButtons.toggleUserVerified
-    MacroEntry InterfaceSheet
 
     AutocorrectedAddressesSheet.Select
     Union(AutocorrectedAddressesSheet.Range("A3"), _
           AutocorrectedAddressesSheet.Range("A5")).Select
     InterfaceButtons.toggleUserVerifiedAutocorrected
-    MacroEntry InterfaceSheet
 
     CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\test5usereditsaddresses_addressesoutput.csv"
     CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test5usereditsaddresses_totalsoutput.csv", getTotalsRng
@@ -178,10 +178,8 @@ Public Sub TestAllAddresses()
     CompareSheetCSV Assert, "Autocorrected", ThisWorkbook.path & "\testdata\test5usereditsaddresses_autocorrectedoutput.csv"
 
     InterfaceButtons.confirmAttemptValidation
-    MacroEntry InterfaceSheet
     
     InterfaceButtons.confirmGenerateFinalReport
-    MacroEntry InterfaceSheet
 
     CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\test6validateduseredits_addressesoutput.csv"
     CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test6validateduseredits_totalsoutput.csv", getTotalsRng
@@ -192,10 +190,8 @@ Public Sub TestAllAddresses()
     AddressesSheet.Select
     AddressesSheet.Range("A6").Select
     InterfaceButtons.confirmMoveAutocorrect
-    MacroEntry InterfaceSheet
     
     InterfaceButtons.confirmDeleteAllVisitData
-    MacroEntry InterfaceSheet
 
     CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\test7deletedata_addressesoutput.csv"
     CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test7deletedata_totalsoutput.csv", getTotalsRng
@@ -223,8 +219,12 @@ Public Sub TestAllAddresses()
     AutocorrectedAddressesSheet.Range("A2").Select
     InterfaceButtons.toggleUserVerifiedAutocorrected
 
+
+    MacroEntry InterfaceSheet
     InterfaceSheet.Select
     PasteTestRecords testMergeAutocorrectedAddressesArr
+    MacroExit InterfaceSheet
+
 
     InterfaceButtons.confirmAddRecords
     InterfaceButtons.confirmAttemptValidation
@@ -249,19 +249,22 @@ Public Sub TestToggleUserVerifiedAutocorrect()
     Dim testAddressesArr() As String
     testAddressesArr = getCSV(ThisWorkbook.path & "\testdata\testtoggleuserverified.csv")
     
+    
+    MacroEntry InterfaceSheet
     PasteTestRecords testAddressesArr
     
     addRecords
     attemptValidation
     
+    MacroExit InterfaceSheet
+    
+    
     AutocorrectedAddressesSheet.Select
     AutocorrectedAddressesSheet.Range("A2:A3").Select
     InterfaceButtons.toggleUserVerifiedAutocorrected
-    MacroEntry AutocorrectedAddressesSheet
     
     AutocorrectedAddressesSheet.Range("A2").Select
     InterfaceButtons.toggleUserVerifiedAutocorrected
-    MacroEntry InterfaceSheet
     
     CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\testtoggleuserverified_addressesoutput.csv"
     CompareSheetCSV Assert, "Discards", ThisWorkbook.path & "\testdata\testtoggleuserverified_discardsoutput.csv"
@@ -279,28 +282,28 @@ Public Sub TestUserMove()
     
     Dim testAddressesArr() As String
     testAddressesArr = getCSV(ThisWorkbook.path & "\testdata\testusermove.csv")
+    
+    
+    MacroEntry InterfaceSheet
     PasteTestRecords testAddressesArr
+    MacroExit InterfaceSheet
+    
     
     Fakes.MsgBox.Returns vbYes
 
     InterfaceButtons.confirmAddRecords
-    MacroEntry InterfaceSheet
     
     InterfaceButtons.confirmAttemptValidation
-    MacroEntry InterfaceSheet
     
     AddressesSheet.Select
     AddressesSheet.Range("A2").Select
     InterfaceButtons.confirmMoveAutocorrect
-    MacroEntry InterfaceSheet
 
     AutocorrectAddressesSheet.Select
     AutocorrectAddressesSheet.Range("A2:A3").Select
     InterfaceButtons.toggleUserVerified
-    MacroEntry InterfaceSheet
     
     InterfaceButtons.confirmAttemptValidation
-    MacroEntry InterfaceSheet
     
     CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\testusermove_addressesoutput.csv"
     
@@ -316,6 +319,8 @@ Public Sub TestCountyTotals()
     Dim testAddressesArr() As String
     testAddressesArr = getCSV(ThisWorkbook.path & "\testdata\testcounty.csv")
 
+
+    MacroEntry InterfaceSheet
     PasteTestRecords testAddressesArr
 
     addRecords
@@ -325,6 +330,8 @@ Public Sub TestCountyTotals()
     attemptValidation
     
     CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\testcounty_2validated_totalsoutput.csv", getCountyRng
+    MacroExit InterfaceSheet
+    
     
     Exit Sub
 TestFail:
@@ -339,10 +346,15 @@ Public Sub TestHandcorrected()
     Dim testAddressesArr() As String
 '    testAddressesArr = getCSV(ThisWorkbook.path & "\testdata\testhandcorrected.csv")
     testAddressesArr = getCSV(ThisWorkbook.path & "\testdata\testdifficultaddresses.csv")
+    
+    
+    MacroEntry InterfaceSheet
     PasteTestRecords testAddressesArr
     
     addRecords
     attemptValidation
+    MacroExit InterfaceSheet
+    
     
 '    CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\testhandcorrected_addressesoutput.csv"
 '    CompareSheetCSV Assert, "Needs Autocorrect", ThisWorkbook.path & "\testdata\testhandcorrected_autocorrectoutput.csv"
@@ -365,6 +377,9 @@ On Error GoTo TestFail
     
     Dim testAddressesArr() As String
     testAddressesArr = getCSV(ThisWorkbook.path & "\testdata\testoverwrite.csv")
+    
+    
+    MacroEntry InterfaceSheet
     PasteTestRecords testAddressesArr
     
     addRecords
@@ -374,6 +389,8 @@ On Error GoTo TestFail
     PasteTestRecords testAddressesArr
     
     addRecords
+    MacroExit InterfaceSheet
+    
     
     CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\testoverwrite_addressesoutput.csv"
     CompareSheetCSV Assert, "Needs Autocorrect", ThisWorkbook.path & "\testdata\testoverwrite_autocorrectoutput.csv"
@@ -389,10 +406,13 @@ End Sub
 Public Sub TestSort()
     On Error GoTo TestFail
     
+    MacroEntry AddressesSheet
+    
     Dim wbook As Workbook
     Set wbook = Workbooks.Open(fileName:=ThisWorkbook.path & "\testdata\testsortaddresses.csv")
     
     wbook.Worksheets.[_Default](1).UsedRange.Copy
+    
     AddressesSheet.Range("A1").PasteSpecial xlPasteValues
     
     SheetUtilities.SortSheet "Addresses"
@@ -412,6 +432,9 @@ Public Sub TestSort()
     wbook.Close
     
     SheetUtilities.SortSheet "Discards"
+    MacroExit InterfaceSheet
+    
+    
     CompareSheetCSV Assert, "Discards", ThisWorkbook.path & "\testdata\testsortaddresses_raw_discardsoutput.csv"
     
     Exit Sub
