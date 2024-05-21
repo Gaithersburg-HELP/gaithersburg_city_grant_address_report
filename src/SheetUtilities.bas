@@ -240,6 +240,10 @@ Public Function loadServiceNames(ByVal sheetName As String) As String()
     loadServiceNames = services
 End Function
 
+Public Function getMostRecentRng() As Range
+    Set getMostRecentRng = InterfaceSheet.Range("D1")
+End Function
+
 Public Function getAddressRng(ByVal sheetName As String) As Range
     Dim lastCellAddr As String
     lastCellAddr = getServiceHeaderLastCell(sheetName)
@@ -302,7 +306,7 @@ Public Sub CompareSheetCSV(ByVal Assert As Object, ByVal sheetName As String, By
     Dim i As Long
     For i = LBound(correctArr, 1) To UBound(correctArr, 1)
         If i <= UBound(testArr) Then
-            Assert.IsTrue StrComp(correctArr(i), testArr(i)) = 0, "Diff. at " & sheetName & " row " & i & " vs correct file: " & csvPath
+            Assert.isTrue StrComp(correctArr(i), testArr(i)) = 0, "Diff. at " & sheetName & " row " & i & " vs correct file: " & csvPath
         Else
             Assert.Fail "Diff. at " & sheetName & " row " & i & "vs correct file: " & csvPath
         End If
@@ -353,6 +357,7 @@ Public Sub ClearAll()
     InterfaceButtons.MacroEntry ThisWorkbook.ActiveSheet
     Application.StatusBar = False
     
+    getMostRecentRng.value = vbNullString
     getPastedRecordsRng.Clear
     InterfaceSheet.columns.Item("A").NumberFormat = "mm/dd/yyyy"
     
@@ -364,6 +369,13 @@ Public Sub ClearAll()
     For i = 3 To ThisWorkbook.Sheets.count
         ClearSheet ThisWorkbook.Sheets.[_Default](i).Name
     Next
+End Sub
+
+Public Sub ClearAllPreserveDate()
+    Dim mostRecentDate As String
+    mostRecentDate = getMostRecentRng.value
+    ClearAll
+    getMostRecentRng.value = mostRecentDate
 End Sub
 
 Public Sub SortRange(ByVal rng As Range, ByVal sortOnValidFirst As Boolean)

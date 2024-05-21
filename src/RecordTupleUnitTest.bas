@@ -32,12 +32,12 @@ Public Sub TestMergeRecord()
     
     Assert.IsFalse record.MergeRecord(recordToMerge)
     
-    Assert.IsTrue record.visitData.exists("food")
-    Assert.IsTrue record.visitData.Item("food").exists("Q1")
-    Assert.IsTrue record.visitData.Item("food").exists("Q2")
-    Assert.IsTrue record.visitData.Item("food").Item("Q1")(1) = CDate("09/10/2023")
-    Assert.IsTrue record.visitData.Item("food").Item("Q1")(2) = CDate("08/17/2023")
-    Assert.IsTrue record.visitData.Item("food").Item("Q2")(1) = CDate("10/20/2024")
+    Assert.isTrue record.visitData.exists("food")
+    Assert.isTrue record.visitData.Item("food").exists("Q1")
+    Assert.isTrue record.visitData.Item("food").exists("Q2")
+    Assert.isTrue record.visitData.Item("food").Item("Q1")(1) = CDate("09/10/2023")
+    Assert.isTrue record.visitData.Item("food").Item("Q1")(2) = CDate("08/17/2023")
+    Assert.isTrue record.visitData.Item("food").Item("Q2")(1) = CDate("10/20/2024")
 End Sub
 
 '@TestMethod
@@ -53,12 +53,12 @@ Public Sub TestVisitJson()
     
     Set record.visitData = visitData
     
-    Assert.IsTrue record.visitData.exists("food")
-    Assert.IsTrue record.visitData.Item("food").exists("Q1")
-    Assert.IsTrue record.visitData.Item("food").exists("Q3")
-    Assert.IsTrue record.visitData.Item("food").exists("Q4")
-    Assert.IsTrue record.visitData.Item("food").Item("Q1").Item(1) = "8/31/2023"
-    Assert.IsTrue record.visitData.Item("food").Item("Q1").Item(2) = "9/15/2023"
+    Assert.isTrue record.visitData.exists("food")
+    Assert.isTrue record.visitData.Item("food").exists("Q1")
+    Assert.isTrue record.visitData.Item("food").exists("Q3")
+    Assert.isTrue record.visitData.Item("food").exists("Q4")
+    Assert.isTrue record.visitData.Item("food").Item("Q1").Item(1) = "8/31/2023"
+    Assert.isTrue record.visitData.Item("food").Item("Q1").Item(2) = "9/15/2023"
 End Sub
 
 '@TestMethod
@@ -69,18 +69,18 @@ Public Sub TestFormatAddress()
     record.RawAddress = "501A S Frederick Ave E"
     record.RawUnitWithNum = "Suite 1"
     
-    Assert.IsTrue record.isCorrectableAddress()
+    Assert.isTrue record.isCorrectableAddress()
     
     Dim gburgFormat As Scripting.Dictionary
     Set gburgFormat = record.GburgFormatRawAddress
     
-    Assert.IsTrue gburgFormat.Item(addressKey.Full) = "501a S Frederick Ave E Ste 1", "Full address incorrect"
-    Assert.IsTrue gburgFormat.Item(addressKey.Postfix) = "E", "Postfix incorrect"
-    Assert.IsTrue gburgFormat.Item(addressKey.PrefixedStreetname) = "S Frederick", "Street name incorrect"
-    Assert.IsTrue gburgFormat.Item(addressKey.streetNum) = "501a", "Street no. incorrect"
-    Assert.IsTrue gburgFormat.Item(addressKey.StreetType) = "Ave", "Street type incorrect"
-    Assert.IsTrue gburgFormat.Item(addressKey.unitNum) = "1", "Unit no. incorrect"
-    Assert.IsTrue gburgFormat.Item(addressKey.unitType) = "Ste", "Unit type incorrect"
+    Assert.isTrue gburgFormat.Item(addressKey.Full) = "501a S Frederick Ave E Ste 1", "Full address incorrect"
+    Assert.isTrue gburgFormat.Item(addressKey.Postfix) = "E", "Postfix incorrect"
+    Assert.isTrue gburgFormat.Item(addressKey.PrefixedStreetname) = "S Frederick", "Street name incorrect"
+    Assert.isTrue gburgFormat.Item(addressKey.streetNum) = "501a", "Street no. incorrect"
+    Assert.isTrue gburgFormat.Item(addressKey.StreetType) = "Ave", "Street type incorrect"
+    Assert.isTrue gburgFormat.Item(addressKey.unitNum) = "1", "Unit no. incorrect"
+    Assert.isTrue gburgFormat.Item(addressKey.unitType) = "Ste", "Unit type incorrect"
     
     Dim recordNoPostfix As RecordTuple
     Set recordNoPostfix = New RecordTuple
@@ -88,10 +88,10 @@ Public Sub TestFormatAddress()
     recordNoPostfix.RawAddress = "2 Nina Ave"
     Set gburgFormat = recordNoPostfix.GburgFormatRawAddress
     
-    Assert.IsTrue gburgFormat.Item(addressKey.Postfix) = vbNullString, "Postfix incorrect"
-    Assert.IsTrue gburgFormat.Item(addressKey.PrefixedStreetname) = "Nina", "Street name incorrect"
-    Assert.IsTrue gburgFormat.Item(addressKey.unitNum) = vbNullString, "Unit no. incorrect"
-    Assert.IsTrue gburgFormat.Item(addressKey.unitType) = vbNullString, "Unit type incorrect"
+    Assert.isTrue gburgFormat.Item(addressKey.Postfix) = vbNullString, "Postfix incorrect"
+    Assert.isTrue gburgFormat.Item(addressKey.PrefixedStreetname) = "Nina", "Street name incorrect"
+    Assert.isTrue gburgFormat.Item(addressKey.unitNum) = vbNullString, "Unit no. incorrect"
+    Assert.isTrue gburgFormat.Item(addressKey.unitType) = vbNullString, "Unit type incorrect"
     
     Dim numericRecord As RecordTuple
     Set numericRecord = New RecordTuple
@@ -121,13 +121,13 @@ Public Sub TestIsAutocorrected()
     Assert.IsFalse record.isAutocorrected
     
     record.validUnitWithNum = "Ste 23"
-    Assert.IsTrue record.isAutocorrected
+    Assert.isTrue record.isAutocorrected
 
     record.validUnitWithNum = "Apt 23"
     record.ValidZipcode = "20877"
-    Assert.IsTrue record.isAutocorrected
+    Assert.isTrue record.isAutocorrected
 
     record.ValidZipcode = "20878"
     record.validAddress = "124 test"
-    Assert.IsTrue record.isAutocorrected
+    Assert.isTrue record.isAutocorrected
 End Sub

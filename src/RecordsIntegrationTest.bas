@@ -111,7 +111,7 @@ Public Sub TestAllAddresses()
     CompareSheetCSV Assert, "Discards", ThisWorkbook.path & "\testdata\test3autocorrectaddresses_discardsoutput.csv"
     CompareSheetCSV Assert, "Autocorrected", ThisWorkbook.path & "\testdata\test3autocorrectaddresses_autocorrectedoutput.csv"
 
-    Assert.IsTrue Autocorrect.getRemainingRequests = 7980
+    Assert.isTrue Autocorrect.getRemainingRequests = 7980
 
 
     Dim testMergeAutocorrectedAddressesArr() As String
@@ -385,10 +385,15 @@ On Error GoTo TestFail
     addRecords
     attemptValidation
     
+    Assert.isTrue getMostRecentRng.value = "11/5/2023", "Most recent date is not 11/5/2023"
+    
     testAddressesArr = getCSV(ThisWorkbook.path & "\testdata\testoverwrite_2.csv")
     PasteTestRecords testAddressesArr
     
     addRecords
+    
+    Assert.isTrue getMostRecentRng.value = "12/5/2023", "Most recent date is not 12/5/2023"
+    
     MacroExit InterfaceSheet
     
     

@@ -20,6 +20,10 @@ Private Function loadRecordFromRaw(ByVal recordRowFirstCell As Range) As RecordT
     Set record = New RecordTuple
     
     record.AddVisit recordRowFirstCell.value, recordRowFirstCell.Offset(0, 1).value
+    If (CDate(recordRowFirstCell.value) > CDate(getMostRecentRng.value)) Then
+        getMostRecentRng.value = CStr(CDate(recordRowFirstCell.value))
+    End If
+    
     record.UserVerified = False
 
     record.guestID = recordRowFirstCell.Offset(0, 2).value
@@ -538,8 +542,9 @@ Public Sub writeAddressesComputeTotals(ByVal addresses As Scripting.Dictionary, 
                                        ByVal needsAutocorrect As Scripting.Dictionary, _
                                        ByVal discards As Scripting.Dictionary, _
                                        ByVal autocorrected As Scripting.Dictionary)
-    SheetUtilities.ClearAll
-       
+    
+    SheetUtilities.ClearAllPreserveDate
+    
     writeAddresses "Addresses", addresses
     writeAddresses "Needs Autocorrect", needsAutocorrect
     writeAddresses "Discards", discards
