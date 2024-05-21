@@ -17,7 +17,7 @@ To print this documentation, click [here](README.md) and print that page.
 1) Ensure you have the latest version. Download the [latest release of the XLSM file](https://github.com/jimmyli97/gaithersburg_city_grant_address_report/releases). Click on the "Assets" title and then click on the XLSM to download. 
 ![Release assets download page](readme/1download.png)
     * If you have data in an older release version, in the new file on the "Interface" sheet, click "Import Data" and select the older file. All data will be copied over to the new version.
-2) The same file can be used from year to year and from quarter to quarter. The XLSM file will remember previously validated and user edited addresses.
+2) The same file can be used from year to year and from quarter to quarter. The XLSM file will remember previously validated and user edited addresses. The date of the most recent imported service is stored in D1 of the "Interface" sheet.
 3) If this is the first quarter, name the file with the current fiscal year, "e.g. City Grant Address Listings Report v3.0 FY24.xlsm"
     * If you have a file from the last fiscal year, make a copy of it for this fiscal year and rename it. Then on the "Addresses" sheet, click "Delete All Visit Data" to delete all visit data but keep address data.
 ## Importing data
