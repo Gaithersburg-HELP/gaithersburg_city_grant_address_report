@@ -169,13 +169,13 @@ Public Sub confirmDeleteAllVisitData()
     SheetUtilities.getCountyRng.value = 0
     SheetUtilities.getFinalReportRng.Clear
     SheetUtilities.getAddressVisitDataRng("Addresses").Clear
-    SheetUtilities.getRng("Addresses", "A2", "A2").offset(0, SheetUtilities.firstServiceColumn - 2).value = "{}"
+    SheetUtilities.getRng("Addresses", "A2", "A2").Offset(0, SheetUtilities.firstServiceColumn - 2).value = "{}"
     SheetUtilities.getAddressVisitDataRng("Needs Autocorrect").Clear
-    SheetUtilities.getRng("Needs Autocorrect", "A2", "A2").offset(0, SheetUtilities.firstServiceColumn - 2).value = "{}"
+    SheetUtilities.getRng("Needs Autocorrect", "A2", "A2").Offset(0, SheetUtilities.firstServiceColumn - 2).value = "{}"
     SheetUtilities.getAddressVisitDataRng("Discards").Clear
-    SheetUtilities.getRng("Discards", "A2", "A2").offset(0, SheetUtilities.firstServiceColumn - 2).value = "{}"
+    SheetUtilities.getRng("Discards", "A2", "A2").Offset(0, SheetUtilities.firstServiceColumn - 2).value = "{}"
     SheetUtilities.getAddressVisitDataRng("Autocorrected").Clear
-    SheetUtilities.getRng("Autocorrected", "A2", "A2").offset(0, SheetUtilities.firstServiceColumn - 2).value = "{}"
+    SheetUtilities.getRng("Autocorrected", "A2", "A2").Offset(0, SheetUtilities.firstServiceColumn - 2).value = "{}"
 
     MacroExit ThisWorkbook.ActiveSheet
 End Sub

@@ -19,24 +19,24 @@ Private Function loadRecordFromRaw(ByVal recordRowFirstCell As Range) As RecordT
     Dim record As RecordTuple
     Set record = New RecordTuple
     
-    record.AddVisit recordRowFirstCell.value, recordRowFirstCell.offset(0, 1).value
+    record.AddVisit recordRowFirstCell.value, recordRowFirstCell.Offset(0, 1).value
     record.UserVerified = False
 
-    record.guestID = recordRowFirstCell.offset(0, 2).value
-    record.FirstName = recordRowFirstCell.offset(0, 3).value
-    record.LastName = recordRowFirstCell.offset(0, 4).value
-    record.RawAddress = recordRowFirstCell.offset(0, 5).value
-    record.RawUnitWithNum = recordRowFirstCell.offset(0, 6).value
-    record.RawCity = recordRowFirstCell.offset(0, 7).value
-    record.RawState = recordRowFirstCell.offset(0, 8).value
-    record.RawZip = recordRowFirstCell.offset(0, 9).value
-    record.householdTotal = recordRowFirstCell.offset(0, 10).value
-    record.zeroToOneTotal = recordRowFirstCell.offset(0, 11).value
-    record.twoToSeventeenTotal = recordRowFirstCell.offset(0, 12).value
-    record.eighteenPlusTotal = recordRowFirstCell.offset(0, 13).value
+    record.guestID = recordRowFirstCell.Offset(0, 2).value
+    record.FirstName = recordRowFirstCell.Offset(0, 3).value
+    record.LastName = recordRowFirstCell.Offset(0, 4).value
+    record.RawAddress = recordRowFirstCell.Offset(0, 5).value
+    record.RawUnitWithNum = recordRowFirstCell.Offset(0, 6).value
+    record.RawCity = recordRowFirstCell.Offset(0, 7).value
+    record.RawState = recordRowFirstCell.Offset(0, 8).value
+    record.RawZip = recordRowFirstCell.Offset(0, 9).value
+    record.householdTotal = recordRowFirstCell.Offset(0, 10).value
+    record.zeroToOneTotal = recordRowFirstCell.Offset(0, 11).value
+    record.twoToSeventeenTotal = recordRowFirstCell.Offset(0, 12).value
+    record.eighteenPlusTotal = recordRowFirstCell.Offset(0, 13).value
     
     Dim rx As Double
-    rx = recordRowFirstCell.offset(0, 14).value
+    rx = recordRowFirstCell.Offset(0, 14).value
     If rx <> 0 Then record.addRx recordRowFirstCell.value, rx
     
     Set loadRecordFromRaw = record
@@ -49,25 +49,25 @@ Public Function loadRecordFromSheet(ByVal recordRowFirstCell As Range) As Record
     Dim services() As String
     services = loadServiceNames(recordRowFirstCell.Worksheet.Name)
     
-    record.SetInCity recordRowFirstCell.offset(0, 0).value
-    record.UserVerified = CBool(recordRowFirstCell.offset(0, 1).value)
-    record.validAddress = recordRowFirstCell.offset(0, 2).value
-    record.validUnitWithNum = recordRowFirstCell.offset(0, 3).value
-    record.ValidZipcode = recordRowFirstCell.offset(0, 4).value
-    record.RawAddress = recordRowFirstCell.offset(0, 5).value
-    record.RawUnitWithNum = recordRowFirstCell.offset(0, 6).value
-    record.RawCity = recordRowFirstCell.offset(0, 7).value
-    record.RawState = recordRowFirstCell.offset(0, 8).value
-    record.RawZip = recordRowFirstCell.offset(0, 9).value
-    record.guestID = recordRowFirstCell.offset(0, 10).value
-    record.FirstName = recordRowFirstCell.offset(0, 11).value
-    record.LastName = recordRowFirstCell.offset(0, 12).value
-    record.householdTotal = recordRowFirstCell.offset(0, 13).value
-    record.zeroToOneTotal = recordRowFirstCell.offset(0, 14).value
-    record.twoToSeventeenTotal = recordRowFirstCell.offset(0, 15).value
-    record.eighteenPlusTotal = recordRowFirstCell.offset(0, 16).value
+    record.SetInCity recordRowFirstCell.Offset(0, 0).value
+    record.UserVerified = CBool(recordRowFirstCell.Offset(0, 1).value)
+    record.validAddress = recordRowFirstCell.Offset(0, 2).value
+    record.validUnitWithNum = recordRowFirstCell.Offset(0, 3).value
+    record.ValidZipcode = recordRowFirstCell.Offset(0, 4).value
+    record.RawAddress = recordRowFirstCell.Offset(0, 5).value
+    record.RawUnitWithNum = recordRowFirstCell.Offset(0, 6).value
+    record.RawCity = recordRowFirstCell.Offset(0, 7).value
+    record.RawState = recordRowFirstCell.Offset(0, 8).value
+    record.RawZip = recordRowFirstCell.Offset(0, 9).value
+    record.guestID = recordRowFirstCell.Offset(0, 10).value
+    record.FirstName = recordRowFirstCell.Offset(0, 11).value
+    record.LastName = recordRowFirstCell.Offset(0, 12).value
+    record.householdTotal = recordRowFirstCell.Offset(0, 13).value
+    record.zeroToOneTotal = recordRowFirstCell.Offset(0, 14).value
+    record.twoToSeventeenTotal = recordRowFirstCell.Offset(0, 15).value
+    record.eighteenPlusTotal = recordRowFirstCell.Offset(0, 16).value
     
-    Set record.rxTotal = JsonConverter.ParseJson(recordRowFirstCell.offset(0, _
+    Set record.rxTotal = JsonConverter.ParseJson(recordRowFirstCell.Offset(0, _
                                                         SheetUtilities.firstServiceColumn - 2).value)
     
     Dim visitData As Scripting.Dictionary
@@ -77,7 +77,7 @@ Public Function loadRecordFromSheet(ByVal recordRowFirstCell As Range) As Record
     j = 1
     Do While j <= UBound(services) + 1
         Dim visitJson As String
-        visitJson = recordRowFirstCell.offset(0, SheetUtilities.firstServiceColumn - 2 + j).value
+        visitJson = recordRowFirstCell.Offset(0, SheetUtilities.firstServiceColumn - 2 + j).value
         If visitJson <> vbNullString Then
             visitData.Add services(j - 1), JsonConverter.ParseJson(visitJson)
         End If

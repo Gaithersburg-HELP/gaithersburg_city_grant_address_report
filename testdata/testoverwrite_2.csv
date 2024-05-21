@@ -1,6 +1,11 @@
 Visit on,Tracking Method,Guest ID,First Name,Last Name,Address,Apartment/Suite,City/Town,State/Province,Zip/Postal Code,Total Individuals,0 to 1,2 to 17,18+,--- TOTAL Rx COSTS (number only 0.00),,Test notes
-2/5/2023,Food,Cherry Rose,Cherry Hut,Rose Pull,18235 Lost Knife,,Gaithersburg,MD,20886,6,1,0,5,12,,"merge into discards + autocorrected, no change in address"
+2/5/2023,Food,Cherry Rose,Cherry Hut,Rose Pull,18235 Lost Knife,,Gaithersburg,MD,20886,6,1,0,5,12,,"merge into discards + autocorrected, no change in address, date change only"
+1/5/2023,Food,Cherry Rose,Cherry Hut,Rose Pull,18235 Lost Knife,,Gaithersburg,MD,20886,6,1,0,5,12,,same as above but no date change
 3/8/2023,7,Bongcloud Regret,Bongcloud Bag,Regret Push,18235 Los Knife Cir,103,Germantown,VA,20668,11,0,0,11,15,,"merge into address not in city + autocorrected, should remove autocorrected and validated address, overwrite and go to needs autocorrect"
+2/8/2023,7,Bongcloud Regret,Bongcloud Bag,Regret Push,18235 Los Knife Cir,103,Germantown,VA,20668,11,0,0,11,15,,same as above but no date change
+4/17/2023,Food,1004,Uber Minx,Victor Pop,4 Nina Ct,,Gaithersburg,MD,20878,5,1,1,3,16,,same as below but no date change
 5/17/2023,Food,1004,Uber Minx,Victor Pop,4 Nina Ct,,Gaithersburg,MD,20878,5,1,1,3,16,,"merge into address in city + autocorrected, should remove autocorrected, overwrite and go to yes"
+10/1/2023,Food,1,12,13,424 N Frederick Ave,Ste 3A,Germantown,VA,20876,2,1,0,1,,,same as below but no date change
 11/1/2023,Food,1,12,13,424 N Frederick Ave,Ste 3A,Germantown,VA,20876,2,1,0,1,,,"merge into needs autocorrect, should go to yes"
 12/5/2023,Food,discard,fix,discard,9650 Lost Knife Rd,,Gaithersburg,MD,20878,4,0,0,4,10,,"discards + autocorrected, should remove autocorrected, overwrite and validated to Yes"
+11/5/2023,Food,discard,fix,discard,9650 Lost Knife Rd,,Gaithersburg,MD,20878,4,0,0,4,10,,same as above but no date change

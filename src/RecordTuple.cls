@@ -42,10 +42,10 @@ Private pZeroToOneTotal As Long
 Private pTwoToSeventeenTotal As Long
 Private pEighteenPlusTotal As Long
 
-' Quarter: Dictionary (VisitDate Date: RxTotal Double)
+' Quarter: Dictionary (VisitDate CStr(Date): RxTotal Double)
 Private pRxTotal As Scripting.Dictionary
 
-' Service: Dictionary (Quarter: VisitDate Date Collection)
+' Service: Dictionary (Quarter: VisitDate CStr(CDate) Collection)
 Private pVisitData As Scripting.Dictionary
 
 Private pGburgFormatRawAddress As Scripting.Dictionary
@@ -288,7 +288,9 @@ Public Sub AddVisit(ByVal visitDate As String, ByVal service As String)
     Dim visits As Collection
     Set visits = New Collection
     
+    ' NOTE Adding Date as dictionary key silently changes string formatting on print for some reason
     ' CStr formats Date more nicely for readability
+    ' and prevents issues like 4/17/2023 not matching 2023-04-17T04:00:00.000Z
     visits.Add CStr(CDate(visitDate))
     serviceVisits.Add getQuarterStr(visitDate), visits
     newVisitData.Add service, serviceVisits
@@ -303,8 +305,8 @@ Public Sub addRx(ByVal visitDate As String, ByVal rx As Double)
     Dim rxVisits As Scripting.Dictionary
     Set rxVisits = New Scripting.Dictionary
     
-    ' NOTE Adding Date as dictionary key silently changes string formatting on print for some reason
-    rxVisits.Add CDate(visitDate), rx
+    ' NOTE as above use CStr(CDate)
+    rxVisits.Add CStr(CDate(visitDate)), rx
     newRx.Add getQuarterStr(visitDate), rxVisits
     
     MergeRx newRx

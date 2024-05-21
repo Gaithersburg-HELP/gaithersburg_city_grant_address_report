@@ -135,12 +135,12 @@ End Function
 ' Assumes services exist!
 Public Function serviceFirstCell(ByVal sheetName As String) As String
     serviceFirstCell = ThisWorkbook.Worksheets.[_Default](sheetName) _
-                         .Range("A1").offset(0, firstServiceColumn - 1).address
+                         .Range("A1").Offset(0, firstServiceColumn - 1).address
 End Function
 
 Public Function rxFirstCell(ByVal sheetName As String) As String
     rxFirstCell = ThisWorkbook.Worksheets.[_Default](sheetName) _
-                        .Range("A2").offset(0, firstServiceColumn - 2).address
+                        .Range("A2").Offset(0, firstServiceColumn - 2).address
 End Function
 
 ' Returns blank row after all data, assuming Column A is filled in last row
@@ -195,7 +195,7 @@ Private Function getServiceHeaderLastCell(ByVal sheetName As String) As String
     Dim lastCellAddr As String
     
     lastCellAddr = ThisWorkbook.Worksheets.[_Default](sheetName) _
-                                      .Range("A1").offset(0, firstServiceColumn - 2) _
+                                      .Range("A1").Offset(0, firstServiceColumn - 2) _
                                       .End(xlToRight).address
     If lastCellAddr = "$XFD$1" Then
         getServiceHeaderLastCell = vbNullString
@@ -383,7 +383,7 @@ Public Sub SortRange(ByVal rng As Range, ByVal sortOnValidFirst As Boolean)
         ' insert second word of address into temporary sort column to right of data
         ' NOTE don't use column to left of data, when tests fail then sometimes this
         ' column doesn't get deleted
-        row.offset(0, 1).Cells(1, rng.columns.count).value = LWordTrim(LWordTrim(row.Range(addressKey).value)(1))(0)
+        row.Offset(0, 1).Cells(1, rng.columns.count).value = LWordTrim(LWordTrim(row.Range(addressKey).value)(1))(0)
     Next row
     
     Dim rngWithSortCol As Range
