@@ -435,55 +435,7 @@ Public Sub SortAll() ' TODO refactor? except for Final Report
     SortSheet "Autocorrected"
 End Sub
 
-' Prints Collection
-'@Ignore ParameterCanBeByVal
-Public Sub PrintCollection(ByRef collectionResult As Collection)
-    Dim i As Long
-    Debug.Print ("[")
-    For i = 1 To collectionResult.count
-        If TypeOf collectionResult.Item(i) Is Dictionary Then
-            PrintJson collectionResult.Item(i)
-        ElseIf TypeOf collectionResult.Item(i) Is Collection Then
-            PrintCollection collectionResult.Item(i)
-        Else
-            Debug.Print """" & collectionResult.Item(i) & """"
-        End If
-        If i <> collectionResult.count Then
-            Debug.Print (",")
-        End If
-    Next
-    Debug.Print ("]")
-End Sub
-
-' Prints JSON
-'@Ignore ParameterCanBeByVal
-Public Sub PrintJson(ByRef jsonResult As Scripting.Dictionary)
-    Debug.Print ("{")
-    
-    Dim i As Long
-    i = 0
-    
-    Do While i <= UBound(jsonResult.Keys)
-        Dim key As Variant
-        key = jsonResult.Keys(i)
-        
-        Debug.Print ("""" & key & """" & ":")
-        If TypeOf jsonResult.Item(key) Is Collection Then
-            PrintCollection jsonResult.Item(key)
-        ElseIf TypeOf jsonResult.Item(key) Is Dictionary Then
-            PrintJson jsonResult.Item(key)
-        Else
-            Debug.Print """" & (CStr(jsonResult.Item(key))) & """"
-        End If
-        
-        If i < UBound(jsonResult.Keys) Then
-            Debug.Print (",")
-        End If
-        
-        i = i + 1
-    Loop
-    Debug.Print ("}")
-End Sub
+' Use JsonConverter.ConvertToJson instead of old PrintCollection and PrintJson
 
 ' Trims off first word including space afterwards
 ' Returns [trimmed first word, trimmed string (blank if only one word)]
