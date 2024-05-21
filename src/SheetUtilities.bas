@@ -4,6 +4,7 @@ Option Explicit
 
 Public Const keyColumn As Long = 11
 Public Const firstServiceColumn As Long = 19
+Public Const mostRecentDateCell As String = "D1"
 
 Public Enum CountyTotalCols
     countymonth = 1
@@ -241,7 +242,7 @@ Public Function loadServiceNames(ByVal sheetName As String) As String()
 End Function
 
 Public Function getMostRecentRng() As Range
-    Set getMostRecentRng = InterfaceSheet.Range("D1")
+    Set getMostRecentRng = InterfaceSheet.Range(mostRecentDateCell)
 End Function
 
 Public Function getAddressRng(ByVal sheetName As String) As Range
