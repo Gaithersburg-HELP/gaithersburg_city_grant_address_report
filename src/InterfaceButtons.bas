@@ -617,7 +617,13 @@ Attribute LookupInCity.VB_ProcData.VB_Invoke_Func = "L\n14"
     
     Dim AddrLookupURL As String
     AddrLookupURL = "https://maps.gaithersburgmd.gov/AddressSearch/index.html?address="
-    AddrLookupURL = AddrLookupURL & record.GburgFormatRawAddress.Item(addressKey.streetAddress)
+    Dim addr As String
+    If (record.GburgFormatValidAddress.Item(addressKey.streetAddress) <> vbNullString) Then
+        addr = record.GburgFormatValidAddress.Item(addressKey.streetAddress)
+    Else
+        addr = record.GburgFormatRawAddress.Item(addressKey.streetAddress)
+    End If
+    AddrLookupURL = AddrLookupURL & addr
     AddrLookupURL = Replace(AddrLookupURL, " ", "+")
     
     ThisWorkbook.FollowHyperlink address:=AddrLookupURL
