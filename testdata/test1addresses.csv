@@ -14,7 +14,7 @@ Visit on,Tracking Method,Guest ID,First Name,Last Name,Address,Apartment/Suite,C
 12/5/2023 11:00,18,2260,Thirst,Hunger,405 CHRISTOPHER AVE,T3,Gaithersburg,MD,20879,1,0,0,1,,,tracking number 18 is disabled Adult Underwear
 9/2/2023 9:35,9,7514,Music,Quartet,413 MUDDY BRANCH RD,T2,Gaithersburg,MD,20878,8,0,0,8,,,tracking number 9 is disabled Diapers
 7/5/2023 9:35,Food,7514,Music,Quartet,413 MUDDY BRANCH RD,T2,Gaithersburg,MD,20878,8,0,0,8,,,test multiple tracking methods
-11/6/2023,Choice Pantry 13 Firstfield Road,Napster Rainman,Rainman,Napster,19718 Circle,,Darnestown,MD,20874,5,0,0,5,,,one word address
+11/6/2023,Choice Pantry 13 Firstfield Road,Napster Rainman,Rainman,Napster,19718 Circle,,Darnestown,MD,20874,5,0,0,5,,,one word address should discard due to not being in a city zip code
 7/11/2023,Choice Pantry 13 Firstfield Road,Panoply Toilet Seat,Toilet Seat,Panoply,13308,,Germantown,MD,20874,4,1,1,2,,,number only address
 7/13/2023,Choice Pantry 13 Firstfield Road,Rapier Human,Human,Rapier,200 N Ho,,Rockville,MD,20850,4,0,0,4,,,prefix + street name only address
 5/31/2023,Food,1111,Why,This,101 Odendhal AVE,1007,Gaitheburg,ME,20870,6,0,0,6,,,"incorrect city, state, zip"

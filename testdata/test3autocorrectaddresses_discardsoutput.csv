@@ -1,4 +1,5 @@
 In City,User Verified,Validated Address,Validated Unit Type and No.,Validated Zip Code,Raw Address,Raw Unit Type With Number,Raw City,Raw State,Raw Zipcode,Guest ID,First Name,Last Name,Household Total,0 to 1,2 to 17,18+,Rx Total,Choice Pantry 13 Firstfield Road,Clothes,Food
+Failed autocorrection and geocoded not in city,FALSE,,,20874,19718 Circle,,Darnestown,MD,20874,Napster Rainman,Rainman,Napster,5,0,0,5,{},"{""Q2"":[""11/6/2023""]}",,
 Failed autocorrection and geocoded not in city,FALSE,,,20877,501 Fck Ave,,Hyattsville,MD,20877,Shrimp Lobster,Shrimp,Lobster,4,0,0,4,{},,,"{""Q2"":[""10/4/2023""]}"
 Failed autocorrection and geocoded not in city,FALSE,18235 Lost Knife Cir,,20886,18235 Lost Knife,,Gaithersburg,MD,20886,Cherry Rose,Cherry,Rose,4,0,0,4,{},,,"{""Q4"":[""5/10/2023""]}"
 Failed autocorrection and geocoded not in city,FALSE,,,20850,200 N Ho,,Rockville,MD,20850,Rapier Human,Human,Rapier,4,0,0,4,{},"{""Q1"":[""7/13/2023""]}",,

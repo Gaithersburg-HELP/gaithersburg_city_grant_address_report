@@ -156,7 +156,10 @@ Public Sub attemptValidation()
                 End If
             End If
         ElseIf receivedValidation Then
-            If Lookup.possibleInGburgQuery(minLongitude, minLatitude, maxLongitude, maxLatitude) Then
+            If (recordToAutocorrect.ValidZipcode = "20877" Or _
+                 recordToAutocorrect.ValidZipcode = "20878" Or _
+                 recordToAutocorrect.ValidZipcode = "20879") And _
+                Lookup.possibleInGburgQuery(minLongitude, minLatitude, maxLongitude, maxLatitude) Then
                 ' Gaithersburg database does not match USPS database on multiple addresses such as:
                 ' - 110-150 Chevy Chase St Unit 102 > should be Apt 102
                 ' - 25 Chestnut St Unit A > should be Ste A

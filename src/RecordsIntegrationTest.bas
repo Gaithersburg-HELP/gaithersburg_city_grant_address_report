@@ -133,14 +133,15 @@ Public Sub TestAllAddresses()
     InterfaceButtons.confirmDiscardAll
 
     DiscardsSheet.Select
-    Union(DiscardsSheet.Range("A2:A6"), _
-          DiscardsSheet.Range("A9:A13")). _
+    Union(DiscardsSheet.Range("A2:A3"), _
+          DiscardsSheet.Range("A5:A7"), _
+          DiscardsSheet.Range("A10:A14")). _
           Select
     InterfaceButtons.confirmRestoreSelectedDiscard
     
     AutocorrectAddressesSheet.Select
-    Union(AutocorrectAddressesSheet.Range("A4"), _
-          AutocorrectAddressesSheet.Range("A7:A8")).Select
+    Union(AutocorrectAddressesSheet.Range("A6:A7"), _
+          AutocorrectAddressesSheet.Range("A11")).Select
     InterfaceButtons.confirmDiscardSelected
     
     AddressesSheet.Select
@@ -167,8 +168,8 @@ Public Sub TestAllAddresses()
     InterfaceButtons.toggleUserVerified
 
     AutocorrectedAddressesSheet.Select
-    Union(AutocorrectedAddressesSheet.Range("A3"), _
-          AutocorrectedAddressesSheet.Range("A5")).Select
+    Union(AutocorrectedAddressesSheet.Range("A4"), _
+          AutocorrectedAddressesSheet.Range("A6")).Select
     InterfaceButtons.toggleUserVerifiedAutocorrected
 
     CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\test5usereditsaddresses_addressesoutput.csv"
