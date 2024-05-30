@@ -74,7 +74,7 @@ Public Sub attemptValidation()
         Dim minLatitude As Double
         Dim maxLatitude As Double
         
-        ' if user verified, only re-run google validation if fixing a ValidNotInCity address to verify if ValidNotInCity
+        ' if user verified, re-run google validation on validated field if fixing a ValidNotInCity address to verify if ValidNotInCity
         ' other user verified codes like FailedAutocorrection or ValidInCity should be verified in Gaithersburg database
         If (usedRequests < getRemainingRequests) And _
            ((recordToAutocorrect.UserVerified = True And recordToAutocorrect.InCity = InCityCode.ValidNotInCity) Or _

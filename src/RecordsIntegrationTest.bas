@@ -300,7 +300,9 @@ Public Sub TestUserMove()
     InterfaceButtons.confirmMoveAutocorrect
 
     AutocorrectAddressesSheet.Select
-    AutocorrectAddressesSheet.Range("A2:A3").Select
+    AutocorrectAddressesSheet.Range("C2").value = "1 Grantchester Pl"
+    AutocorrectAddressesSheet.Range("E2").value = "20878" ' should correct to 20877
+    AutocorrectAddressesSheet.Range("A3").Select
     InterfaceButtons.toggleUserVerified
     
     InterfaceButtons.confirmAttemptValidation
