@@ -47,7 +47,7 @@ To print this documentation, click [here](README.md) and print that page.
     * Addresses that were autocorrected and in Gaithersburg will be marked with an "In City" code of "Yes" and be placed in the "Addresses" sheet.
     * Addresses that were autocorrected and not in Gaithersburg will be marked with an "In City" code of "No" and be placed in the "Addresses" sheet.
     * Addresses that were marked as not correctable (one word addresses, etc.) will be marked with an "In City" code of "Not correctable" and be placed in the "Discards" sheet
-    * Addresses that could not be autocorrected but were predicted to not be in Gaithersburg will be marked with an "In City" code of "Failed autocorrection and geocoded not in city" and be placed in the "Discards" sheet
+    * Addresses that could not be autocorrected but were predicted to not be in Gaithersburg (not in zips 20877, 20878, 20879, not in Gaithersburg city bounds) will be marked with an "In City" code of "Failed autocorrection and geocoded not in city" and be placed in the "Discards" sheet
     * Addresses that could not be autocorrected but were predicted to be in Gaithersburg will be marked with an "In City" code of "Possible but failed autocorrection" and be placed in the "Needs Autocorrect" sheet
 5) You can generate a final report and county totals now (see [here](#generating-totals-and-final-report)), or continue with editing addresses by hand.
 ## Manually validating addresses
