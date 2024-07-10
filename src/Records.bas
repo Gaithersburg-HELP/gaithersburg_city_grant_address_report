@@ -34,14 +34,20 @@ Private Function loadRecordFromRaw(ByVal recordRowFirstCell As Range) As RecordT
     record.RawCity = recordRowFirstCell.Offset(0, 7).value
     record.RawState = recordRowFirstCell.Offset(0, 8).value
     record.RawZip = recordRowFirstCell.Offset(0, 9).value
-    record.householdTotal = recordRowFirstCell.Offset(0, 10).value
-    record.zeroToOneTotal = recordRowFirstCell.Offset(0, 11).value
-    record.twoToSeventeenTotal = recordRowFirstCell.Offset(0, 12).value
-    record.eighteenPlusTotal = recordRowFirstCell.Offset(0, 13).value
+    
+    Dim val As String
+    val = recordRowFirstCell.Offset(0, 10).value
+    record.householdTotal = IIf(IsNumeric(val), val, 0)
+    val = recordRowFirstCell.Offset(0, 11).value
+    record.zeroToOneTotal = IIf(IsNumeric(val), val, 0)
+    val = recordRowFirstCell.Offset(0, 12).value
+    record.twoToSeventeenTotal = IIf(IsNumeric(val), val, 0)
+    val = recordRowFirstCell.Offset(0, 13).value
+    record.eighteenPlusTotal = IIf(IsNumeric(val), val, 0)
     
     Dim rx As Double
     rx = recordRowFirstCell.Offset(0, 14).value
-    If rx <> 0 Then record.addRx recordRowFirstCell.value, rx
+    If IsNumeric(rx) And (rx <> 0) Then record.addRx recordRowFirstCell.value, rx
     
     Set loadRecordFromRaw = record
 End Function

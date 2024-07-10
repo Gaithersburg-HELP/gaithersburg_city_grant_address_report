@@ -1960,7 +1960,7 @@ Public Function GetSpecialFolderPath(ByVal sfc As SpecialFolderConstant _
     On Error Resume Next
     Dim app As Object:        Set app = Application
     Dim inExcel As Boolean:   inExcel = (app.Name = "Microsoft Excel")
-    Dim appVersion As Double: appVersion = Val(app.Version)
+    Dim appVersion As Double: appVersion = val(app.Version)
     On Error GoTo 0
     '
     If inExcel And appVersion < 15 Then 'Old excel version
