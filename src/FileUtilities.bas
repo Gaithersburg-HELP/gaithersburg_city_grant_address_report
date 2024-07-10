@@ -88,25 +88,19 @@ Public Function getAPIKeys() As Scripting.Dictionary
     
     Dim apiKeysDict As Object
     Set apiKeysDict = CreateObject("Scripting.Dictionary")
-        
-    Dim apiFileArray() As String
-    apiFileArray = getCSV(LibFileTools.GetLocalPath(ThisWorkbook.path) & "\apikeys.csv")
+    Dim addressKey As String
+    addressKey = InterfaceSheet.Range("F1").value
     
-    Dim i As Long
-    Dim apiFileArrLine() As String
-    For i = LBound(apiFileArray, 1) To UBound(apiFileArray, 1)
-        apiFileArrLine = Split(apiFileArray(i), ",")
-        apiKeysDict.Add apiFileArrLine(0), apiFileArrLine(1)
-    Next i
-    
-    If Not apiKeysDict.exists(addressValidationKeyname) Then
+    If addressKey = vbNullString Then
         Err.Raise 513
     End If
+    
+    apiKeysDict.Add addressValidationKeyname, addressKey
     
     Set getAPIKeys = apiKeysDict
     Exit Function
 
 APIerror:
-    Err.Raise 513, Description:="invalid apikeys.csv, cannot continue"
+    Err.Raise 513, Description:="no API address key, cannot continue"
 End Function
 
