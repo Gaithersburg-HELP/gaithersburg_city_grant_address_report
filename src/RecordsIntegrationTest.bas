@@ -158,9 +158,9 @@ Public Sub TestAllAddresses()
     AutocorrectAddressesSheet.Select
 
     AutocorrectAddressesSheet.Range("C5").value = "13-15 E Deer Park Dr"
-    AutocorrectAddressesSheet.Range("D5").value = "Ste 102"
+    AutocorrectAddressesSheet.Range("D5").value = "Ste 202"
     AutocorrectAddressesSheet.Range("C6").value = "13-15 E Deer Park Dr"
-    AutocorrectAddressesSheet.Range("D6").value = "Ste 202"
+    AutocorrectAddressesSheet.Range("D6").value = "Ste 102"
     AutocorrectAddressesSheet.Range("D2").value = "Unit 102"
     AutocorrectAddressesSheet.Range("D3").value = "Unit 102"
     AutocorrectAddressesSheet.Range("D8").value = "Apt 103"
@@ -193,7 +193,7 @@ Public Sub TestAllAddresses()
     CompareSheetCSV Assert, "Final Report", ThisWorkbook.path & "\testdata\test6validateduseredits_finalreportoutput.csv"
 
     AddressesSheet.Select
-    AddressesSheet.Range("A6").Select
+    AddressesSheet.Range("A7").Select
     InterfaceButtons.confirmMoveAutocorrect
     
     InterfaceButtons.confirmDeleteAllVisitData
