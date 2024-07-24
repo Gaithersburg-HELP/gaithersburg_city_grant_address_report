@@ -81,7 +81,6 @@ CSVError:
     Err.Raise 513
 End Function
 
-' Expects a CSV formatted as "keyname,apikey"
 ' Returns a dictionary of API keys
 Public Function getAPIKeys() As Scripting.Dictionary
     On Error GoTo APIerror
@@ -89,7 +88,7 @@ Public Function getAPIKeys() As Scripting.Dictionary
     Dim apiKeysDict As Object
     Set apiKeysDict = CreateObject("Scripting.Dictionary")
     Dim addressKey As String
-    addressKey = InterfaceSheet.Range("F1").value
+    addressKey = getAPIKeyRng().value
     
     If addressKey = vbNullString Then
         Err.Raise 513

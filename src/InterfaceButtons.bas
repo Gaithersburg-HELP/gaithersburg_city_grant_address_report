@@ -432,7 +432,7 @@ Public Sub ImportRecords()
     End If
     
     Dim versionNum As String
-    versionNum = InterfaceSheet.Cells.Item(1, 1).value
+    versionNum = getVersionNum()
     
     SheetUtilities.ClearAll
     

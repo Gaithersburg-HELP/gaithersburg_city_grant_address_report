@@ -3,5 +3,9 @@ Option Explicit
 
 '@Ignore ParameterNotUsed, ParameterCanBeByVal
 Private Sub Workbook_BeforeSave(ByVal SaveAsUI As Boolean, ByRef Cancel As Boolean)
+    If (getAPIKeyRng().value <> vbNullString) And (InStr(1, getVersionNum(), "dev", vbTextCompare)) Then
+        getAPIKeyRng().value = vbNullString
+    End If
+    
     InterfaceButtons.MacroExit ActiveSheet
 End Sub

@@ -133,6 +133,14 @@ Public Function uniqueCountyZipCols() As Scripting.Dictionary
     Set uniqueCountyZipCols = cols
 End Function
 
+Public Function getVersionNum() As String
+    getVersionNum = InterfaceSheet.Cells.Item(1, 1).value
+End Function
+
+Public Function getAPIKeyRng() As Range
+    Set getAPIKeyRng = InterfaceSheet.Range("F1")
+End Function
+
 ' Assumes services exist!
 Public Function serviceFirstCell(ByVal sheetName As String) As String
     serviceFirstCell = ThisWorkbook.Worksheets.[_Default](sheetName) _

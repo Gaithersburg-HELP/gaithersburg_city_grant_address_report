@@ -16,6 +16,8 @@ Private Sub ModuleInitialize()
     Set Assert = CreateObject("Rubberduck.AssertClass")
     Set Fakes = CreateObject("Rubberduck.FakesProvider")
     
+    getAPIKeyRng.value = Split(getCSV(LibFileTools.GetLocalPath(ThisWorkbook.path) & "\apikeys.csv")(0), ",")(1)
+    
     ' ScreenUpdating, Visible result in buggy behavior, don't turn on
 End Sub
 
@@ -24,6 +26,8 @@ Private Sub ModuleCleanup()
     'this method runs once per module.
     Set Assert = Nothing
     Set Fakes = Nothing
+    
+    getAPIKeyRng.value = vbNullString
     
     MacroExit InterfaceSheet
 End Sub
