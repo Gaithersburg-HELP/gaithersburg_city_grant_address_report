@@ -37,13 +37,14 @@ Private Function loadRecordFromRaw(ByVal recordRowFirstCell As Range) As RecordT
     
     Dim val As String
     val = recordRowFirstCell.Offset(0, 10).value
-    record.householdTotal = IIf(IsNumeric(val), val, 0)
+    ' Count blank totals as 1 for household total and 18+
+    record.householdTotal = IIf(IsNumeric(val), val, 1)
     val = recordRowFirstCell.Offset(0, 11).value
     record.zeroToOneTotal = IIf(IsNumeric(val), val, 0)
     val = recordRowFirstCell.Offset(0, 12).value
     record.twoToSeventeenTotal = IIf(IsNumeric(val), val, 0)
     val = recordRowFirstCell.Offset(0, 13).value
-    record.eighteenPlusTotal = IIf(IsNumeric(val), val, 0)
+    record.eighteenPlusTotal = IIf(IsNumeric(val), val, 1)
     
     Dim rx As Double
     rx = recordRowFirstCell.Offset(0, 14).value

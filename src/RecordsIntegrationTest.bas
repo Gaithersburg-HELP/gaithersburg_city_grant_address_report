@@ -248,6 +248,33 @@ TestFail:
 End Sub
 
 '@TestMethod
+Public Sub TestNoHouseholdTotal()
+    On Error GoTo TestFail
+    
+    Dim testNoHouseholdTotalArr() As String
+    testNoHouseholdTotalArr = getCSV(ThisWorkbook.path & "\testdata\testnohouseholdtotal.csv")
+    
+    MacroEntry InterfaceSheet
+    PasteTestRecords testNoHouseholdTotalArr
+    MacroExit InterfaceSheet
+    
+    Fakes.MsgBox.Returns vbYes
+    InterfaceButtons.confirmAddRecords
+    InterfaceButtons.confirmAttemptValidation
+    InterfaceButtons.confirmGenerateFinalReport
+    
+    CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\testnohouseholdtotal_addressesoutput.csv"
+    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\testnohouseholdtotal_totalsoutput.csv", getTotalsRng
+    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\testnohouseholdtotal_countyoutput.csv", getCountyRng
+    CompareSheetCSV Assert, "Autocorrected", ThisWorkbook.path & "\testdata\testnohouseholdtotal_autocorrectedoutput.csv"
+    CompareSheetCSV Assert, "Final Report", ThisWorkbook.path & "\testdata\testnohouseholdtotal_finalreportoutput.csv"
+    
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
 Public Sub TestToggleUserVerifiedAutocorrect()
     On Error GoTo TestFail
     
