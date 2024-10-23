@@ -470,6 +470,8 @@ Public Sub computeTotals()
     Dim guestIDTotal(1 To 4) As Long
     Dim householdTotal(1 To 4) As Long
     Dim rxTotal(1 To 4) As Double
+    Dim uniqueServices As Scripting.Dictionary
+    Set uniqueServices = New Scripting.Dictionary
     
     Dim appStatus As Variant
     If Application.StatusBar = False Then appStatus = False Else appStatus = Application.StatusBar
@@ -499,6 +501,8 @@ Public Sub computeTotals()
             
             Dim service As Variant
             For Each service In record.visitData.Keys
+                uniqueServices.Item(service) = 1
+            
                 For Each quarter In record.visitData.Item(service).Keys
                     visitCount(getQuarterNum(quarter)) = _
                         visitCount(getQuarterNum(quarter)) + _
@@ -529,6 +533,17 @@ Public Sub computeTotals()
         recordProgress = recordProgress + 1
         Application.StatusBar = "Totaling address " & recordProgress & " of " & UBound(addresses.Keys) + 1
     Next key
+    
+    Dim nonDeliveryTotalHeader As Range
+    Set nonDeliveryTotalHeader = SheetUtilities.getNonDeliveryTotalHeaderRng()
+    Dim sortedServices As Variant
+    Set sortedServices = CreateObject("System.Collections.ArrayList")
+    Dim serviceName As Variant
+    For Each serviceName In uniqueServices.Keys
+        sortedServices.Add serviceName
+    Next serviceName
+    sortedServices.Sort
+    nonDeliveryTotalHeader.value = "Gburg Totals for " & Join(sortedServices.toarray, ",")
     
     Dim totalsRng As Range
     Set totalsRng = SheetUtilities.getTotalsRng

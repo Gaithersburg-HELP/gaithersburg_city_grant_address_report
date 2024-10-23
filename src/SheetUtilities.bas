@@ -191,6 +191,10 @@ Public Function getTotalsRng() As Range
     Set getTotalsRng = InterfaceSheet.Range("N2:Q6")
 End Function
 
+Public Function getNonDeliveryTotalHeaderRng() As Range
+    Set getNonDeliveryTotalHeaderRng = InterfaceSheet.Range("I1")
+End Function
+
 Public Function getCountyRng() As Range
     Set getCountyRng = InterfaceSheet.Range("B9:CS20")
 End Function
@@ -371,6 +375,7 @@ Public Sub ClearAll()
     InterfaceSheet.columns.Item("A").NumberFormat = "mm/dd/yyyy"
     
     getTotalsRng.value = 0
+    getNonDeliveryTotalHeaderRng.value = "Totals"
     getCountyRng.value = 0
     getFinalReportRng.Clear
     
@@ -471,5 +476,3 @@ Public Function LWordTrim(ByVal str As String) As String()
         LWordTrim = Split(str & "|", "|")
     End If
 End Function
-
-

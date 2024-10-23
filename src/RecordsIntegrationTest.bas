@@ -80,6 +80,8 @@ Public Sub TestAllAddresses()
     
     addRecords
     
+    Assert.isTrue (SheetUtilities.getNonDeliveryTotalHeaderRng().value = "In Gburg Totals for 18,7,9,Food,Rx Asst")
+    
     CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\test1addresses_addressesoutput.csv"
     CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test1addresses_totalsoutput.csv", getTotalsRng
     CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test1addresses_countytotalsoutput.csv", getCountyRng
@@ -442,7 +444,7 @@ TestFail:
 End Sub
 
 '@TestMethod
-Public Sub TestSort()
+Public Sub testSort()
     On Error GoTo TestFail
     
     MacroEntry AddressesSheet
