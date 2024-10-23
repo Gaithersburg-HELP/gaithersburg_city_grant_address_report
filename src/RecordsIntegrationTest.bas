@@ -80,10 +80,10 @@ Public Sub TestAllAddresses()
     
     addRecords
     
-    Assert.isTrue (SheetUtilities.getNonDeliveryTotalHeaderRng().value = "In Gburg Totals for 18,7,9,Food,Rx Asst")
+    Assert.isTrue SheetUtilities.getNonDeliveryTotalHeaderRng().value = "18,7,9,Food,Rx Asst", "Incorrect non delivery total header name"
     
     CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\test1addresses_addressesoutput.csv"
-    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test1addresses_totalsoutput.csv", getTotalsRng
+    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test1addresses_totalsoutput.csv", getTotalsRng(nonDelivery)
     CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test1addresses_countytotalsoutput.csv", getCountyRng
     CompareSheetCSV Assert, "Needs Autocorrect", ThisWorkbook.path & "\testdata\test1addresses_autocorrectoutput.csv"
     CompareSheetCSV Assert, "Discards", ThisWorkbook.path & "\testdata\test1addresses_discardsoutput.csv"
@@ -97,7 +97,7 @@ Public Sub TestAllAddresses()
     addRecords
 
     CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\test2extraaddresses_addressesoutput.csv"
-    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test2extraaddresses_totalsoutput.csv", getTotalsRng
+    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test2extraaddresses_totalsoutput.csv", getTotalsRng(nonDelivery)
     CompareSheetCSV Assert, "Needs Autocorrect", ThisWorkbook.path & "\testdata\test2extraaddresses_autocorrectoutput.csv"
     CompareSheetCSV Assert, "Discards", ThisWorkbook.path & "\testdata\test2extraaddresses_discardsoutput.csv"
     CompareSheetCSV Assert, "Autocorrected", ThisWorkbook.path & "\testdata\test2extraaddresses_autocorrectedoutput.csv"
@@ -112,7 +112,7 @@ Public Sub TestAllAddresses()
     attemptValidation
 
     CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\test3autocorrectaddresses_addressesoutput.csv"
-    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test3autocorrectaddresses_totalsoutput.csv", getTotalsRng
+    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test3autocorrectaddresses_totalsoutput.csv", getTotalsRng(nonDelivery)
     CompareSheetCSV Assert, "Needs Autocorrect", ThisWorkbook.path & "\testdata\test3autocorrectaddresses_autocorrectoutput.csv"
     CompareSheetCSV Assert, "Discards", ThisWorkbook.path & "\testdata\test3autocorrectaddresses_discardsoutput.csv"
     CompareSheetCSV Assert, "Autocorrected", ThisWorkbook.path & "\testdata\test3autocorrectaddresses_autocorrectedoutput.csv"
@@ -127,7 +127,7 @@ Public Sub TestAllAddresses()
     addRecords
 
     CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\test4mergeaddresses_addressesoutput.csv"
-    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test4mergeaddresses_totalsoutput.csv", getTotalsRng
+    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test4mergeaddresses_totalsoutput.csv", getTotalsRng(nonDelivery)
     CompareSheetCSV Assert, "Discards", ThisWorkbook.path & "\testdata\test4mergeaddresses_discardsoutput.csv"
     CompareSheetCSV Assert, "Autocorrected", ThisWorkbook.path & "\testdata\test4mergeaddresses_autocorrectedoutput.csv"
 
@@ -179,7 +179,7 @@ Public Sub TestAllAddresses()
     InterfaceButtons.toggleUserVerifiedAutocorrected
 
     CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\test5usereditsaddresses_addressesoutput.csv"
-    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test5usereditsaddresses_totalsoutput.csv", getTotalsRng
+    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test5usereditsaddresses_totalsoutput.csv", getTotalsRng(nonDelivery)
     CompareSheetCSV Assert, "Needs Autocorrect", ThisWorkbook.path & "\testdata\test5usereditsaddresses_autocorrectoutput.csv"
     CompareSheetCSV Assert, "Discards", ThisWorkbook.path & "\testdata\test5usereditsaddresses_discardsoutput.csv"
     CompareSheetCSV Assert, "Autocorrected", ThisWorkbook.path & "\testdata\test5usereditsaddresses_autocorrectedoutput.csv"
@@ -189,7 +189,7 @@ Public Sub TestAllAddresses()
     InterfaceButtons.confirmGenerateFinalReport
 
     CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\test6validateduseredits_addressesoutput.csv"
-    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test6validateduseredits_totalsoutput.csv", getTotalsRng
+    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test6validateduseredits_totalsoutput.csv", getTotalsRng(nonDelivery)
     CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test6validateduseredits_countyoutput.csv", getCountyRng
     CompareSheetCSV Assert, "Autocorrected", ThisWorkbook.path & "\testdata\test6validateduseredits_autocorrectedoutput.csv"
     CompareSheetCSV Assert, "Final Report", ThisWorkbook.path & "\testdata\test6validateduseredits_finalreportoutput.csv"
@@ -201,7 +201,7 @@ Public Sub TestAllAddresses()
     InterfaceButtons.confirmDeleteAllVisitData
 
     CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\test7deletedata_addressesoutput.csv"
-    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test7deletedata_totalsoutput.csv", getTotalsRng
+    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test7deletedata_totalsoutput.csv", getTotalsRng(nonDelivery)
     CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test7deletedata_countyoutput.csv", getCountyRng
     CompareSheetCSV Assert, "Needs Autocorrect", ThisWorkbook.path & "\testdata\test7deletedata_autocorrectoutput.csv"
     CompareSheetCSV Assert, "Discards", ThisWorkbook.path & "\testdata\test7deletedata_discardsoutput.csv"
@@ -238,7 +238,7 @@ Public Sub TestAllAddresses()
     InterfaceButtons.confirmGenerateFinalReport
 
     CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\test8noservices_addressesoutput.csv"
-    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test8noservices_totalsoutput.csv", getTotalsRng
+    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test8noservices_totalsoutput.csv", getTotalsRng(nonDelivery)
     CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\test8noservices_countyoutput.csv", getCountyRng
     CompareSheetCSV Assert, "Needs Autocorrect", ThisWorkbook.path & "\testdata\test8noservices_autocorrectoutput.csv"
     CompareSheetCSV Assert, "Discards", ThisWorkbook.path & "\testdata\test8noservices_discardsoutput.csv"
@@ -266,7 +266,7 @@ Public Sub TestNoHouseholdTotal()
     InterfaceButtons.confirmGenerateFinalReport
     
     CompareSheetCSV Assert, "Addresses", ThisWorkbook.path & "\testdata\testnohouseholdtotal_addressesoutput.csv"
-    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\testnohouseholdtotal_totalsoutput.csv", getTotalsRng
+    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\testnohouseholdtotal_totalsoutput.csv", getTotalsRng(nonDelivery)
     CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\testnohouseholdtotal_countyoutput.csv", getCountyRng
     CompareSheetCSV Assert, "Autocorrected", ThisWorkbook.path & "\testdata\testnohouseholdtotal_autocorrectedoutput.csv"
     CompareSheetCSV Assert, "Final Report", ThisWorkbook.path & "\testdata\testnohouseholdtotal_finalreportoutput.csv"

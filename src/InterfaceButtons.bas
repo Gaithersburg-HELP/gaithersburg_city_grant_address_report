@@ -166,7 +166,7 @@ Public Sub confirmDeleteAllVisitData()
     If Not MacroEntry(ThisWorkbook.ActiveSheet) Then Exit Sub
     
     SheetUtilities.getMostRecentRng.value = vbNullString
-    SheetUtilities.getTotalsRng.value = 0
+    SheetUtilities.ClearGburgTotals
     SheetUtilities.getCountyRng.value = 0
     SheetUtilities.getFinalReportRng.Clear
     SheetUtilities.getAddressVisitDataRng("Addresses").Clear

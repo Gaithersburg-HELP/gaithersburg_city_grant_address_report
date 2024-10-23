@@ -187,8 +187,13 @@ Public Function getPastedRecordsRng() As Range
     Set getPastedRecordsRng = getRng("Interface", "A23", "O23")
 End Function
 
-Public Function getTotalsRng() As Range
-    Set getTotalsRng = InterfaceSheet.Range("N2:Q6")
+Public Function getTotalsRng(ByVal totalService As TotalServiceType) As Range
+    Select Case totalService '
+        Case nonDelivery
+            Set getTotalsRng = InterfaceSheet.Range("I3:L7")
+        Case Delivery
+            Set getTotalsRng = InterfaceSheet.Range("N3:Q7")
+    End Select
 End Function
 
 Public Function getNonDeliveryTotalHeaderRng() As Range
@@ -196,7 +201,7 @@ Public Function getNonDeliveryTotalHeaderRng() As Range
 End Function
 
 Public Function getDeliveryTotalHeaderRng() As Range
-    Set getDeliveryTotalHeaderRng = InterfaceSheet.Range("U1")
+    Set getDeliveryTotalHeaderRng = InterfaceSheet.Range("N1")
 End Function
 
 Public Function getCountyRng() As Range
@@ -369,6 +374,13 @@ Public Sub ClearSheet(ByVal sheetName As String)
     If Not (serviceRng Is Nothing) Then serviceRng.Clear
 End Sub
 
+Public Sub ClearGburgTotals()
+    Dim totalService As TotalServiceType
+    For totalService = [_TotalServiceTypeFirst] To [_TotalServiceTypeLast]
+        getTotalsRng(totalService).value = 0
+    Next totalService
+End Sub
+
 Public Sub ClearAll()
     '@Ignore FunctionReturnValueDiscarded
     InterfaceButtons.MacroEntry ThisWorkbook.ActiveSheet
@@ -378,9 +390,9 @@ Public Sub ClearAll()
     getPastedRecordsRng.Clear
     InterfaceSheet.columns.Item("A").NumberFormat = "mm/dd/yyyy"
     
-    getTotalsRng.value = 0
-    getNonDeliveryTotalHeaderRng.value = "Gburg Totals for non-delivery"
-    getDeliveryTotalHeaderRng.value = "Gburg Totals for delivery"
+    ClearGburgTotals
+    getNonDeliveryTotalHeaderRng.value = "Non-delivery"
+    getDeliveryTotalHeaderRng.value = "Delivery"
     getCountyRng.value = 0
     getFinalReportRng.Clear
     
@@ -459,7 +471,7 @@ Public Sub SortSheet(ByVal sheetName As String)
     End If
 End Sub
 
-Public Function sortArr(ByRef arr() As Variant)
+Public Function sortArr(ByRef arr() As Variant) As Variant()
     Dim sorted As Variant
     Set sorted = CreateObject("System.Collections.ArrayList")
     Dim element As Variant
@@ -468,6 +480,19 @@ Public Function sortArr(ByRef arr() As Variant)
     Next element
     sorted.Sort
     sortArr = sorted.toarray
+End Function
+
+Public Function cloneDict(ByVal dict As Scripting.Dictionary) As Scripting.Dictionary
+    Dim newDict As Scripting.Dictionary
+    Set newDict = CreateObject("Scripting.Dictionary")
+
+    newDict.CompareMode = dict.CompareMode
+    Dim key As Variant
+    For Each key In dict.Keys
+        newDict.Add key, dict.Item(key)
+    Next
+
+    Set cloneDict = newDict
 End Function
 
 Public Sub SortAll() ' TODO refactor? except for Final Report

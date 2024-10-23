@@ -2,6 +2,23 @@ Attribute VB_Name = "Records"
 Option Explicit
 
 '@Folder "City_Grant_Address_Report.src"
+Public Enum TotalServiceType
+    nonDelivery = 1
+    Delivery = 2
+    [_TotalServiceTypeFirst] = nonDelivery
+    [_TotalServiceTypeLast] = Delivery
+End Enum
+
+Public Enum TotalType
+    uniqueGuestID = 1
+    uniqueGuestIDHousehold = 2
+    nonUniqueGuestID = 3
+    nonUniqueHousehold = 4
+    rx = 5
+    [_TotalTypeFirst] = uniqueGuestID
+    [_TotalTypeLast] = rx
+End Enum
+
 Public Function getQuarterNum(ByVal quarter As String) As Long
     Select Case quarter
         Case "Q1"
@@ -459,19 +476,22 @@ Public Sub computeCountyTotals()
 End Sub
 
 Public Sub computeTotals()
-    SheetUtilities.getTotalsRng.Clear
+    SheetUtilities.ClearGburgTotals
     
     Dim addresses As Scripting.Dictionary
     Set addresses = Records.loadAddresses("Addresses")
-
+    
     ' All initialized to 0
     Dim uniqueGuestIDTotal(1 To 4) As Long
     Dim uniqueGuestIDHouseholdTotal(1 To 4) As Long
     Dim guestIDTotal(1 To 4) As Long
     Dim householdTotal(1 To 4) As Long
     Dim rxTotal(1 To 4) As Double
-    Dim uniqueServices As Scripting.Dictionary
-    Set uniqueServices = New Scripting.Dictionary
+    
+    Dim uniqueNonDeliveryServices As Scripting.Dictionary
+    Set uniqueNonDeliveryServices = New Scripting.Dictionary
+    Dim uniqueDeliveryServices As Scripting.Dictionary
+    Set uniqueDeliveryServices = New Scripting.Dictionary
     
     Dim appStatus As Variant
     If Application.StatusBar = False Then appStatus = False Else appStatus = Application.StatusBar
@@ -479,16 +499,16 @@ Public Sub computeTotals()
     Dim recordProgress As Long
     recordProgress = 1
     Application.StatusBar = "Totaling address 1 of " & UBound(addresses.Keys) + 1
-    
+
     Dim key As Variant
     For Each key In addresses.Keys
         Dim record As RecordTuple
         Set record = addresses.Item(key)
-        
+
         ' Gaithersburg totals
         If record.InCity = InCityCode.ValidInCity Then
             ' GBH names deliveries "Food-Delivery"
-        
+
             Dim rxCount(1 To 4) As Double
             Dim quarter As Variant
             For Each quarter In record.rxTotal.Keys
@@ -498,20 +518,20 @@ Public Sub computeTotals()
                                                       record.rxTotal.Item(quarter).Item(visit)
                 Next visit
             Next quarter
-            
+
             Dim visitCount(1 To 4) As Long
-            
+
             Dim service As Variant
             For Each service In record.visitData.Keys
-                uniqueServices.Item(service) = 1
-            
+                uniqueNonDeliveryServices.Item(service) = 1
+
                 For Each quarter In record.visitData.Item(service).Keys
                     visitCount(getQuarterNum(quarter)) = _
                         visitCount(getQuarterNum(quarter)) + _
                         record.visitData.Item(service).Item(quarter).count
                 Next quarter
             Next service
-            
+
             Dim countedUnduplicated As Boolean
             countedUnduplicated = False
             Dim i As Long
@@ -525,30 +545,32 @@ Public Sub computeTotals()
                 guestIDTotal(i) = guestIDTotal(i) + visitCount(i)
                 householdTotal(i) = householdTotal(i) + (visitCount(i) * record.householdTotal)
                 rxTotal(i) = rxTotal(i) + rxCount(i)
-                
+
                 ' arrays are not reset on loop iteration!
                 rxCount(i) = 0
                 visitCount(i) = 0
             Next i
         End If
-        
+
         recordProgress = recordProgress + 1
         Application.StatusBar = "Totaling address " & recordProgress & " of " & UBound(addresses.Keys) + 1
     Next key
     
     Dim nonDeliveryTotalHeader As Range
     Set nonDeliveryTotalHeader = SheetUtilities.getNonDeliveryTotalHeaderRng()
-    
     ' Necessary to avoid VBA compile error
     Dim clonedKeys() As Variant
-    clonedKeys = uniqueServices.Keys
-    nonDeliveryTotalHeader.value = "Gburg Totals for " & Join(SheetUtilities.sortArr(clonedKeys), ",")
+    clonedKeys = uniqueNonDeliveryServices.Keys
+    nonDeliveryTotalHeader.value = Join(SheetUtilities.sortArr(clonedKeys), ",")
     
     Dim deliveryTotalHeader As Range
     Set deliveryTotalHeader = SheetUtilities.getDeliveryTotalHeaderRng()
+    clonedKeys = uniqueDeliveryServices.Keys
+    deliveryTotalHeader.value = Join(SheetUtilities.sortArr(clonedKeys), ",")
     
     Dim totalsRng As Range
-    Set totalsRng = SheetUtilities.getTotalsRng
+    ' TODO implement non delivery and delivery total split
+    Set totalsRng = SheetUtilities.getTotalsRng(nonDelivery)
     
     For i = 1 To 4
         totalsRng.Cells.Item(1, i) = uniqueGuestIDTotal(i)
