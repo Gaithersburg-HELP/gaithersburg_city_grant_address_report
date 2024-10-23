@@ -195,6 +195,10 @@ Public Function getNonDeliveryTotalHeaderRng() As Range
     Set getNonDeliveryTotalHeaderRng = InterfaceSheet.Range("I1")
 End Function
 
+Public Function getDeliveryTotalHeaderRng() As Range
+    Set getDeliveryTotalHeaderRng = InterfaceSheet.Range("U1")
+End Function
+
 Public Function getCountyRng() As Range
     Set getCountyRng = InterfaceSheet.Range("B9:CS20")
 End Function
@@ -375,7 +379,8 @@ Public Sub ClearAll()
     InterfaceSheet.columns.Item("A").NumberFormat = "mm/dd/yyyy"
     
     getTotalsRng.value = 0
-    getNonDeliveryTotalHeaderRng.value = "Totals"
+    getNonDeliveryTotalHeaderRng.value = "Gburg Totals for non-delivery"
+    getDeliveryTotalHeaderRng.value = "Gburg Totals for delivery"
     getCountyRng.value = 0
     getFinalReportRng.Clear
     
@@ -453,6 +458,17 @@ Public Sub SortSheet(ByVal sheetName As String)
         SortRange getAddressRng(sheetName), sortOnValidFirst
     End If
 End Sub
+
+Public Function sortArr(ByRef arr() As Variant)
+    Dim sorted As Variant
+    Set sorted = CreateObject("System.Collections.ArrayList")
+    Dim element As Variant
+    For Each element In arr
+        sorted.Add element
+    Next element
+    sorted.Sort
+    sortArr = sorted.toarray
+End Function
 
 Public Sub SortAll() ' TODO refactor? except for Final Report
     SortSheet "Addresses"

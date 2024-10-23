@@ -487,6 +487,8 @@ Public Sub computeTotals()
         
         ' Gaithersburg totals
         If record.InCity = InCityCode.ValidInCity Then
+            ' GBH names deliveries "Food-Delivery"
+        
             Dim rxCount(1 To 4) As Double
             Dim quarter As Variant
             For Each quarter In record.rxTotal.Keys
@@ -536,14 +538,14 @@ Public Sub computeTotals()
     
     Dim nonDeliveryTotalHeader As Range
     Set nonDeliveryTotalHeader = SheetUtilities.getNonDeliveryTotalHeaderRng()
-    Dim sortedServices As Variant
-    Set sortedServices = CreateObject("System.Collections.ArrayList")
-    Dim serviceName As Variant
-    For Each serviceName In uniqueServices.Keys
-        sortedServices.Add serviceName
-    Next serviceName
-    sortedServices.Sort
-    nonDeliveryTotalHeader.value = "Gburg Totals for " & Join(sortedServices.toarray, ",")
+    
+    ' Necessary to avoid VBA compile error
+    Dim clonedKeys() As Variant
+    clonedKeys = uniqueServices.Keys
+    nonDeliveryTotalHeader.value = "Gburg Totals for " & Join(SheetUtilities.sortArr(clonedKeys), ",")
+    
+    Dim deliveryTotalHeader As Range
+    Set deliveryTotalHeader = SheetUtilities.getDeliveryTotalHeaderRng()
     
     Dim totalsRng As Range
     Set totalsRng = SheetUtilities.getTotalsRng
