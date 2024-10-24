@@ -481,12 +481,26 @@ Public Sub computeTotals()
     Dim addresses As Scripting.Dictionary
     Set addresses = Records.loadAddresses("Addresses")
     
-    ' All initialized to 0
-    Dim uniqueGuestIDTotal(1 To 4) As Long
-    Dim uniqueGuestIDHouseholdTotal(1 To 4) As Long
-    Dim guestIDTotal(1 To 4) As Long
-    Dim householdTotal(1 To 4) As Long
-    Dim rxTotal(1 To 4) As Double
+    ' First key determines total service type, second key determines total type
+    Dim totals As Scripting.Dictionary
+    Set totals = New Scripting.Dictionary
+    Dim totalServicename As TotalServiceType
+    Dim totalTypename As TotalType
+    For totalServicename = [_TotalServiceTypeFirst] To [_TotalServiceTypeLast]
+        Dim totalTypes As Scripting.Dictionary
+        Set totalTypes = New Scripting.Dictionary
+        For totalTypename = [_TotalTypeFirst] To [_TotalTypeLast]
+            ' initialized to 0
+            Dim quarters As Scripting.Dictionary
+            Set quarters = New Scripting.Dictionary
+            quarters.Item(1) = 0
+            quarters.Item(2) = 0
+            quarters.Item(3) = 0
+            quarters.Item(4) = 0
+            totalTypes.Add totalTypename, SheetUtilities.cloneDict(quarters)
+        Next totalTypename
+        totals.Add totalServicename, totalTypes
+    Next totalServicename
     
     Dim uniqueNonDeliveryServices As Scripting.Dictionary
     Set uniqueNonDeliveryServices = New Scripting.Dictionary
@@ -504,52 +518,56 @@ Public Sub computeTotals()
     For Each key In addresses.Keys
         Dim record As RecordTuple
         Set record = addresses.Item(key)
-
+        
         ' Gaithersburg totals
         If record.InCity = InCityCode.ValidInCity Then
-            ' GBH names deliveries "Food-Delivery"
-
-            Dim rxCount(1 To 4) As Double
             Dim quarter As Variant
+            Dim qNum As Long
             For Each quarter In record.rxTotal.Keys
+                qNum = getQuarterNum(quarter)
                 Dim visit As Variant
                 For Each visit In record.rxTotal.Item(quarter).Keys
-                    rxCount(getQuarterNum(quarter)) = rxCount(getQuarterNum(quarter)) + _
-                                                      record.rxTotal.Item(quarter).Item(visit)
+                    ' Include Rx in non delivery even though technically this is for all services delivery and non delivery
+                    totals.Item(nonDelivery).Item(rx)(qNum) = totals.Item(nonDelivery).Item(rx)(qNum) + _
+                                                              record.rxTotal.Item(quarter).Item(visit)
                 Next visit
             Next quarter
 
-            Dim visitCount(1 To 4) As Long
-
+            ' Keep track of whether we've counted unduplicated for Delivery and Non Delivery using a dict
+            Dim countedUnduplicated As Dictionary
+            Set countedUnduplicated = New Scripting.Dictionary
+            countedUnduplicated.Add Delivery, False
+            countedUnduplicated.Add nonDelivery, False
+            
             Dim service As Variant
             For Each service In record.visitData.Keys
-                uniqueNonDeliveryServices.Item(service) = 1
+                Dim serviceType As TotalServiceType
+                If InStr(1, service, "delivery", vbTextCompare) > 0 Then
+                    serviceType = Delivery
+                    uniqueDeliveryServices.Item(service) = 1
+                Else
+                    serviceType = nonDelivery
+                    uniqueNonDeliveryServices.Item(service) = 1
+                End If
 
                 For Each quarter In record.visitData.Item(service).Keys
-                    visitCount(getQuarterNum(quarter)) = _
-                        visitCount(getQuarterNum(quarter)) + _
-                        record.visitData.Item(service).Item(quarter).count
+                    qNum = getQuarterNum(quarter)
+                    Dim count As Long
+                    count = record.visitData.Item(service).Item(quarter).count
+                    
+                    If (count > 0) And (Not countedUnduplicated.Item(serviceType)) Then
+                        totals.Item(serviceType).Item(uniqueGuestID)(qNum) = totals.Item(serviceType).Item(uniqueGuestID)(qNum) + _
+                                                                             1
+                        totals.Item(serviceType).Item(uniqueGuestIDHousehold)(qNum) = totals.Item(serviceType).Item(uniqueGuestIDHousehold)(qNum) + _
+                                                                                      record.householdTotal
+                        countedUnduplicated.Item(serviceType) = True
+                    End If
+                    totals.Item(serviceType).Item(nonUniqueGuestID)(qNum) = totals.Item(serviceType).Item(nonUniqueGuestID)(qNum) + _
+                                                                            count
+                    totals.Item(serviceType).Item(nonUniqueHousehold)(qNum) = totals.Item(serviceType).Item(nonUniqueHousehold)(qNum) + _
+                                                                              count * record.householdTotal
                 Next quarter
             Next service
-
-            Dim countedUnduplicated As Boolean
-            countedUnduplicated = False
-            Dim i As Long
-            For i = 1 To 4
-                If Not countedUnduplicated And visitCount(i) > 0 Then
-                    uniqueGuestIDTotal(i) = uniqueGuestIDTotal(i) + 1
-                    uniqueGuestIDHouseholdTotal(i) = uniqueGuestIDHouseholdTotal(i) + _
-                                                     record.householdTotal
-                    countedUnduplicated = True
-                End If
-                guestIDTotal(i) = guestIDTotal(i) + visitCount(i)
-                householdTotal(i) = householdTotal(i) + (visitCount(i) * record.householdTotal)
-                rxTotal(i) = rxTotal(i) + rxCount(i)
-
-                ' arrays are not reset on loop iteration!
-                rxCount(i) = 0
-                visitCount(i) = 0
-            Next i
         End If
 
         recordProgress = recordProgress + 1
@@ -568,20 +586,24 @@ Public Sub computeTotals()
     clonedKeys = uniqueDeliveryServices.Keys
     deliveryTotalHeader.value = Join(SheetUtilities.sortArr(clonedKeys), ",")
     
-    Dim totalsRng As Range
-    ' TODO implement non delivery and delivery total split
-    Set totalsRng = SheetUtilities.getTotalsRng(nonDelivery)
     
-    For i = 1 To 4
-        totalsRng.Cells.Item(1, i) = uniqueGuestIDTotal(i)
-        totalsRng.Cells.Item(2, i) = uniqueGuestIDHouseholdTotal(i)
-        totalsRng.Cells.Item(3, i) = guestIDTotal(i)
-        totalsRng.Cells.Item(4, i) = householdTotal(i)
-        totalsRng.Cells.Item(5, i) = rxTotal(i)
-    Next i
+    For totalServicename = [_TotalServiceTypeFirst] To [_TotalServiceTypeLast]
+        Dim totalsRng As Range
+        Set totalsRng = SheetUtilities.getTotalsRng(totalServicename)
+        Dim i As Long
+        For i = 1 To 4
+            totalsRng.Cells.Item(1, i) = totals.Item(totalServicename).Item(uniqueGuestID)(i)
+            totalsRng.Cells.Item(2, i) = totals.Item(totalServicename).Item(uniqueGuestIDHousehold)(i)
+            totalsRng.Cells.Item(3, i) = totals.Item(totalServicename).Item(nonUniqueGuestID)(i)
+            totalsRng.Cells.Item(4, i) = totals.Item(totalServicename).Item(nonUniqueHousehold)(i)
+        
+            If totalServicename = nonDelivery Then
+                totalsRng.Cells.Item(5, i) = totals.Item(totalServicename).Item(rx)(i)
+            End If
+        Next i
+    Next totalServicename
     
     Application.StatusBar = appStatus
-    
 End Sub
 
 Public Sub writeAddressesComputeTotals(ByVal addresses As Scripting.Dictionary, _

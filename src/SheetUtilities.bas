@@ -190,9 +190,10 @@ End Function
 Public Function getTotalsRng(ByVal totalService As TotalServiceType) As Range
     Select Case totalService '
         Case nonDelivery
+            ' Include RxTotal for easy test comparison
             Set getTotalsRng = InterfaceSheet.Range("I3:L7")
         Case Delivery
-            Set getTotalsRng = InterfaceSheet.Range("N3:Q7")
+            Set getTotalsRng = InterfaceSheet.Range("N3:Q6")
     End Select
 End Function
 
