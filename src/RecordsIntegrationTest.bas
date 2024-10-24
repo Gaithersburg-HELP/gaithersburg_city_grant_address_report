@@ -250,6 +250,32 @@ TestFail:
 End Sub
 
 '@TestMethod
+Public Sub TestDelivery()
+    On Error GoTo TestFail
+    
+    Dim testDeliveryArr() As String
+    testDeliveryArr = getCSV(ThisWorkbook.path & "\testdata\testdeliveryaddresses.csv")
+    
+    MacroEntry InterfaceSheet
+    PasteTestRecords testDeliveryArr
+    MacroExit InterfaceSheet
+    
+    Fakes.MsgBox.Returns vbYes
+    InterfaceButtons.confirmAddRecords
+    InterfaceButtons.confirmAttemptValidation
+    InterfaceButtons.confirmGenerateFinalReport
+    
+    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\testdeliveryaddresses_nondeliverytotalsoutput.csv", getTotalsRng(nonDelivery)
+    CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\testdeliveryaddresses_deliverytotalsoutput.csv", getTotalsRng(Delivery)
+    'CompareSheetCSV Assert, "Final Report", ThisWorkbook.path & "\testdata\testdeliveryaddresses_finalreportoutput.csv"
+    
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
 Public Sub TestNoHouseholdTotal()
     On Error GoTo TestFail
     

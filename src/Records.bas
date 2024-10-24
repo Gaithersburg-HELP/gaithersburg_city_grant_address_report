@@ -532,12 +532,19 @@ Public Sub computeTotals()
                                                               record.rxTotal.Item(quarter).Item(visit)
                 Next visit
             Next quarter
-
-            ' Keep track of whether we've counted unduplicated for Delivery and Non Delivery using a dict
+            
+             ' Keep track of whether we've counted unduplicated for Delivery and Non Delivery using a dict of Booleans for each quarter
+            Dim countedUndupQuarter As Scripting.Dictionary
+            Set countedUndupQuarter = New Scripting.Dictionary
+            countedUndupQuarter(1) = False
+            countedUndupQuarter(2) = False
+            countedUndupQuarter(3) = False
+            countedUndupQuarter(4) = False
+            
             Dim countedUnduplicated As Dictionary
             Set countedUnduplicated = New Scripting.Dictionary
-            countedUnduplicated.Add Delivery, False
-            countedUnduplicated.Add nonDelivery, False
+            countedUnduplicated.Add Delivery, cloneDict(countedUndupQuarter)
+            countedUnduplicated.Add nonDelivery, cloneDict(countedUndupQuarter)
             
             Dim service As Variant
             For Each service In record.visitData.Keys
@@ -555,12 +562,12 @@ Public Sub computeTotals()
                     Dim count As Long
                     count = record.visitData.Item(service).Item(quarter).count
                     
-                    If (count > 0) And (Not countedUnduplicated.Item(serviceType)) Then
+                    If (count > 0) And (Not countedUnduplicated.Item(serviceType).Item(qNum)) Then
                         totals.Item(serviceType).Item(uniqueGuestID)(qNum) = totals.Item(serviceType).Item(uniqueGuestID)(qNum) + _
                                                                              1
                         totals.Item(serviceType).Item(uniqueGuestIDHousehold)(qNum) = totals.Item(serviceType).Item(uniqueGuestIDHousehold)(qNum) + _
                                                                                       record.householdTotal
-                        countedUnduplicated.Item(serviceType) = True
+                        countedUnduplicated.Item(serviceType).Item(qNum) = True
                     End If
                     totals.Item(serviceType).Item(nonUniqueGuestID)(qNum) = totals.Item(serviceType).Item(nonUniqueGuestID)(qNum) + _
                                                                             count
