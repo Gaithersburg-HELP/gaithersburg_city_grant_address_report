@@ -6,7 +6,7 @@ Private Sub writeFinalReportRecord(ByVal record As RecordTuple)
     Dim row As Range
     Set row = SheetUtilities.getBlankRow("Final Report")
     
-    row.Cells.Item(1, 1) = "GBH"
+    row.Cells.Item(1, 1) = "Gaithersburg HELP"
     row.Cells.Item(1, 2) = record.GburgFormatValidAddress.Item(addressKey.streetNum)
     row.Cells.Item(1, 3) = record.GburgFormatValidAddress.Item(addressKey.PrefixedStreetname)
     row.Cells.Item(1, 4) = record.GburgFormatValidAddress.Item(addressKey.StreetType)
@@ -15,13 +15,16 @@ Private Sub writeFinalReportRecord(ByVal record As RecordTuple)
     row.Cells.Item(1, 7) = "Gaithersburg"
     row.Cells.Item(1, 8) = "MD"
     row.Cells.Item(1, 9) = record.CleanInitials
+    row.Cells.Item(1, 10) = record.householdTotal
+    row.Cells.Item(1, 11) = record.eighteenPlusTotal
+    row.Cells.Item(1, 12) = record.zeroToOneTotal + record.twoToSeventeenTotal
     
     Dim quarters() As Boolean
     quarters = record.quarters
-    If quarters(1) Then row.Cells.Item(1, 10) = "x"
-    If quarters(2) Then row.Cells.Item(1, 11) = "x"
-    If quarters(3) Then row.Cells.Item(1, 12) = "x"
-    If quarters(4) Then row.Cells.Item(1, 13) = "x"
+    If quarters(1) Then row.Cells.Item(1, 13) = "x"
+    If quarters(2) Then row.Cells.Item(1, 14) = "x"
+    If quarters(3) Then row.Cells.Item(1, 15) = "x"
+    If quarters(4) Then row.Cells.Item(1, 16) = "x"
 End Sub
 
 Public Sub generateFinalReport()

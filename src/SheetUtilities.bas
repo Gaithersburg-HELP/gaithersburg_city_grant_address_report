@@ -210,7 +210,7 @@ Public Function getCountyRng() As Range
 End Function
 
 Public Function getFinalReportRng() As Range
-    Set getFinalReportRng = getRng("Final Report", "A2", "M2")
+    Set getFinalReportRng = getRng("Final Report", "A2", "P2")
 End Function
 
 ' Returns null if all services deleted
@@ -454,8 +454,7 @@ Public Sub SortSheet(ByVal sheetName As String)
     
     If sheetName = "Final Report" Then
         FinalReportSheet.Select
-        FinalReportSheet.Range("A2:O2").Select
-        ActiveSheet.Range(selection, selection.End(xlDown)).Select
+        getFinalReportRng().Select
         
         With ActiveSheet.Sort
             .SortFields.Clear

@@ -1,2 +1,2 @@
-Organization_Initial,Street_No,Street_Name,Street_Type,Apt,Apt_No,City,State,Client_Initials,Q1,Q2,Q3,Q4
-GBH,2,Nina,Ct,,,Gaithersburg,MD,UV,,,,x
+Organization,Street_No,Street_Name,Street_Type,Apt,Apt_No,City,State,Client_Initials,# of members,# of adults,# of children,Q1,Q2,Q3,Q4
+Gaithersburg HELP,2,Nina,Ct,,,Gaithersburg,MD,UV,3,3,0,,,,x

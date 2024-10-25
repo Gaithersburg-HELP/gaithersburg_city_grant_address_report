@@ -269,7 +269,7 @@ Public Sub TestDelivery()
     
     CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\testdeliveryaddresses_nondeliverytotalsoutput.csv", getTotalsRng(nonDelivery)
     CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\testdeliveryaddresses_deliverytotalsoutput.csv", getTotalsRng(Delivery)
-    'CompareSheetCSV Assert, "Final Report", ThisWorkbook.path & "\testdata\testdeliveryaddresses_finalreportoutput.csv"
+    CompareSheetCSV Assert, "Final Report", ThisWorkbook.path & "\testdata\testdeliveryaddresses_finalreportoutput.csv"
     
     Exit Sub
 TestFail:
