@@ -354,10 +354,10 @@ End Function
 Private Sub MergeRx(ByVal rxToMerge As Scripting.Dictionary)
     Dim quarter As Variant
     For Each quarter In rxToMerge.Keys
-        If rxTotal.exists(quarter) Then
+        If rxTotal.Exists(quarter) Then
             Dim visit As Variant
             For Each visit In rxToMerge.Item(quarter).Keys
-                If Not rxTotal.Item(quarter).exists(visit) Then
+                If Not rxTotal.Item(quarter).Exists(visit) Then
                     rxTotal.Item(quarter).Add visit, rxToMerge.Item(quarter).Item(visit)
                 End If
             Next visit
@@ -371,11 +371,11 @@ Private Sub MergeVisitData(ByVal visitDataToMerge As Scripting.Dictionary)
     Dim service As Variant
     
     For Each service In visitDataToMerge.Keys
-        If visitData.exists(service) Then
+        If visitData.Exists(service) Then
             ' Loop through quarters and merge
             Dim quarter As Variant
             For Each quarter In visitDataToMerge.Item(service)
-                If visitData.Item(service).exists(quarter) Then
+                If visitData.Item(service).Exists(quarter) Then
                     Dim visitDateToMerge As Variant
                     For Each visitDateToMerge In visitDataToMerge.Item(service).Item(quarter)
                         Dim visitExists As Boolean

@@ -221,7 +221,7 @@ Public Function googleValidateQuery(ByVal fullAddress As String, ByVal city As S
     ' E.g. 600 s frederik dr at 100, gburg, md, 20877, usa: Google components keeps "at 100" instead of Ste 100
     ' see https://issuetracker.google.com/issues/325302835
 
-    If jsonResult.Item("result").exists("uspsData") Then
+    If jsonResult.Item("result").Exists("uspsData") Then
         Dim uspsFullAddress As String
         uspsFullAddress = jsonResult.Item("result").Item("uspsData").Item("standardizedAddress").Item("firstAddressLine")
         
@@ -235,7 +235,7 @@ Public Function googleValidateQuery(ByVal fullAddress As String, ByVal city As S
         
         ' For DPV confirmation values, https://developers.google.com/maps/documentation/address-validation/handle-us-address
         ' Short circuiting does not exist in VBA
-        If jsonResult.Item("result").Item("uspsData").exists("dpvConfirmation") Then
+        If jsonResult.Item("result").Item("uspsData").Exists("dpvConfirmation") Then
             Select Case jsonResult.Item("result").Item("uspsData").Item("dpvConfirmation")
                 Case "Y"
                     validatedAddress.Item(addressKey.Full) = uspsFullAddress

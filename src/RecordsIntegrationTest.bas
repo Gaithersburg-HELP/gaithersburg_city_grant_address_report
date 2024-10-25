@@ -265,6 +265,8 @@ Public Sub TestDelivery()
     InterfaceButtons.confirmAttemptValidation
     InterfaceButtons.confirmGenerateFinalReport
     
+    Assert.isTrue SheetUtilities.getDeliveryTotalHeaderRng.value = "Delivery,Food-Delivery", "Delivery service header doesn't match"
+    
     CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\testdeliveryaddresses_nondeliverytotalsoutput.csv", getTotalsRng(nonDelivery)
     CompareSheetCSV Assert, "Interface", ThisWorkbook.path & "\testdata\testdeliveryaddresses_deliverytotalsoutput.csv", getTotalsRng(Delivery)
     'CompareSheetCSV Assert, "Final Report", ThisWorkbook.path & "\testdata\testdeliveryaddresses_finalreportoutput.csv"

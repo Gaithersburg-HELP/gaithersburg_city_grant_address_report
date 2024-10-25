@@ -205,7 +205,7 @@ Public Sub writeAddress(ByVal sheetName As String, ByVal record As RecordTuple)
         Dim visitDataToAdd As String
         visitDataToAdd = JsonConverter.ConvertToJson(record.visitData.Item(serviceToAdd))
         
-        If Not serviceCols.exists(serviceToAdd) Then
+        If Not serviceCols.Exists(serviceToAdd) Then
             Dim newServiceCol As Long
             newServiceCol = SheetUtilities.firstServiceColumn + UBound(serviceCols.Keys) + 1
             serviceCols.Add serviceToAdd, newServiceCol
@@ -281,7 +281,7 @@ Private Sub incrementCountyTotal(ByVal record As RecordTuple)
     
     Dim zipCol As Long
     
-    If uniqueCols.exists(zip) Then
+    If uniqueCols.Exists(zip) Then
         zipCol = uniqueCols.Item(zip)
     Else
         ' BUG assumes poorer city
@@ -533,18 +533,10 @@ Public Sub computeTotals()
                 Next visit
             Next quarter
             
-             ' Keep track of whether we've counted unduplicated for Delivery and Non Delivery using a dict of Booleans for each quarter
-            Dim countedUndupQuarter As Scripting.Dictionary
-            Set countedUndupQuarter = New Scripting.Dictionary
-            countedUndupQuarter(1) = False
-            countedUndupQuarter(2) = False
-            countedUndupQuarter(3) = False
-            countedUndupQuarter(4) = False
-            
-            Dim countedUnduplicated As Dictionary
-            Set countedUnduplicated = New Scripting.Dictionary
-            countedUnduplicated.Add Delivery, cloneDict(countedUndupQuarter)
-            countedUnduplicated.Add nonDelivery, cloneDict(countedUndupQuarter)
+            ' Keep track of whether we've counted unduplicated for Delivery and Non Delivery using a dict holding earliest quarter added
+            ' If service key does not exist, not counted
+            Dim earliestQuarterAdded As Dictionary
+            Set earliestQuarterAdded = New Scripting.Dictionary
             
             Dim service As Variant
             For Each service In record.visitData.Keys
@@ -562,12 +554,28 @@ Public Sub computeTotals()
                     Dim count As Long
                     count = record.visitData.Item(service).Item(quarter).count
                     
-                    If (count > 0) And (Not countedUnduplicated.Item(serviceType).Item(qNum)) Then
-                        totals.Item(serviceType).Item(uniqueGuestID)(qNum) = totals.Item(serviceType).Item(uniqueGuestID)(qNum) + _
-                                                                             1
-                        totals.Item(serviceType).Item(uniqueGuestIDHousehold)(qNum) = totals.Item(serviceType).Item(uniqueGuestIDHousehold)(qNum) + _
-                                                                                      record.householdTotal
-                        countedUnduplicated.Item(serviceType).Item(qNum) = True
+                    If (count > 0) Then
+                        If Not earliestQuarterAdded.Exists(serviceType) Then
+                            totals.Item(serviceType).Item(uniqueGuestID)(qNum) = totals.Item(serviceType).Item(uniqueGuestID)(qNum) + _
+                                                                                 1
+                            totals.Item(serviceType).Item(uniqueGuestIDHousehold)(qNum) = totals.Item(serviceType).Item(uniqueGuestIDHousehold)(qNum) + _
+                                                                                          record.householdTotal
+                            earliestQuarterAdded.Add serviceType, qNum
+                        ' Check for edge case where you get an earlier quarter after already counted due to services being out of order
+                        ElseIf qNum < earliestQuarterAdded.Item(serviceType) Then
+                            Dim laterQNum As Long
+                            laterQNum = earliestQuarterAdded.Item(serviceType)
+                            totals.Item(serviceType).Item(uniqueGuestID)(laterQNum) = totals.Item(serviceType).Item(uniqueGuestID)(laterQNum) - _
+                                                                                      1
+                            totals.Item(serviceType).Item(uniqueGuestIDHousehold)(laterQNum) = totals.Item(serviceType).Item(uniqueGuestIDHousehold)(laterQNum) - _
+                                                                                               record.householdTotal
+                            
+                            totals.Item(serviceType).Item(uniqueGuestID)(qNum) = totals.Item(serviceType).Item(uniqueGuestID)(qNum) + _
+                                                                                 1
+                            totals.Item(serviceType).Item(uniqueGuestIDHousehold)(qNum) = totals.Item(serviceType).Item(uniqueGuestIDHousehold)(qNum) + _
+                                                                                          record.householdTotal
+                            earliestQuarterAdded.Item(serviceType) = qNum
+                        End If
                     End If
                     totals.Item(serviceType).Item(nonUniqueGuestID)(qNum) = totals.Item(serviceType).Item(nonUniqueGuestID)(qNum) + _
                                                                             count
@@ -665,16 +673,16 @@ Public Sub addRecords()
         Dim existingRecord As RecordTuple
         Set existingRecord = Nothing
         
-        If recordsToValidate.exists(recordToAdd.key) Then
+        If recordsToValidate.Exists(recordToAdd.key) Then
             Set existingRecord = recordsToValidate.Item(recordToAdd.key)
             '@Ignore FunctionReturnValueDiscarded
             existingRecord.MergeRecord recordToAdd
         Else
-            If addresses.exists(recordToAdd.key) Then
+            If addresses.Exists(recordToAdd.key) Then
                 Set existsInDict = addresses
-            ElseIf needsAutocorrect.exists(recordToAdd.key) Then
+            ElseIf needsAutocorrect.Exists(recordToAdd.key) Then
                 Set existsInDict = needsAutocorrect
-            ElseIf discards.exists(recordToAdd.key) Then
+            ElseIf discards.Exists(recordToAdd.key) Then
                 Set existsInDict = discards
             End If
             
@@ -686,7 +694,7 @@ Public Sub addRecords()
                 '@Ignore FunctionReturnValueDiscarded
                 changedAddress = existingRecord.MergeRecord(recordToAdd)
                 
-                If autocorrected.exists(recordToAdd.key) And Not changedAddress Then
+                If autocorrected.Exists(recordToAdd.key) And Not changedAddress Then
                     Set existingRecord = autocorrected.Item(recordToAdd.key)
                     '@Ignore FunctionReturnValueDiscarded
                     existingRecord.MergeRecord recordToAdd
@@ -695,7 +703,7 @@ Public Sub addRecords()
                 Set recordToAdd = existingRecord
                 If changedAddress Then
                     existsInDict.Remove recordToAdd.key
-                    If autocorrected.exists(recordToAdd.key) Then
+                    If autocorrected.Exists(recordToAdd.key) Then
                         autocorrected.Remove recordToAdd.key
                     End If
                 End If
@@ -751,5 +759,4 @@ Public Sub addRecords()
     
     Application.StatusBar = appStatus
 End Sub
-
 
