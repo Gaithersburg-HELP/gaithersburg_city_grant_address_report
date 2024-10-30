@@ -436,9 +436,7 @@ Public Sub ImportRecords()
     
     SheetUtilities.ClearAll
     
-    wbook.Worksheets.[_Default]("Final Report").UsedRange.Copy
-    FinalReportSheet.Range("A1").PasteSpecial xlPasteValues
-    
+    ' Copy all sheets except for Interface and Final Report
     wbook.Worksheets.[_Default]("Addresses").UsedRange.Copy
     AddressesSheet.Range("A1").PasteSpecial xlPasteValues
     
