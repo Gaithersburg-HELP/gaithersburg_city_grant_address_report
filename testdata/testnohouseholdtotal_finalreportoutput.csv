@@ -1,2 +1,3 @@
-Organization_Initial,Street_No,Street_Name,Street_Type,Apt,Apt_No,City,State,Client_Initials,Q1,Q2,Q3,Q4
-GBH,419,Muddy Branch,Rd,,,Gaithersburg,MD,JA,,,x,
+Final report for all services except for Rx Asst,,,,,,,,,,,,,,,
+Organization,Street_No,Street_Name,Street_Type,Apt,Apt_No,City,State,Client_Initials,# of members,# of adults,# of children,Q1,Q2,Q3,Q4
+Gaithersburg HELP,419,Muddy Branch,Rd,,,Gaithersburg,MD,JA,1,1,0,,,x,

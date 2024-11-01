@@ -184,7 +184,7 @@ Public Function getRng(ByVal sheetName As String, ByVal firstCell As String, ByV
 End Function
 
 Public Function getPastedRecordsRng() As Range
-    Set getPastedRecordsRng = getRng("Interface", "A23", "O23")
+    Set getPastedRecordsRng = getRng(InterfaceSheet.Name, "A23", "O23")
 End Function
 
 Public Function getTotalsRng(ByVal totalService As TotalServiceType) As Range
@@ -209,8 +209,12 @@ Public Function getCountyRng() As Range
     Set getCountyRng = InterfaceSheet.Range("B9:CS20")
 End Function
 
-Public Function getFinalReportRng() As Range
-    Set getFinalReportRng = getRng("Final Report", "A2", "P2")
+Public Function getNonRxReportRng() As Range
+    Set getNonRxReportRng = getRng(NonRxReportSheet.Name, "A3", "P3")
+End Function
+
+Public Function getRxReportRng() As Range
+    Set getRxReportRng = getRng(RxReportSheet.Name, "A3", "M3")
 End Function
 
 ' Returns null if all services deleted
@@ -395,10 +399,11 @@ Public Sub ClearAll()
     getNonDeliveryTotalHeaderRng.value = "Non-delivery"
     getDeliveryTotalHeaderRng.value = "Delivery"
     getCountyRng.value = 0
-    getFinalReportRng.Clear
+    getNonRxReportRng.Clear
+    getRxReportRng.Clear
     
     Dim i As Long
-    For i = 3 To ThisWorkbook.Sheets.count
+    For i = 4 To ThisWorkbook.Sheets.count
         ClearSheet ThisWorkbook.Sheets.[_Default](i).Name
     Next
 End Sub
@@ -446,15 +451,17 @@ Public Sub SortSheet(ByVal sheetName As String)
     Dim sortOnValidFirst As Boolean
     
     Select Case sheetName
-    Case "Addresses", "Autocorrected"
-        sortOnValidFirst = True
-    Case "Needs Autocorrect", "Discards"
-        sortOnValidFirst = False
+        Case AddressesSheet.Name, AutocorrectedAddressesSheet.Name
+            sortOnValidFirst = True
+        ' Rubberduck Inspection bug
+        '@Ignore UnreachableCase
+        Case AutocorrectAddressesSheet.Name, DiscardsSheet.Name
+            sortOnValidFirst = False
     End Select
     
-    If sheetName = "Final Report" Then
-        FinalReportSheet.Select
-        getFinalReportRng().Select
+    If sheetName = NonRxReportSheet.Name Or sheetName = RxReportSheet.Name Then
+        ActiveWorkbook.Worksheets.[_Default](sheetName).Activate
+        ActiveSheet.UsedRange.Offset(2, 0).Select
         
         With ActiveSheet.Sort
             .SortFields.Clear
@@ -496,10 +503,10 @@ Public Function cloneDict(ByVal dict As Scripting.Dictionary) As Scripting.Dicti
 End Function
 
 Public Sub SortAll() ' TODO refactor? except for Final Report
-    SortSheet "Addresses"
-    SortSheet "Needs Autocorrect"
-    SortSheet "Discards"
-    SortSheet "Autocorrected"
+    SortSheet AddressesSheet.Name
+    SortSheet AutocorrectAddressesSheet.Name
+    SortSheet DiscardsSheet.Name
+    SortSheet AutocorrectedAddressesSheet.Name
 End Sub
 
 ' Use JsonConverter.ConvertToJson instead of old PrintCollection and PrintJson
@@ -517,3 +524,5 @@ Public Function LWordTrim(ByVal str As String) As String()
         LWordTrim = Split(str & "|", "|")
     End If
 End Function
+
+

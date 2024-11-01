@@ -4,7 +4,9 @@ Option Explicit
 
 Private Sub writeFinalReportRecord(ByVal record As RecordTuple)
     Dim row As Range
-    Set row = SheetUtilities.getBlankRow("Final Report")
+    
+    ' TODO check whether to write to nonrx or rx or both
+    Set row = SheetUtilities.getBlankRow(NonRxReportSheet.Name)
     
     row.Cells.Item(1, 1) = "Gaithersburg HELP"
     row.Cells.Item(1, 2) = record.GburgFormatValidAddress.Item(addressKey.streetNum)
@@ -28,10 +30,11 @@ Private Sub writeFinalReportRecord(ByVal record As RecordTuple)
 End Sub
 
 Public Sub generateFinalReport()
-    SheetUtilities.getFinalReportRng.Clear
+    SheetUtilities.getRxReportRng.Clear
+    SheetUtilities.getNonRxReportRng.Clear
     
     Dim addresses As Scripting.Dictionary
-    Set addresses = Records.loadAddresses("Addresses")
+    Set addresses = Records.loadAddresses(AddressesSheet.Name)
     
     Dim address As Variant
     For Each address In addresses.Keys()
@@ -41,7 +44,8 @@ Public Sub generateFinalReport()
         If record.InCity = ValidInCity And record.visitData.count > 0 Then writeFinalReportRecord record
     Next address
     
-    SheetUtilities.SortSheet "Final Report"
+    SheetUtilities.SortSheet NonRxReportSheet.Name
+    SheetUtilities.SortSheet RxReportSheet.Name
     
     ActiveSheet.Range("A2").Select
 End Sub

@@ -39,7 +39,12 @@ Public Sub MacroExit(ByVal wsheetToReturn As Worksheet)
         wsheet.Unprotect
         wsheet.AutoFilterMode = False
         
-        If i <> 1 Then wsheet.UsedRange.AutoFilter
+        Select Case i
+            Case 2, 3
+                wsheet.UsedRange.Offset(1, 0).AutoFilter
+            Case Is > 2
+                wsheet.UsedRange.AutoFilter
+        End Select
         
         wsheet.Protect AllowFormattingColumns:=True, AllowFormattingRows:=True, AllowSorting:=True, AllowFiltering:=True
     Next
@@ -98,7 +103,7 @@ Public Sub PasteRecords()
     InterfaceSheet.Activate
     Application.ScreenUpdating = False
     
-    getBlankRow("Interface").Cells.Item(1, 1).PasteSpecial Paste:=xlPasteValues
+    getBlankRow(InterfaceSheet.Name).Cells.Item(1, 1).PasteSpecial Paste:=xlPasteValues
     
     InterfaceSheet.Cells.Item(1, 1).Select
     Application.ScreenUpdating = True
@@ -143,7 +148,7 @@ End Sub
 '@EntryPoint
 Public Sub confirmGenerateFinalReport()
     Dim confirmResponse As VbMsgBoxResult
-    confirmResponse = MsgBox("Are you sure you wish to generate the final report?", vbYesNo + vbQuestion, "Confirmation")
+    confirmResponse = MsgBox("Are you sure you wish to generate the final reports?", vbYesNo + vbQuestion, "Confirmation")
     If confirmResponse = vbNo Then
         Exit Sub
     End If
@@ -168,15 +173,16 @@ Public Sub confirmDeleteAllVisitData()
     SheetUtilities.getMostRecentRng.value = vbNullString
     SheetUtilities.ClearGburgTotals
     SheetUtilities.getCountyRng.value = 0
-    SheetUtilities.getFinalReportRng.Clear
-    SheetUtilities.getAddressVisitDataRng("Addresses").Clear
-    SheetUtilities.getRng("Addresses", "A2", "A2").Offset(0, SheetUtilities.firstServiceColumn - 2).value = "{}"
-    SheetUtilities.getAddressVisitDataRng("Needs Autocorrect").Clear
-    SheetUtilities.getRng("Needs Autocorrect", "A2", "A2").Offset(0, SheetUtilities.firstServiceColumn - 2).value = "{}"
-    SheetUtilities.getAddressVisitDataRng("Discards").Clear
-    SheetUtilities.getRng("Discards", "A2", "A2").Offset(0, SheetUtilities.firstServiceColumn - 2).value = "{}"
-    SheetUtilities.getAddressVisitDataRng("Autocorrected").Clear
-    SheetUtilities.getRng("Autocorrected", "A2", "A2").Offset(0, SheetUtilities.firstServiceColumn - 2).value = "{}"
+    SheetUtilities.getNonRxReportRng.Clear
+    SheetUtilities.getRxReportRng.Clear
+    SheetUtilities.getAddressVisitDataRng(AddressesSheet.Name).Clear
+    SheetUtilities.getRng(AddressesSheet.Name, "A2", "A2").Offset(0, SheetUtilities.firstServiceColumn - 2).value = "{}"
+    SheetUtilities.getAddressVisitDataRng(AutocorrectAddressesSheet.Name).Clear
+    SheetUtilities.getRng(AutocorrectAddressesSheet.Name, "A2", "A2").Offset(0, SheetUtilities.firstServiceColumn - 2).value = "{}"
+    SheetUtilities.getAddressVisitDataRng(DiscardsSheet.Name).Clear
+    SheetUtilities.getRng(DiscardsSheet.Name, "A2", "A2").Offset(0, SheetUtilities.firstServiceColumn - 2).value = "{}"
+    SheetUtilities.getAddressVisitDataRng(AutocorrectedAddressesSheet.Name).Clear
+    SheetUtilities.getRng(AutocorrectedAddressesSheet.Name, "A2", "A2").Offset(0, SheetUtilities.firstServiceColumn - 2).value = "{}"
 
     MacroExit ThisWorkbook.ActiveSheet
 End Sub
@@ -196,10 +202,10 @@ End Sub
 '
 '
 '    Dim addressServices() As String
-'    addressServices = SheetUtilities.loadServiceNames("Addresses")
+'    addressServices = SheetUtilities.loadServiceNames(AddressesSheet.Name)
 '
 '    Dim autocorrectedServices() As String
-'    autocorrectedServices = SheetUtilities.loadServiceNames("Autocorrected")
+'    autocorrectedServices = SheetUtilities.loadServiceNames(AutocorrectedAddressesSheet.Name)
 '
 '    Dim addressColsToDelete As Range
 '    Dim autocorrectedColsToDelete As Range
@@ -260,15 +266,15 @@ Public Sub confirmDiscardAll()
     If Not MacroEntry(ThisWorkbook.ActiveSheet) Then Exit Sub
     
     Dim Autocorrect As Scripting.Dictionary
-    Set Autocorrect = Records.loadAddresses("Needs Autocorrect")
+    Set Autocorrect = Records.loadAddresses(AutocorrectAddressesSheet.Name)
     
     Dim key As Variant
     For Each key In Autocorrect.Keys()
-        Records.writeAddress "Discards", Autocorrect.Item(key)
+        Records.writeAddress DiscardsSheet.Name, Autocorrect.Item(key)
     Next key
     
-    SheetUtilities.ClearSheet "Needs Autocorrect"
-    SheetUtilities.SortSheet "Discards"
+    SheetUtilities.ClearSheet AutocorrectAddressesSheet.Name
+    SheetUtilities.SortSheet DiscardsSheet.Name
     
     MacroExit ThisWorkbook.ActiveSheet
 End Sub
@@ -325,7 +331,7 @@ Private Sub moveSelectedRows(ByVal sourceSheet As String, ByVal destSheet As Str
     Dim movedRecord As Variant
     For Each movedRecord In movedRecords
         Dim foundCell As Range
-        Set foundCell = findRow("Autocorrected", movedRecord.key)
+        Set foundCell = findRow(AutocorrectedAddressesSheet.Name, movedRecord.key)
         If Not foundCell Is Nothing Then
             foundCell.EntireRow.Delete
         End If
@@ -336,7 +342,7 @@ End Sub
 Public Sub confirmDiscardSelected()
     If Not MacroEntry(ThisWorkbook.ActiveSheet) Then Exit Sub
     
-    moveSelectedRows "Needs Autocorrect", "Discards", False
+    moveSelectedRows AutocorrectAddressesSheet.Name, DiscardsSheet.Name, False
     
     MacroExit ThisWorkbook.ActiveSheet
 End Sub
@@ -345,7 +351,7 @@ End Sub
 Public Sub confirmRestoreSelectedDiscard()
     If Not MacroEntry(ThisWorkbook.ActiveSheet) Then Exit Sub
     
-    moveSelectedRows "Discards", "Needs Autocorrect", True
+    moveSelectedRows DiscardsSheet.Name, AutocorrectAddressesSheet.Name, True
     
     MacroExit ThisWorkbook.ActiveSheet
 End Sub
@@ -354,8 +360,9 @@ End Sub
 Public Sub confirmMoveAutocorrect()
     If Not MacroEntry(ThisWorkbook.ActiveSheet) Then Exit Sub
     
-    moveSelectedRows "Addresses", "Needs Autocorrect", True
-    SheetUtilities.getFinalReportRng.Clear
+    moveSelectedRows AddressesSheet.Name, AutocorrectAddressesSheet.Name, True
+    SheetUtilities.getRxReportRng.Clear
+    SheetUtilities.getNonRxReportRng.Clear
     Records.computeTotals
     
     MacroExit ThisWorkbook.ActiveSheet
@@ -400,7 +407,7 @@ Public Sub toggleUserVerifiedAutocorrected()
         key = currentRowRng.Cells.Item(1, SheetUtilities.keyColumn)
         
         Dim foundCell As Range
-        Set foundCell = findRow("Addresses", key)
+        Set foundCell = findRow(AddressesSheet.Name, key)
         
         If Not foundCell Is Nothing Then
             AddressesSheet.rows.Item(foundCell.row).Cells.Item(1, 2) = _
@@ -437,16 +444,16 @@ Public Sub ImportRecords()
     SheetUtilities.ClearAll
     
     ' Copy all sheets except for Interface and Final Report
-    wbook.Worksheets.[_Default]("Addresses").UsedRange.Copy
+    wbook.Worksheets.[_Default](AddressesSheet.Name).UsedRange.Copy
     AddressesSheet.Range("A1").PasteSpecial xlPasteValues
     
-    wbook.Worksheets.[_Default]("Needs Autocorrect").UsedRange.Copy
+    wbook.Worksheets.[_Default](AutocorrectAddressesSheet.Name).UsedRange.Copy
     AutocorrectAddressesSheet.Range("A1").PasteSpecial xlPasteValues
     
-    wbook.Worksheets.[_Default]("Discards").UsedRange.Copy
+    wbook.Worksheets.[_Default](DiscardsSheet.Name).UsedRange.Copy
     DiscardsSheet.Range("A1").PasteSpecial xlPasteValues
     
-    wbook.Worksheets.[_Default]("Autocorrected").UsedRange.Copy
+    wbook.Worksheets.[_Default](AutocorrectedAddressesSheet.Name).UsedRange.Copy
     AutocorrectedAddressesSheet.Range("A1").PasteSpecial xlPasteValues
     
     With CreateObject("htmlfile")
@@ -459,7 +466,7 @@ Public Sub ImportRecords()
     Records.computeCountyTotals
     
     InterfaceSheet.Range("A1").value = versionNum
-    getMostRecentRng.value = wbook.Worksheets.[_Default]("Interface").Range(SheetUtilities.mostRecentDateCell).value
+    getMostRecentRng.value = wbook.Worksheets.[_Default](InterfaceSheet.Name).Range(SheetUtilities.mostRecentDateCell).value
     
     wbook.Close
     

@@ -470,16 +470,16 @@ End Sub
 Public Sub computeCountyTotals()
     getCountyRng.value = 0
     
-    loadAddressComputeCountyTotal "Addresses"
-    loadAddressComputeCountyTotal "Needs Autocorrect"
-    loadAddressComputeCountyTotal "Discards"
+    loadAddressComputeCountyTotal AddressesSheet.Name
+    loadAddressComputeCountyTotal AutocorrectAddressesSheet.Name
+    loadAddressComputeCountyTotal DiscardsSheet.Name
 End Sub
 
 Public Sub computeTotals()
     SheetUtilities.ClearGburgTotals
     
     Dim addresses As Scripting.Dictionary
-    Set addresses = Records.loadAddresses("Addresses")
+    Set addresses = Records.loadAddresses(AddressesSheet.Name)
     
     ' First key determines total service type, second key determines total type
     Dim totals As Scripting.Dictionary
@@ -628,10 +628,10 @@ Public Sub writeAddressesComputeTotals(ByVal addresses As Scripting.Dictionary, 
     
     SheetUtilities.ClearAllPreserveDate
     
-    writeAddresses "Addresses", addresses
-    writeAddresses "Needs Autocorrect", needsAutocorrect
-    writeAddresses "Discards", discards
-    writeAddresses "Autocorrected", autocorrected
+    writeAddresses AddressesSheet.Name, addresses
+    writeAddresses AutocorrectAddressesSheet.Name, needsAutocorrect
+    writeAddresses DiscardsSheet.Name, discards
+    writeAddresses AutocorrectedAddressesSheet.Name, autocorrected
     
     SortAll
     
@@ -647,23 +647,23 @@ Public Sub addRecords()
     Application.StatusBar = "Loading addresses"
         
     Dim addresses As Scripting.Dictionary
-    Set addresses = loadAddresses("Addresses")
+    Set addresses = loadAddresses(AddressesSheet.Name)
     
     Dim needsAutocorrect As Scripting.Dictionary
-    Set needsAutocorrect = loadAddresses("Needs Autocorrect")
+    Set needsAutocorrect = loadAddresses(AutocorrectAddressesSheet.Name)
     
     Dim discards As Scripting.Dictionary
-    Set discards = loadAddresses("Discards")
+    Set discards = loadAddresses(DiscardsSheet.Name)
     
     Dim autocorrected As Scripting.Dictionary
-    Set autocorrected = loadAddresses("Autocorrected")
+    Set autocorrected = loadAddresses(AutocorrectedAddressesSheet.Name)
        
     Dim recordsToValidate As Scripting.Dictionary
     Set recordsToValidate = New Scripting.Dictionary
     
     Dim i As Long
     i = getPastedRecordsRng.row
-    Do While i < getBlankRow("Interface").row
+    Do While i < getBlankRow(InterfaceSheet.Name).row
         Dim recordToAdd As RecordTuple
         Set recordToAdd = loadRecordFromRaw(InterfaceSheet.Range("A" & i))
         
@@ -719,7 +719,7 @@ Public Sub addRecords()
             End If
         End If
         
-        Application.StatusBar = "Adding record " & (i - 8) & " of " & (getBlankRow("Interface").row - 8)
+        Application.StatusBar = "Adding record " & (i - 8) & " of " & (getBlankRow(InterfaceSheet.Name).row - 8)
         ' yield execution so Excel remains responsive and user can hit Esc
         DoEvents
         i = i + 1
