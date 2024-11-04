@@ -191,18 +191,18 @@ Public Function getTotalsRng(ByVal totalService As TotalServiceType) As Range
     Select Case totalService '
         Case nonDelivery
             ' Include RxTotal for easy test comparison
-            Set getTotalsRng = InterfaceSheet.Range("I3:L7")
+            Set getTotalsRng = InterfaceSheet.Range("S3:V7")
         Case Delivery
-            Set getTotalsRng = InterfaceSheet.Range("N3:Q6")
+            Set getTotalsRng = InterfaceSheet.Range("X3:AA6")
     End Select
 End Function
 
 Public Function getNonDeliveryTotalHeaderRng() As Range
-    Set getNonDeliveryTotalHeaderRng = InterfaceSheet.Range("I1")
+    Set getNonDeliveryTotalHeaderRng = InterfaceSheet.Range("R1")
 End Function
 
 Public Function getDeliveryTotalHeaderRng() As Range
-    Set getDeliveryTotalHeaderRng = InterfaceSheet.Range("N1")
+    Set getDeliveryTotalHeaderRng = InterfaceSheet.Range("W1")
 End Function
 
 Public Function getCountyRng() As Range

@@ -80,7 +80,7 @@ Public Sub TestAllAddresses()
     
     addRecords
     
-    Assert.isTrue SheetUtilities.getNonDeliveryTotalHeaderRng().value = "18,7,9,Food,Rx Asst", "Incorrect non delivery total header name"
+    Assert.isTrue SheetUtilities.getNonDeliveryTotalHeaderRng().value = "Non-Delivery: 18,7,9,Food,Rx Asst", "Incorrect non delivery total header name"
     
     CompareSheetCSV Assert, AddressesSheet.Name, ThisWorkbook.path & "\testdata\test1addresses_addressesoutput.csv"
     CompareSheetCSV Assert, InterfaceSheet.Name, ThisWorkbook.path & "\testdata\test1addresses_nondeliverytotalsoutput.csv", getTotalsRng(nonDelivery)
@@ -265,7 +265,7 @@ Public Sub TestDelivery()
     InterfaceButtons.confirmAttemptValidation
     InterfaceButtons.confirmGenerateFinalReport
     
-    Assert.isTrue SheetUtilities.getDeliveryTotalHeaderRng.value = "Delivery,Food-Delivery", "Delivery service header doesn't match"
+    Assert.isTrue SheetUtilities.getDeliveryTotalHeaderRng.value = "Delivery: Delivery,Food-Delivery", "Delivery service header doesn't match"
     
     CompareSheetCSV Assert, InterfaceSheet.Name, ThisWorkbook.path & "\testdata\testdeliveryaddresses_nondeliverytotalsoutput.csv", getTotalsRng(nonDelivery)
     CompareSheetCSV Assert, InterfaceSheet.Name, ThisWorkbook.path & "\testdata\testdeliveryaddresses_deliverytotalsoutput.csv", getTotalsRng(Delivery)

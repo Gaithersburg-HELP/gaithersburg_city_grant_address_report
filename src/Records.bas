@@ -594,12 +594,12 @@ Public Sub computeTotals()
     ' Necessary to avoid VBA compile error
     Dim clonedKeys() As Variant
     clonedKeys = uniqueNonDeliveryServices.Keys
-    nonDeliveryTotalHeader.value = Join(SheetUtilities.sortArr(clonedKeys), ",")
+    nonDeliveryTotalHeader.value = "Non-Delivery: " & Join(SheetUtilities.sortArr(clonedKeys), ",")
     
     Dim deliveryTotalHeader As Range
     Set deliveryTotalHeader = SheetUtilities.getDeliveryTotalHeaderRng()
     clonedKeys = uniqueDeliveryServices.Keys
-    deliveryTotalHeader.value = Join(SheetUtilities.sortArr(clonedKeys), ",")
+    deliveryTotalHeader.value = "Delivery: " & Join(SheetUtilities.sortArr(clonedKeys), ",")
     
     
     For totalServicename = [_TotalServiceTypeFirst] To [_TotalServiceTypeLast]
