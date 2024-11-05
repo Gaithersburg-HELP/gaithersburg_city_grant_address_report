@@ -475,8 +475,8 @@ Public Sub computeCountyTotals()
     loadAddressComputeCountyTotal DiscardsSheet.Name
 End Sub
 
-Public Sub computeTotals()
-    SheetUtilities.ClearGburgTotals
+Public Sub computeInterfaceTotals()
+    SheetUtilities.ClearInterfaceTotals
     
     Dim addresses As Scripting.Dictionary
     Set addresses = Records.loadAddresses(AddressesSheet.Name)
@@ -604,7 +604,7 @@ Public Sub computeTotals()
     
     For totalServicename = [_TotalServiceTypeFirst] To [_TotalServiceTypeLast]
         Dim totalsRng As Range
-        Set totalsRng = SheetUtilities.getTotalsRng(totalServicename)
+        Set totalsRng = SheetUtilities.getInterfaceTotalsRng(totalServicename)
         Dim i As Long
         For i = 1 To 4
             totalsRng.Cells.Item(1, i) = totals.Item(totalServicename).Item(uniqueGuestID)(i)
@@ -621,7 +621,7 @@ Public Sub computeTotals()
     Application.StatusBar = appStatus
 End Sub
 
-Public Sub writeAddressesComputeTotals(ByVal addresses As Scripting.Dictionary, _
+Public Sub writeAddressesComputeInterfaceTotals(ByVal addresses As Scripting.Dictionary, _
                                        ByVal needsAutocorrect As Scripting.Dictionary, _
                                        ByVal discards As Scripting.Dictionary, _
                                        ByVal autocorrected As Scripting.Dictionary)
@@ -635,7 +635,7 @@ Public Sub writeAddressesComputeTotals(ByVal addresses As Scripting.Dictionary, 
     
     SortAll
     
-    computeTotals
+    computeInterfaceTotals
 End Sub
 
 Public Sub addRecords()
@@ -662,7 +662,7 @@ Public Sub addRecords()
     Set recordsToValidate = New Scripting.Dictionary
     
     Dim i As Long
-    i = getPastedRecordsRng.row
+    i = getPastedInterfaceRecordsRng.row
     Do While i < getBlankRow(InterfaceSheet.Name).row
         Dim recordToAdd As RecordTuple
         Set recordToAdd = loadRecordFromRaw(InterfaceSheet.Range("A" & i))
@@ -754,7 +754,7 @@ Public Sub addRecords()
 
     Application.StatusBar = "Writing addresses and computing totals"
     
-    writeAddressesComputeTotals addresses, needsAutocorrect, discards, autocorrected
+    writeAddressesComputeInterfaceTotals addresses, needsAutocorrect, discards, autocorrected
     computeCountyTotals
     
     Application.StatusBar = appStatus

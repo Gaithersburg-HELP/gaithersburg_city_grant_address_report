@@ -171,7 +171,7 @@ Public Sub confirmDeleteAllVisitData()
     If Not MacroEntry(ThisWorkbook.ActiveSheet) Then Exit Sub
     
     SheetUtilities.getMostRecentRng.value = vbNullString
-    SheetUtilities.ClearGburgTotals
+    SheetUtilities.ClearInterfaceTotals
     SheetUtilities.getCountyRng.value = 0
     SheetUtilities.getNonRxReportRng.Clear
     SheetUtilities.getRxReportRng.Clear
@@ -249,7 +249,7 @@ End Sub
 '    End If
 '
 '    SheetUtilities.getFinalReportRng.Clear
-'    Records.computeTotals
+'    Records.computeInterfaceTotals
 '    Records.computeCountyTotals
 '
 '    MacroExit ThisWorkbook.ActiveSheet
@@ -363,7 +363,7 @@ Public Sub confirmMoveAutocorrect()
     moveSelectedRows AddressesSheet.Name, AutocorrectAddressesSheet.Name, True
     SheetUtilities.getRxReportRng.Clear
     SheetUtilities.getNonRxReportRng.Clear
-    Records.computeTotals
+    Records.computeInterfaceTotals
     
     MacroExit ThisWorkbook.ActiveSheet
 End Sub
@@ -462,7 +462,7 @@ Public Sub ImportRecords()
         End With
     End With
     
-    Records.computeTotals
+    Records.computeInterfaceTotals
     Records.computeCountyTotals
     
     InterfaceSheet.Range("A1").value = versionNum

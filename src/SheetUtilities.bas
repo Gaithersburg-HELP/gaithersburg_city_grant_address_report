@@ -183,17 +183,17 @@ Public Function getRng(ByVal sheetName As String, ByVal firstCell As String, ByV
     Set getRng = sheet.Range(sheet.Range(firstCell), sheet.Cells.Item(lastRow, lastColNum))
 End Function
 
-Public Function getPastedRecordsRng() As Range
-    Set getPastedRecordsRng = getRng(InterfaceSheet.Name, "A23", "O23")
+Public Function getPastedInterfaceRecordsRng() As Range
+    Set getPastedInterfaceRecordsRng = getRng(InterfaceSheet.Name, "A23", "O23")
 End Function
 
-Public Function getTotalsRng(ByVal totalService As TotalServiceType) As Range
+Public Function getInterfaceTotalsRng(ByVal totalService As TotalServiceType) As Range
     Select Case totalService '
         Case nonDelivery
             ' Include RxTotal for easy test comparison
-            Set getTotalsRng = InterfaceSheet.Range("S3:V7")
+            Set getInterfaceTotalsRng = InterfaceSheet.Range("S3:V7")
         Case Delivery
-            Set getTotalsRng = InterfaceSheet.Range("X3:AA6")
+            Set getInterfaceTotalsRng = InterfaceSheet.Range("X3:AA6")
     End Select
 End Function
 
@@ -215,6 +215,10 @@ End Function
 
 Public Function getRxReportRng() As Range
     Set getRxReportRng = getRng(RxReportSheet.Name, "A3", "M3")
+End Function
+
+Public Function getPastedRxRecordsRng() As Range
+    Set getPastedRxRecordsRng = getRng(RxSheet.Name, "A11", "U11")
 End Function
 
 ' Returns null if all services deleted
@@ -379,10 +383,10 @@ Public Sub ClearSheet(ByVal sheetName As String)
     If Not (serviceRng Is Nothing) Then serviceRng.Clear
 End Sub
 
-Public Sub ClearGburgTotals()
+Public Sub ClearInterfaceTotals()
     Dim totalService As TotalServiceType
     For totalService = [_TotalServiceTypeFirst] To [_TotalServiceTypeLast]
-        getTotalsRng(totalService).value = 0
+        getInterfaceTotalsRng(totalService).value = 0
     Next totalService
 End Sub
 
@@ -392,10 +396,10 @@ Public Sub ClearAll()
     Application.StatusBar = False
     
     getMostRecentRng.value = vbNullString
-    getPastedRecordsRng.Clear
+    getPastedInterfaceRecordsRng.Clear
     InterfaceSheet.columns.Item("A").NumberFormat = "mm/dd/yyyy"
     
-    ClearGburgTotals
+    ClearInterfaceTotals
     getNonDeliveryTotalHeaderRng.value = "Non-delivery"
     getDeliveryTotalHeaderRng.value = "Delivery"
     getCountyRng.value = 0
