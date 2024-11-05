@@ -39,10 +39,10 @@ Public Sub MacroExit(ByVal wsheetToReturn As Worksheet)
         wsheet.Unprotect
         wsheet.AutoFilterMode = False
         
-        Select Case i
-            Case 2, 3
+        Select Case wsheet.Name
+            Case NonRxReportSheet.Name, RxReportSheet.Name
                 wsheet.UsedRange.Offset(1, 0).AutoFilter
-            Case Is > 2
+            Case AddressesSheet.Name, AutocorrectAddressesSheet.Name, AutocorrectedAddressesSheet.Name, DiscardsSheet.Name
                 wsheet.UsedRange.AutoFilter
         End Select
         

@@ -399,13 +399,14 @@ Public Sub ClearAll()
     getNonDeliveryTotalHeaderRng.value = "Non-delivery"
     getDeliveryTotalHeaderRng.value = "Delivery"
     getCountyRng.value = 0
+    
     getNonRxReportRng.Clear
     getRxReportRng.Clear
     
-    Dim i As Long
-    For i = 4 To ThisWorkbook.Sheets.count
-        ClearSheet ThisWorkbook.Sheets.[_Default](i).Name
-    Next
+    ClearSheet AutocorrectAddressesSheet.Name
+    ClearSheet AddressesSheet.Name
+    ClearSheet DiscardsSheet.Name
+    ClearSheet AutocorrectedAddressesSheet.Name
 End Sub
 
 Public Sub ClearAllPreserveDate()
