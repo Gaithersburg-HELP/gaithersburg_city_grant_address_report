@@ -146,16 +146,16 @@ Public Sub confirmAttemptValidation()
 End Sub
 
 '@EntryPoint
-Public Sub confirmGenerateFinalReport()
+Public Sub confirmGenerateNonRxReport()
     Dim confirmResponse As VbMsgBoxResult
-    confirmResponse = MsgBox("Are you sure you wish to generate the final reports?", vbYesNo + vbQuestion, "Confirmation")
+    confirmResponse = MsgBox("Are you sure you wish to generate the Non-Rx report?", vbYesNo + vbQuestion, "Confirmation")
     If confirmResponse = vbNo Then
         Exit Sub
     End If
     
     If Not MacroEntry(ThisWorkbook.ActiveSheet) Then Exit Sub
     
-    GenerateReport.generateFinalReport
+    GenerateReport.generateNonRxReport
     
     MacroExit ThisWorkbook.ActiveSheet
 End Sub

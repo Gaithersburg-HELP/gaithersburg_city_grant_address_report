@@ -186,7 +186,7 @@ Public Sub TestAllAddresses()
 
     InterfaceButtons.confirmAttemptValidation
     
-    InterfaceButtons.confirmGenerateFinalReport
+    InterfaceButtons.confirmGenerateNonRxReport
 
     CompareSheetCSV Assert, AddressesSheet.Name, ThisWorkbook.path & "\testdata\test6validateduseredits_addressesoutput.csv"
     CompareSheetCSV Assert, InterfaceSheet.Name, ThisWorkbook.path & "\testdata\test6validateduseredits_nondeliverytotalsoutput.csv", getTotalsRng(nonDelivery)
@@ -235,7 +235,7 @@ Public Sub TestAllAddresses()
 
     InterfaceButtons.confirmAddRecords
     InterfaceButtons.confirmAttemptValidation
-    InterfaceButtons.confirmGenerateFinalReport
+    InterfaceButtons.confirmGenerateNonRxReport
 
     CompareSheetCSV Assert, AddressesSheet.Name, ThisWorkbook.path & "\testdata\test8noservices_addressesoutput.csv"
     CompareSheetCSV Assert, InterfaceSheet.Name, ThisWorkbook.path & "\testdata\test8noservices_nondeliverytotalsoutput.csv", getTotalsRng(nonDelivery)
@@ -263,7 +263,7 @@ Public Sub TestDelivery()
     Fakes.MsgBox.Returns vbYes
     InterfaceButtons.confirmAddRecords
     InterfaceButtons.confirmAttemptValidation
-    InterfaceButtons.confirmGenerateFinalReport
+    InterfaceButtons.confirmGenerateNonRxReport
     
     Assert.isTrue SheetUtilities.getDeliveryTotalHeaderRng.value = "Delivery: Delivery,Food-Delivery", "Delivery service header doesn't match"
     
@@ -291,7 +291,7 @@ Public Sub TestNoHouseholdTotal()
     Fakes.MsgBox.Returns vbYes
     InterfaceButtons.confirmAddRecords
     InterfaceButtons.confirmAttemptValidation
-    InterfaceButtons.confirmGenerateFinalReport
+    InterfaceButtons.confirmGenerateNonRxReport
     
     CompareSheetCSV Assert, AddressesSheet.Name, ThisWorkbook.path & "\testdata\testnohouseholdtotal_addressesoutput.csv"
     CompareSheetCSV Assert, InterfaceSheet.Name, ThisWorkbook.path & "\testdata\testnohouseholdtotal_nondeliverytotalsoutput.csv", getTotalsRng(nonDelivery)

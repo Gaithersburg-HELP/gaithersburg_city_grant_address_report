@@ -2,10 +2,9 @@ Attribute VB_Name = "GenerateReport"
 '@Folder("City_Grant_Address_Report.src")
 Option Explicit
 
-Private Sub writeFinalReportRecord(ByVal record As RecordTuple)
+Private Sub writeNonRxReportRecord(ByVal record As RecordTuple)
     Dim row As Range
     
-    ' TODO check whether to write to nonrx or rx or both
     Set row = SheetUtilities.getBlankRow(NonRxReportSheet.Name)
     
     row.Cells.Item(1, 1) = "Gaithersburg HELP"
@@ -29,8 +28,7 @@ Private Sub writeFinalReportRecord(ByVal record As RecordTuple)
     If quarters(4) Then row.Cells.Item(1, 16) = "x"
 End Sub
 
-Public Sub generateFinalReport()
-    SheetUtilities.getRxReportRng.Clear
+Public Sub generateNonRxReport()
     SheetUtilities.getNonRxReportRng.Clear
     
     Dim addresses As Scripting.Dictionary
@@ -41,11 +39,10 @@ Public Sub generateFinalReport()
         Dim record As RecordTuple
         Set record = addresses.Item(address)
         
-        If record.InCity = ValidInCity And record.visitData.count > 0 Then writeFinalReportRecord record
+        If record.InCity = ValidInCity And record.visitData.count > 0 Then writeNonRxReportRecord record
     Next address
     
     SheetUtilities.SortSheet NonRxReportSheet.Name
-    SheetUtilities.SortSheet RxReportSheet.Name
     
     ActiveSheet.Range("A2").Select
 End Sub
