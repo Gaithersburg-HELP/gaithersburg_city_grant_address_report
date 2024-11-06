@@ -210,11 +210,11 @@ Public Function getCountyRng() As Range
 End Function
 
 Public Function getRxMostRecentDateRng() As Range
-    Set getRxMostRecentDateRng = RxSheet.Range("I5")
+    Set getRxMostRecentDateRng = RxSheet.Range("I7")
 End Function
 
 Public Function getRxDiscardedIDsRng() As Range
-    Set getRxDiscardedIDsRng = RxSheet.Range("I6")
+    Set getRxDiscardedIDsRng = RxSheet.Range("I8")
 End Function
 
 Public Function getNonRxReportRng() As Range
