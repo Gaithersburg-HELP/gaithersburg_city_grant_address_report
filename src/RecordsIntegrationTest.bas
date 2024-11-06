@@ -48,6 +48,13 @@ Private Sub TestCleanup()
     MacroExit InterfaceSheet
 End Sub
 
+
+Private Sub ClearClipboard()
+    Dim oData As New DataObject
+    oData.SetText text:=Empty
+    oData.PutInClipboard
+End Sub
+
 Private Sub PasteInterfaceTestRecords(ByRef addressArr() As String)
     InterfaceSheet.Select
     getPastedInterfaceRecordsRng.Cells.Item(1, 1).Select
@@ -65,6 +72,22 @@ Private Sub PasteInterfaceTestRecords(ByRef addressArr() As String)
             ActiveSheet.Cells(ActiveCell.row + 1, 1).Select
         End If
     Next i
+End Sub
+
+Private Sub PasteRxTestRecords(ByVal csvPath As String)
+    Dim bookToCopy As Workbook
+    Set bookToCopy = Workbooks.Open(ThisWorkbook.path & csvPath)
+    Dim rngToCopy As Range
+    Set rngToCopy = bookToCopy.Sheets(1).UsedRange.Offset(1, 0)
+    Set rngToCopy = rngToCopy.Resize(rngToCopy.rows.count - 1, rngToCopy.Columns.count)
+    rngToCopy.Copy
+    
+    ThisWorkbook.Activate
+    InterfaceButtons.PasteRxRecords
+    
+    ClearClipboard
+    
+    bookToCopy.Close
 End Sub
 
 '@TestMethod

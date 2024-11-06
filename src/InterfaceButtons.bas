@@ -65,9 +65,9 @@ Private Function getUniqueSelection(ByVal returnRows As Boolean, ByVal min As Lo
     Dim selections As Range
     ' xlCellTypeVisible in case a filter is applied
     If returnRows Then
-        Set selections = selection.SpecialCells(xlCellTypeVisible).rows
+        Set selections = Selection.SpecialCells(xlCellTypeVisible).rows
     Else
-        Set selections = selection.SpecialCells(xlCellTypeVisible).Columns
+        Set selections = Selection.SpecialCells(xlCellTypeVisible).Columns
     End If
     
     Dim value As Variant
@@ -96,19 +96,30 @@ Private Function getUniqueSelection(ByVal returnRows As Boolean, ByVal min As Lo
     Set getUniqueSelection = uniques
 End Function
 
-'@EntryPoint
-Public Sub PasteRecords()
+Private Sub PasteRecords(sheet As Worksheet)
     ' NOTE not using MacroEntry here, it disables PasteSpecial for some reason
+    ' Using Allow Edit Ranges
     
-    InterfaceSheet.Activate
+    sheet.Activate
     Application.ScreenUpdating = False
     
-    getBlankRow(InterfaceSheet.Name).Cells.Item(1, 1).PasteSpecial Paste:=xlPasteValues
+    getBlankRow(sheet.Name).Cells.Item(1, 1).PasteSpecial Paste:=xlPasteValues
     
-    InterfaceSheet.Cells.Item(1, 1).Select
+    sheet.Cells.Item(1, 1).Select
     Application.ScreenUpdating = True
     
-    MacroExit InterfaceSheet
+    MacroExit sheet
+End Sub
+
+
+'@EntryPoint
+Public Sub PasteInterfaceRecords()
+    PasteRecords InterfaceSheet
+End Sub
+
+'@EntryPoint
+Public Sub PasteRxRecords()
+    PasteRecords RxSheet
 End Sub
 
 '@EntryPoint
@@ -156,6 +167,23 @@ Public Sub confirmGenerateNonRxReport()
     If Not MacroEntry(ThisWorkbook.ActiveSheet) Then Exit Sub
     
     GenerateReport.generateNonRxReport
+    
+    MacroExit ThisWorkbook.ActiveSheet
+End Sub
+
+'@EntryPoint
+Public Sub confirmDeleteRxRecords()
+    Dim confirmResponse As VbMsgBoxResult
+    confirmResponse = MsgBox("Are you sure you wish to delete all rx records?", vbYesNo + vbQuestion, "Confirmation")
+    If confirmResponse = vbNo Then
+        Exit Sub
+    End If
+    
+    If Not MacroEntry(ThisWorkbook.ActiveSheet) Then Exit Sub
+    
+    SheetUtilities.getPastedRxRecordsRng.Clear
+    SheetUtilities.getRxTotalsRng = 0
+    SheetUtilities.getRxMostRecentDateRng.Clear
     
     MacroExit ThisWorkbook.ActiveSheet
 End Sub
@@ -482,7 +510,7 @@ End Sub
 '@EntryPoint
 Public Sub CopyAndOpenCountyTotalsSite()
     Dim values As Range
-    Set values = ActiveSheet.rows(selection.row)
+    Set values = ActiveSheet.rows(Selection.row)
     
     Dim code As Variant
     code = vbNullString

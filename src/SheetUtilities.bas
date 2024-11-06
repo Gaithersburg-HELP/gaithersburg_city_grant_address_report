@@ -484,12 +484,12 @@ Public Sub SortSheet(ByVal sheetName As String)
         
         With ActiveSheet.Sort
             .SortFields.Clear
-            .SortFields.Add key:=selection.Columns(3), Order:=xlAscending
-            .SortFields.Add key:=selection.Columns(2), Order:=xlAscending
-            .SortFields.Add key:=selection.Columns(4), Order:=xlAscending
-            .SortFields.Add key:=selection.Columns(6), Order:=xlAscending
+            .SortFields.Add key:=Selection.Columns(3), Order:=xlAscending
+            .SortFields.Add key:=Selection.Columns(2), Order:=xlAscending
+            .SortFields.Add key:=Selection.Columns(4), Order:=xlAscending
+            .SortFields.Add key:=Selection.Columns(6), Order:=xlAscending
             .Header = xlNo
-            .SetRange selection
+            .SetRange Selection
             .Apply
         End With
     Else
