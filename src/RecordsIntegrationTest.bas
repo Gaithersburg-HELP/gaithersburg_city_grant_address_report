@@ -80,7 +80,7 @@ Public Sub TestAllAddresses()
     
     addRecords
     
-    Assert.isTrue SheetUtilities.getNonDeliveryTotalHeaderRng().value = "Non-Delivery: 18,7,9,Food,Rx Asst", "Incorrect non delivery total header name"
+    Assert.isTrue SheetUtilities.getNonDeliveryTotalHeaderRng().value = "Non-Delivery: 18,7,9,Food", "Incorrect non delivery total header name"
     
     CompareSheetCSV Assert, AddressesSheet.Name, ThisWorkbook.path & "\testdata\test1addresses_addressesoutput.csv"
     CompareSheetCSV Assert, InterfaceSheet.Name, ThisWorkbook.path & "\testdata\test1addresses_nondeliverytotalsoutput.csv", getInterfaceTotalsRng(nonDelivery)

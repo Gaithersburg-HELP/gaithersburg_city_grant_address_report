@@ -527,7 +527,7 @@ Public Sub computeInterfaceTotals()
                 qNum = getQuarterNum(quarter)
                 Dim visit As Variant
                 For Each visit In record.rxTotal.Item(quarter).Keys
-                    ' Include Rx in non delivery even though technically this is for all services delivery and non delivery
+                    ' Display Rx expenses for all delivery and non-delivery under non-delivery
                     totals.Item(nonDelivery).Item(rx)(qNum) = totals.Item(nonDelivery).Item(rx)(qNum) + _
                                                               record.rxTotal.Item(quarter).Item(visit)
                 Next visit
@@ -544,6 +544,8 @@ Public Sub computeInterfaceTotals()
                 If InStr(1, service, "delivery", vbTextCompare) > 0 Then
                     serviceType = Delivery
                     uniqueDeliveryServices.Item(service) = 1
+                ElseIf InStr(1, service, "Rx Asst", vbTextCompare) > 0 Then
+                    GoTo NextIteration
                 Else
                     serviceType = nonDelivery
                     uniqueNonDeliveryServices.Item(service) = 1
@@ -582,6 +584,7 @@ Public Sub computeInterfaceTotals()
                     totals.Item(serviceType).Item(nonUniqueHousehold)(qNum) = totals.Item(serviceType).Item(nonUniqueHousehold)(qNum) + _
                                                                               count * record.householdTotal
                 Next quarter
+NextIteration:
             Next service
         End If
 
