@@ -114,11 +114,13 @@ End Sub
 
 '@EntryPoint
 Public Sub PasteInterfaceRecords()
+    InterfaceSheet.Activate
     PasteRecords InterfaceSheet
 End Sub
 
 '@EntryPoint
 Public Sub PasteRxRecords()
+    RxSheet.Activate
     PasteRecords RxSheet
 End Sub
 
@@ -184,6 +186,8 @@ Public Sub confirmDeleteRxRecords()
     SheetUtilities.getPastedRxRecordsRng.Clear
     SheetUtilities.getRxTotalsRng = 0
     SheetUtilities.getRxMostRecentDateRng.Clear
+    
+    RxSheet.Columns.Item("A").NumberFormat = "mm/dd/yyyy"
     
     MacroExit ThisWorkbook.ActiveSheet
 End Sub

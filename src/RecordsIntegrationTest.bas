@@ -55,52 +55,38 @@ Private Sub ClearClipboard()
     oData.PutInClipboard
 End Sub
 
-Private Sub PasteInterfaceTestRecords(ByRef addressArr() As String)
-    InterfaceSheet.Select
-    getPastedInterfaceRecordsRng.Cells.Item(1, 1).Select
-    
-    Dim i As Long
-    Dim fileArrLine() As String
-    For i = 1 To UBound(addressArr, 1)
-        If addressArr(i) <> vbNullString Then
-            fileArrLine = Split(addressArr(i), ",")
-            Dim j As Long
-            For j = 0 To 14 ' Not UBound because of test notes
-                ActiveCell.value = fileArrLine(j)
-                ActiveCell.Offset(0, 1).Select
-            Next j
-            ActiveSheet.Cells(ActiveCell.row + 1, 1).Select
-        End If
-    Next i
-End Sub
-
-Private Sub PasteRxTestRecords(ByVal csvPath As String)
+Private Sub PasteTestRecords(ByVal csvPath As String, ByVal pasteFn As String)
     Dim bookToCopy As Workbook
-    Set bookToCopy = Workbooks.Open(ThisWorkbook.path & csvPath)
+    Set bookToCopy = Workbooks.Open(csvPath)
     Dim rngToCopy As Range
     Set rngToCopy = bookToCopy.Sheets(1).UsedRange.Offset(1, 0)
     Set rngToCopy = rngToCopy.Resize(rngToCopy.rows.count - 1, rngToCopy.Columns.count)
     rngToCopy.Copy
     
     ThisWorkbook.Activate
-    InterfaceButtons.PasteRxRecords
+    Application.Run (pasteFn)
     
     ClearClipboard
     
     bookToCopy.Close
 End Sub
 
+Private Sub PasteInterfaceTestRecords(ByVal csvPath As String)
+    PasteTestRecords csvPath, "InterfaceButtons.PasteInterfaceRecords"
+End Sub
+
+Public Sub PasteRxTestRecords(ByVal csvPath As String)
+    PasteTestRecords csvPath, "InterfaceButtons.PasteRxRecords"
+End Sub
+
 '@TestMethod
 Public Sub TestAllAddresses()
     On Error GoTo TestFail
-    
-    Dim testAddressesArr() As String
-    testAddressesArr = getCSV(ThisWorkbook.path & "\testdata\test1addresses.csv")
-    
+       
+    MacroEntry InterfaceSheet
+    PasteInterfaceTestRecords ThisWorkbook.path & "\testdata\test1addresses.csv"
     
     MacroEntry InterfaceSheet
-    PasteInterfaceTestRecords testAddressesArr
-    
     addRecords
     
     Assert.isTrue SheetUtilities.getNonDeliveryTotalHeaderRng().value = "Non-Delivery: 18,7,9,Food", "Incorrect non delivery total header name"
@@ -112,11 +98,9 @@ Public Sub TestAllAddresses()
     CompareSheetCSV Assert, DiscardsSheet.Name, ThisWorkbook.path & "\testdata\test1addresses_discardsoutput.csv"
     CompareSheetCSV Assert, AutocorrectedAddressesSheet.Name, ThisWorkbook.path & "\testdata\test1addresses_autocorrectedoutput.csv"
     
-    Dim testExtraAddressesArr() As String
-    testExtraAddressesArr = getCSV(ThisWorkbook.path & "\testdata\test2extraaddresses.csv")
+    PasteInterfaceTestRecords ThisWorkbook.path & "\testdata\test2extraaddresses.csv"
 
-    PasteInterfaceTestRecords testExtraAddressesArr
-
+    MacroEntry InterfaceSheet
     addRecords
 
     CompareSheetCSV Assert, AddressesSheet.Name, ThisWorkbook.path & "\testdata\test2extraaddresses_addressesoutput.csv"
@@ -125,11 +109,9 @@ Public Sub TestAllAddresses()
     CompareSheetCSV Assert, DiscardsSheet.Name, ThisWorkbook.path & "\testdata\test2extraaddresses_discardsoutput.csv"
     CompareSheetCSV Assert, AutocorrectedAddressesSheet.Name, ThisWorkbook.path & "\testdata\test2extraaddresses_autocorrectedoutput.csv"
 
-    Dim testAutocorrectAddressesArr() As String
-    testAutocorrectAddressesArr = getCSV(ThisWorkbook.path & "\testdata\test3autocorrectaddresses.csv")
+    PasteInterfaceTestRecords ThisWorkbook.path & "\testdata\test3autocorrectaddresses.csv"
 
-    PasteInterfaceTestRecords testAutocorrectAddressesArr
-
+    MacroEntry InterfaceSheet
     addRecords
 
     attemptValidation
@@ -142,11 +124,9 @@ Public Sub TestAllAddresses()
 
     Assert.isTrue Autocorrect.getRemainingRequests = 7980
 
+    PasteInterfaceTestRecords ThisWorkbook.path & "\testdata\test4mergeaddresses.csv"
 
-    Dim testMergeAutocorrectedAddressesArr() As String
-    testMergeAutocorrectedAddressesArr = getCSV(ThisWorkbook.path & "\testdata\test4mergeaddresses.csv")
-    PasteInterfaceTestRecords testMergeAutocorrectedAddressesArr
-
+    MacroEntry InterfaceSheet
     addRecords
 
     CompareSheetCSV Assert, AddressesSheet.Name, ThisWorkbook.path & "\testdata\test4mergeaddresses_addressesoutput.csv"
@@ -252,7 +232,7 @@ Public Sub TestAllAddresses()
 
     MacroEntry InterfaceSheet
     InterfaceSheet.Select
-    PasteInterfaceTestRecords testMergeAutocorrectedAddressesArr
+    PasteInterfaceTestRecords ThisWorkbook.path & "\testdata\test4mergeaddresses.csv"
     MacroExit InterfaceSheet
 
 
@@ -276,11 +256,8 @@ End Sub
 Public Sub TestDelivery()
     On Error GoTo TestFail
     
-    Dim testDeliveryArr() As String
-    testDeliveryArr = getCSV(ThisWorkbook.path & "\testdata\testdeliveryaddresses.csv")
-    
     MacroEntry InterfaceSheet
-    PasteInterfaceTestRecords testDeliveryArr
+    PasteInterfaceTestRecords ThisWorkbook.path & "\testdata\testdeliveryaddresses.csv"
     MacroExit InterfaceSheet
     
     Fakes.MsgBox.Returns vbYes
@@ -304,11 +281,8 @@ End Sub
 Public Sub TestNoHouseholdTotal()
     On Error GoTo TestFail
     
-    Dim testNoHouseholdTotalArr() As String
-    testNoHouseholdTotalArr = getCSV(ThisWorkbook.path & "\testdata\testnohouseholdtotal.csv")
-    
     MacroEntry InterfaceSheet
-    PasteInterfaceTestRecords testNoHouseholdTotalArr
+    PasteInterfaceTestRecords ThisWorkbook.path & "\testdata\testnohouseholdtotal.csv"
     MacroExit InterfaceSheet
     
     Fakes.MsgBox.Returns vbYes
@@ -331,13 +305,10 @@ End Sub
 Public Sub TestToggleUserVerifiedAutocorrect()
     On Error GoTo TestFail
     
-    Dim testAddressesArr() As String
-    testAddressesArr = getCSV(ThisWorkbook.path & "\testdata\testtoggleuserverified.csv")
-    
+    MacroEntry InterfaceSheet
+    PasteInterfaceTestRecords ThisWorkbook.path & "\testdata\testtoggleuserverified.csv"
     
     MacroEntry InterfaceSheet
-    PasteInterfaceTestRecords testAddressesArr
-    
     addRecords
     attemptValidation
     
@@ -365,12 +336,8 @@ End Sub
 Public Sub TestUserMove()
     On Error GoTo TestFail
     
-    Dim testAddressesArr() As String
-    testAddressesArr = getCSV(ThisWorkbook.path & "\testdata\testusermove.csv")
-    
-    
     MacroEntry InterfaceSheet
-    PasteInterfaceTestRecords testAddressesArr
+    PasteInterfaceTestRecords ThisWorkbook.path & "\testdata\testusermove.csv"
     MacroExit InterfaceSheet
     
     
@@ -402,14 +369,11 @@ End Sub
 '@TestMethod
 Public Sub TestCountyTotals()
     On Error GoTo TestFail
-    
-    Dim testAddressesArr() As String
-    testAddressesArr = getCSV(ThisWorkbook.path & "\testdata\testcounty.csv")
-
 
     MacroEntry InterfaceSheet
-    PasteInterfaceTestRecords testAddressesArr
+    PasteInterfaceTestRecords ThisWorkbook.path & "\testdata\testcounty.csv"
 
+    MacroEntry InterfaceSheet
     addRecords
     
     CompareSheetCSV Assert, InterfaceSheet.Name, ThisWorkbook.path & "\testdata\testcounty_1added_nondeliverytotalsoutput.csv", getCountyRng
@@ -429,15 +393,12 @@ End Sub
 '@TestMethod
 Public Sub TestHandcorrected()
     On Error GoTo TestFail
-    
-    Dim testAddressesArr() As String
-'    testAddressesArr = getCSV(ThisWorkbook.path & "\testdata\testhandcorrected.csv")
-    testAddressesArr = getCSV(ThisWorkbook.path & "\testdata\testdifficultaddresses.csv")
-    
+
+    MacroEntry InterfaceSheet
+    ' ThisWorkbook.path & "\testdata\testhandcorrected.csv"
+    PasteInterfaceTestRecords ThisWorkbook.path & "\testdata\testdifficultaddresses.csv"
     
     MacroEntry InterfaceSheet
-    PasteInterfaceTestRecords testAddressesArr
-    
     addRecords
     attemptValidation
     MacroExit InterfaceSheet
@@ -462,21 +423,18 @@ End Sub
 Public Sub TestOverwrite()
 On Error GoTo TestFail
     
-    Dim testAddressesArr() As String
-    testAddressesArr = getCSV(ThisWorkbook.path & "\testdata\testoverwrite.csv")
-    
+    MacroEntry InterfaceSheet
+    PasteInterfaceTestRecords ThisWorkbook.path & "\testdata\testoverwrite.csv"
     
     MacroEntry InterfaceSheet
-    PasteInterfaceTestRecords testAddressesArr
-    
     addRecords
     attemptValidation
     
     Assert.isTrue getInterfaceMostRecentRng.value = "11/5/2023", "Most recent date is not 11/5/2023"
     
-    testAddressesArr = getCSV(ThisWorkbook.path & "\testdata\testoverwrite_2.csv")
-    PasteInterfaceTestRecords testAddressesArr
+    PasteInterfaceTestRecords ThisWorkbook.path & "\testdata\testoverwrite_2.csv"
     
+    MacroEntry InterfaceSheet
     addRecords
     
     Assert.isTrue getInterfaceMostRecentRng.value = "12/5/2023", "Most recent date is not 12/5/2023"
