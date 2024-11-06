@@ -449,14 +449,14 @@ On Error GoTo TestFail
     addRecords
     attemptValidation
     
-    Assert.isTrue getMostRecentRng.value = "11/5/2023", "Most recent date is not 11/5/2023"
+    Assert.isTrue getInterfaceMostRecentRng.value = "11/5/2023", "Most recent date is not 11/5/2023"
     
     testAddressesArr = getCSV(ThisWorkbook.path & "\testdata\testoverwrite_2.csv")
     PasteInterfaceTestRecords testAddressesArr
     
     addRecords
     
-    Assert.isTrue getMostRecentRng.value = "12/5/2023", "Most recent date is not 12/5/2023"
+    Assert.isTrue getInterfaceMostRecentRng.value = "12/5/2023", "Most recent date is not 12/5/2023"
     
     MacroExit InterfaceSheet
     

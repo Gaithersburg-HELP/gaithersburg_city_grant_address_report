@@ -67,7 +67,7 @@ Private Function getUniqueSelection(ByVal returnRows As Boolean, ByVal min As Lo
     If returnRows Then
         Set selections = selection.SpecialCells(xlCellTypeVisible).rows
     Else
-        Set selections = selection.SpecialCells(xlCellTypeVisible).columns
+        Set selections = selection.SpecialCells(xlCellTypeVisible).Columns
     End If
     
     Dim value As Variant
@@ -170,7 +170,7 @@ Public Sub confirmDeleteAllVisitData()
     
     If Not MacroEntry(ThisWorkbook.ActiveSheet) Then Exit Sub
     
-    SheetUtilities.getMostRecentRng.value = vbNullString
+    SheetUtilities.getInterfaceMostRecentRng.value = vbNullString
     SheetUtilities.ClearInterfaceTotals
     SheetUtilities.getCountyRng.value = 0
     SheetUtilities.getNonRxReportRng.Clear
@@ -280,7 +280,7 @@ Public Sub confirmDiscardAll()
 End Sub
 
 Private Function findRow(ByVal sheetName As String, ByVal key As String) As Range
-    Set findRow = ThisWorkbook.Worksheets.[_Default](sheetName).columns(SheetUtilities.keyColumn). _
+    Set findRow = ThisWorkbook.Worksheets.[_Default](sheetName).Columns(SheetUtilities.keyColumn). _
                             Find(What:=key, LookIn:=xlValues, LookAt:=xlWhole)
 End Function
 
@@ -414,7 +414,7 @@ Public Sub toggleUserVerifiedAutocorrected()
                                         Not AddressesSheet.rows.Item(foundCell.row).Cells.Item(1, 2)
         End If
         
-        Set foundCell = DiscardsSheet.columns.Item(SheetUtilities.keyColumn). _
+        Set foundCell = DiscardsSheet.Columns.Item(SheetUtilities.keyColumn). _
                             Find(What:=key, LookIn:=xlValues, LookAt:=xlWhole)
         
         If Not foundCell Is Nothing Then
@@ -466,7 +466,7 @@ Public Sub ImportRecords()
     Records.computeCountyTotals
     
     InterfaceSheet.Range("A1").value = versionNum
-    getMostRecentRng.value = wbook.Worksheets.[_Default](InterfaceSheet.Name).Range(SheetUtilities.mostRecentDateCell).value
+    getInterfaceMostRecentRng.value = wbook.Worksheets.[_Default](InterfaceSheet.Name).Range(SheetUtilities.mostRecentDateCell).value
     
     wbook.Close
     

@@ -209,6 +209,10 @@ Public Function getCountyRng() As Range
     Set getCountyRng = InterfaceSheet.Range("B9:CS20")
 End Function
 
+Public Function getRxMostRecentDateRng() As Range
+    Set getRxMostRecentDateRng = RxSheet.Range("I5")
+End Function
+
 Public Function getNonRxReportRng() As Range
     Set getNonRxReportRng = getRng(NonRxReportSheet.Name, "A3", "P3")
 End Function
@@ -219,6 +223,10 @@ End Function
 
 Public Function getPastedRxRecordsRng() As Range
     Set getPastedRxRecordsRng = getRng(RxSheet.Name, "A11", "U11")
+End Function
+
+Public Function getRxTotalsRng() As Range
+    Set getRxTotalsRng = RxSheet.Range("K2", "N4")
 End Function
 
 ' Returns null if all services deleted
@@ -271,8 +279,8 @@ Public Function loadServiceNames(ByVal sheetName As String) As String()
     loadServiceNames = services
 End Function
 
-Public Function getMostRecentRng() As Range
-    Set getMostRecentRng = InterfaceSheet.Range(mostRecentDateCell)
+Public Function getInterfaceMostRecentRng() As Range
+    Set getInterfaceMostRecentRng = InterfaceSheet.Range(mostRecentDateCell)
 End Function
 
 Public Function getAddressRng(ByVal sheetName As String) As Range
@@ -360,7 +368,7 @@ Public Sub ClearEmptyServices(ByVal sheetName As String)
     Do While i <= servicesRng.count
         If servicesRng.Cells.Item(max, i).End(xlUp).row = 1 Then
             Dim column As Range
-            Set column = ThisWorkbook.Worksheets.[_Default](sheetName).columns( _
+            Set column = ThisWorkbook.Worksheets.[_Default](sheetName).Columns( _
                             i + SheetUtilities.firstServiceColumn - 1)
             If columnsToDelete Is Nothing Then
                 Set columnsToDelete = column
@@ -395,14 +403,20 @@ Public Sub ClearAll()
     InterfaceButtons.MacroEntry ThisWorkbook.ActiveSheet
     Application.StatusBar = False
     
-    getMostRecentRng.value = vbNullString
+    getInterfaceMostRecentRng.value = vbNullString
     getPastedInterfaceRecordsRng.Clear
-    InterfaceSheet.columns.Item("A").NumberFormat = "mm/dd/yyyy"
+    InterfaceSheet.Columns.Item("A").NumberFormat = "mm/dd/yyyy"
+    
+    getRxMostRecentDateRng.value = vbNullString
+    getPastedRxRecordsRng.Clear
+    RxSheet.Columns.Item("A").NumberFormat = "mm/dd/yyyy"
     
     ClearInterfaceTotals
     getNonDeliveryTotalHeaderRng.value = "Non-delivery"
     getDeliveryTotalHeaderRng.value = "Delivery"
     getCountyRng.value = 0
+    
+    getRxTotalsRng.value = 0
     
     getNonRxReportRng.Clear
     getRxReportRng.Clear
@@ -415,9 +429,9 @@ End Sub
 
 Public Sub ClearAllPreserveDate()
     Dim mostRecentDate As String
-    mostRecentDate = getMostRecentRng.value
+    mostRecentDate = getInterfaceMostRecentRng.value
     ClearAll
-    getMostRecentRng.value = mostRecentDate
+    getInterfaceMostRecentRng.value = mostRecentDate
 End Sub
 
 Public Sub SortRange(ByVal rng As Range, ByVal sortOnValidFirst As Boolean)
@@ -437,19 +451,19 @@ Public Sub SortRange(ByVal rng As Range, ByVal sortOnValidFirst As Boolean)
         ' insert second word of address into temporary sort column to right of data
         ' NOTE don't use column to left of data, when tests fail then sometimes this
         ' column doesn't get deleted
-        row.Offset(0, 1).Cells(1, rng.columns.count).value = LWordTrim(LWordTrim(row.Range(addressKey).value)(1))(0)
+        row.Offset(0, 1).Cells(1, rng.Columns.count).value = LWordTrim(LWordTrim(row.Range(addressKey).value)(1))(0)
     Next row
     
     Dim rngWithSortCol As Range
-    Set rngWithSortCol = rng.Resize(ColumnSize:=rng.columns.count + 1)
+    Set rngWithSortCol = rng.Resize(ColumnSize:=rng.Columns.count + 1)
 
     '@Ignore ImplicitDefaultMemberAccess
     rngWithSortCol.Sort _
-        key1:=rngWithSortCol.Cells.Item(1, rngWithSortCol.columns.count), _
+        key1:=rngWithSortCol.Cells.Item(1, rngWithSortCol.Columns.count), _
         key2:=rng.Range(addressKey), _
         Order1:=xlAscending, Order2:=xlAscending, Header:=xlNo
         
-    rngWithSortCol.columns.Item(rngWithSortCol.columns.count).EntireColumn.Clear
+    rngWithSortCol.Columns.Item(rngWithSortCol.Columns.count).EntireColumn.Clear
 End Sub
 
 Public Sub SortSheet(ByVal sheetName As String)
@@ -470,10 +484,10 @@ Public Sub SortSheet(ByVal sheetName As String)
         
         With ActiveSheet.Sort
             .SortFields.Clear
-            .SortFields.Add key:=selection.columns(3), Order:=xlAscending
-            .SortFields.Add key:=selection.columns(2), Order:=xlAscending
-            .SortFields.Add key:=selection.columns(4), Order:=xlAscending
-            .SortFields.Add key:=selection.columns(6), Order:=xlAscending
+            .SortFields.Add key:=selection.Columns(3), Order:=xlAscending
+            .SortFields.Add key:=selection.Columns(2), Order:=xlAscending
+            .SortFields.Add key:=selection.Columns(4), Order:=xlAscending
+            .SortFields.Add key:=selection.Columns(6), Order:=xlAscending
             .Header = xlNo
             .SetRange selection
             .Apply

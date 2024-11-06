@@ -37,8 +37,8 @@ Private Function loadRecordFromRaw(ByVal recordRowFirstCell As Range) As RecordT
     Set record = New RecordTuple
     
     record.AddVisit recordRowFirstCell.value, recordRowFirstCell.Offset(0, 1).value
-    If (CDate(recordRowFirstCell.value) > CDate(getMostRecentRng.value)) Then
-        getMostRecentRng.value = CStr(CDate(recordRowFirstCell.value))
+    If (CDate(recordRowFirstCell.value) > CDate(getInterfaceMostRecentRng.value)) Then
+        getInterfaceMostRecentRng.value = CStr(CDate(recordRowFirstCell.value))
     End If
     
     record.UserVerified = False
