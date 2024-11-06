@@ -186,6 +186,7 @@ Public Sub confirmDeleteRxRecords()
     SheetUtilities.getPastedRxRecordsRng.Clear
     SheetUtilities.getRxTotalsRng = 0
     SheetUtilities.getRxMostRecentDateRng.Clear
+    SheetUtilities.getRxDiscardedIDsRng.Clear
     
     RxSheet.Columns.Item("A").NumberFormat = "mm/dd/yyyy"
     

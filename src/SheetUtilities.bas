@@ -213,6 +213,10 @@ Public Function getRxMostRecentDateRng() As Range
     Set getRxMostRecentDateRng = RxSheet.Range("I5")
 End Function
 
+Public Function getRxDiscardedIDsRng() As Range
+    Set getRxDiscardedIDsRng = RxSheet.Range("I6")
+End Function
+
 Public Function getNonRxReportRng() As Range
     Set getNonRxReportRng = getRng(NonRxReportSheet.Name, "A3", "P3")
 End Function
@@ -408,6 +412,7 @@ Public Sub ClearAll()
     InterfaceSheet.Columns.Item("A").NumberFormat = "mm/dd/yyyy"
     
     getRxMostRecentDateRng.value = vbNullString
+    getRxDiscardedIDsRng.Clear
     getPastedRxRecordsRng.Clear
     RxSheet.Columns.Item("A").NumberFormat = "mm/dd/yyyy"
     
