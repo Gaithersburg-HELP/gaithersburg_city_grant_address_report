@@ -50,17 +50,28 @@ End Sub
 
 
 Private Sub ClearClipboard()
-    Dim oData As New DataObject
-    oData.SetText text:=Empty
-    oData.PutInClipboard
+    Dim data As DataObject
+    Set data = New DataObject
+    
+    data.SetText text:=Empty
+    data.PutInClipboard
 End Sub
 
 Private Sub PasteTestRecords(ByVal csvPath As String, ByVal pasteFn As String)
     Dim bookToCopy As Workbook
     Set bookToCopy = Workbooks.Open(csvPath)
     Dim rngToCopy As Range
-    Set rngToCopy = bookToCopy.Sheets(1).UsedRange.Offset(1, 0)
-    Set rngToCopy = rngToCopy.Resize(rngToCopy.rows.count - 1, rngToCopy.Columns.count)
+    Set rngToCopy = bookToCopy.Sheets.[_Default](1).UsedRange.Offset(1, 0)
+    
+    Dim width As Long
+    Select Case pasteFn
+        Case "InterfaceButtons.PasteInterfaceRecords"
+            width = 15
+        Case "InterfaceButtons.PasteRxRecords"
+            width = 21
+    End Select
+    
+    Set rngToCopy = rngToCopy.Resize(rngToCopy.rows.count - 1, width)
     rngToCopy.Copy
     
     ThisWorkbook.Activate
@@ -491,4 +502,5 @@ Public Sub testSort()
 TestFail:
     Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
 End Sub
+
 

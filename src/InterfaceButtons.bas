@@ -42,6 +42,8 @@ Public Sub MacroExit(ByVal wsheetToReturn As Worksheet)
         Select Case wsheet.Name
             Case NonRxReportSheet.Name, RxReportSheet.Name
                 wsheet.UsedRange.Offset(1, 0).AutoFilter
+            ' Rubberduck bug
+            '@Ignore UnreachableCase
             Case AddressesSheet.Name, AutocorrectAddressesSheet.Name, AutocorrectedAddressesSheet.Name, DiscardsSheet.Name
                 wsheet.UsedRange.AutoFilter
         End Select
@@ -96,7 +98,7 @@ Private Function getUniqueSelection(ByVal returnRows As Boolean, ByVal min As Lo
     Set getUniqueSelection = uniques
 End Function
 
-Private Sub PasteRecords(sheet As Worksheet)
+Private Sub PasteRecords(ByVal sheet As Worksheet)
     ' NOTE not using MacroEntry here, it disables PasteSpecial for some reason
     ' Using Allow Edit Ranges
     
@@ -184,7 +186,7 @@ Public Sub confirmDeleteRxRecords()
     If Not MacroEntry(ThisWorkbook.ActiveSheet) Then Exit Sub
     
     SheetUtilities.getPastedRxRecordsRng.Clear
-    SheetUtilities.getRxTotalsRng = 0
+    SheetUtilities.getRxTotalsRng.value = 0
     SheetUtilities.getRxMostRecentDateRng.Clear
     SheetUtilities.getRxDiscardedIDsRng.Clear
     
