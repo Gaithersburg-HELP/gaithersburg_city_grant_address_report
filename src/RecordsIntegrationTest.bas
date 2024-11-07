@@ -67,7 +67,7 @@ Private Sub PasteTestRecords(ByVal csvPath As String, ByVal pasteFn As String)
     Select Case pasteFn
         Case "InterfaceButtons.PasteInterfaceRecords"
             width = 15
-        Case "InterfaceButtons.PasteRxRecords"
+        Case "InterfaceButtons.PasteRxRecordsCalculate"
             width = 21
     End Select
     
@@ -86,8 +86,34 @@ Private Sub PasteInterfaceTestRecords(ByVal csvPath As String)
     PasteTestRecords csvPath, "InterfaceButtons.PasteInterfaceRecords"
 End Sub
 
-Public Sub PasteRxTestRecords(ByVal csvPath As String)
-    PasteTestRecords csvPath, "InterfaceButtons.PasteRxRecords"
+Public Sub PasteRxTestRecordsCalculate(ByVal csvPath As String)
+    PasteTestRecords csvPath, "InterfaceButtons.PasteRxRecordsCalculate"
+End Sub
+
+'@TestMethod
+Public Sub TestRxAddresses()
+    On Error GoTo TestFail
+    
+    Fakes.MsgBox.Returns vbYes
+    
+    MacroEntry InterfaceSheet
+    PasteInterfaceTestRecords ThisWorkbook.path & "\testdata\testrxaddresses.csv"
+    
+    InterfaceButtons.confirmAddRecords
+    InterfaceButtons.confirmAttemptValidation
+    
+    MacroEntry RxSheet
+    PasteRxTestRecordsCalculate ThisWorkbook.path & "\testdata\testrxrecords.csv"
+    
+    Assert.isTrue SheetUtilities.getRxMostRecentDateRng.value = "4/21/2024"
+    Assert.isTrue SheetUtilities.getRxDiscardedIDsRng.value = "Amazon Rainforest, Apple Rich"
+    
+    CompareSheetCSV Assert, RxSheet.Name, ThisWorkbook.path & "\testdata\testrx_rxtotalsoutput.csv", SheetUtilities.getRxTotalsRng
+    CompareSheetCSV Assert, RxReportSheet.Name, ThisWorkbook.path & "\testdata\testrx_rxfinalreportoutput.csv"
+    
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
 End Sub
 
 '@TestMethod

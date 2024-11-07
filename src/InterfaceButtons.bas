@@ -121,7 +121,7 @@ Public Sub PasteInterfaceRecords()
 End Sub
 
 '@EntryPoint
-Public Sub PasteRxRecords()
+Public Sub PasteRxRecordsCalculate()
     RxSheet.Activate
     PasteRecords RxSheet
 End Sub
