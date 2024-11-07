@@ -230,7 +230,7 @@ Public Function getPastedRxRecordsRng() As Range
 End Function
 
 Public Function getRxTotalsRng() As Range
-    Set getRxTotalsRng = RxSheet.Range("K2", "N4")
+    Set getRxTotalsRng = RxSheet.Range("K2", "N6")
 End Function
 
 ' Returns null if all services deleted
@@ -412,7 +412,7 @@ Public Sub ClearAll()
     InterfaceSheet.Columns.Item("A").NumberFormat = "mm/dd/yyyy"
     
     getRxMostRecentDateRng.value = vbNullString
-    getRxDiscardedIDsRng.Clear
+    getRxDiscardedIDsRng.value = vbNullString
     getPastedRxRecordsRng.Clear
     RxSheet.Columns.Item("A").NumberFormat = "mm/dd/yyyy"
     

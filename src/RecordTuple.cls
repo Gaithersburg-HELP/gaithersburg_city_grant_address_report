@@ -247,12 +247,12 @@ Public Property Let eighteenPlusTotal(ByVal num As Long)
 End Property
 
 
-Public Property Get rxTotal() As Scripting.Dictionary
+Public Property Get RxTotal() As Scripting.Dictionary
     If pRxTotal Is Nothing Then Set pRxTotal = New Scripting.Dictionary
-    Set rxTotal = pRxTotal
+    Set RxTotal = pRxTotal
 End Property
 
-Public Property Set rxTotal(ByVal dict As Scripting.Dictionary)
+Public Property Set RxTotal(ByVal dict As Scripting.Dictionary)
     Set pRxTotal = dict
 End Property
 
@@ -315,7 +315,7 @@ End Sub
 ' Returns true if address changed, false otherwise
 Public Function MergeRecord(ByVal record As RecordTuple) As Boolean
     MergeVisitData record.visitData
-    MergeRx record.rxTotal
+    MergeRx record.RxTotal
     
     FirstName = record.FirstName
     LastName = record.LastName
@@ -354,15 +354,15 @@ End Function
 Private Sub MergeRx(ByVal rxToMerge As Scripting.Dictionary)
     Dim quarter As Variant
     For Each quarter In rxToMerge.Keys
-        If rxTotal.Exists(quarter) Then
+        If RxTotal.Exists(quarter) Then
             Dim visit As Variant
             For Each visit In rxToMerge.Item(quarter).Keys
-                If Not rxTotal.Item(quarter).Exists(visit) Then
-                    rxTotal.Item(quarter).Add visit, rxToMerge.Item(quarter).Item(visit)
+                If Not RxTotal.Item(quarter).Exists(visit) Then
+                    RxTotal.Item(quarter).Add visit, rxToMerge.Item(quarter).Item(visit)
                 End If
             Next visit
         Else
-            rxTotal.Add quarter, rxToMerge.Item(quarter)
+            RxTotal.Add quarter, rxToMerge.Item(quarter)
         End If
     Next quarter
 End Sub

@@ -19,6 +19,18 @@ Public Enum TotalType
     [_TotalTypeLast] = rx
 End Enum
 
+Public Enum RxTotalType
+    numUndupResidentsServedRx = 1
+    numUndupRxInProgramServed = 2
+    numUndupRxInGburgServed = 3
+    costRxInProgram = 4
+    costRxInGburg = 5
+    mostRecentRxDate = 6
+    discardedIDs = 7
+    [_RxTotalTypeFirst] = numUndupResidentsServedRx
+    [_RxTotalTypeLast] = discardedIDs
+End Enum
+
 Public Function getQuarterNum(ByVal quarter As String) As Long
     Select Case quarter
         Case "Q1"
@@ -95,7 +107,7 @@ Public Function loadRecordFromSheet(ByVal recordRowFirstCell As Range) As Record
     record.twoToSeventeenTotal = recordRowFirstCell.Offset(0, 15).value
     record.eighteenPlusTotal = recordRowFirstCell.Offset(0, 16).value
     
-    Set record.rxTotal = JsonConverter.ParseJson(recordRowFirstCell.Offset(0, _
+    Set record.RxTotal = JsonConverter.ParseJson(recordRowFirstCell.Offset(0, _
                                                         SheetUtilities.firstServiceColumn - 2).value)
     
     Dim visitData As Scripting.Dictionary
@@ -198,7 +210,7 @@ Public Sub writeAddress(ByVal sheetName As String, ByVal record As RecordTuple)
     recordRow.Cells.Item(1, 17).value = record.eighteenPlusTotal
     
     recordRow.Cells.Item(1, SheetUtilities.firstServiceColumn - 1).value = _
-                                                            JsonConverter.ConvertToJson(record.rxTotal)
+                                                            JsonConverter.ConvertToJson(record.RxTotal)
     
     Dim serviceToAdd As Variant
     For Each serviceToAdd In record.visitData.Keys
@@ -467,6 +479,47 @@ Private Sub loadAddressComputeCountyTotal(ByVal sheetName As String)
     Application.StatusBar = appStatus
 End Sub
 
+Public Function computeRxTotals() As Scripting.Dictionary
+    Dim totals As Scripting.Dictionary
+    Set totals = New Scripting.Dictionary
+    Dim rxTotalTypename As RxTotalType
+    For rxTotalTypename = [_RxTotalTypeFirst] To [_RxTotalTypeLast]
+        If (rxTotalTypename = discardedIDs) Or (rxTotalTypename = mostRecentRxDate) Then
+            totals.Add rxTotalTypename, "a"
+        Else
+            Dim quarters As Scripting.Dictionary
+            Set quarters = New Scripting.Dictionary
+            quarters.Item(1) = 1
+            quarters.Item(2) = 2
+            quarters.Item(3) = 3
+            quarters.Item(4) = 4
+            totals.Add rxTotalTypename, SheetUtilities.cloneDict(quarters)
+        End If
+    Next rxTotalTypename
+    
+    ' TODO compute totals
+    Set computeRxTotals = totals
+End Function
+
+Public Sub outputRxTotals(ByRef totals As Scripting.Dictionary)
+    Dim rng As Range
+    Set rng = SheetUtilities.getRxTotalsRng
+    
+    Dim rxTotalTypename As RxTotalType
+    For rxTotalTypename = [_RxTotalTypeFirst] To [_RxTotalTypeLast]
+        If (rxTotalTypename = mostRecentRxDate) Then
+            SheetUtilities.getRxMostRecentDateRng = totals.Item(rxTotalTypename)
+        ElseIf (rxTotalTypename = discardedIDs) Then
+            SheetUtilities.getRxDiscardedIDsRng = totals.Item(rxTotalTypename)
+        Else
+            Dim i As Long
+            For i = 1 To 4
+                rng.Cells(rxTotalTypename, i) = totals.Item(rxTotalTypename).Item(i)
+            Next i
+        End If
+    Next rxTotalTypename
+End Sub
+
 Public Sub computeCountyTotals()
     getCountyRng.value = 0
     
@@ -523,13 +576,13 @@ Public Sub computeInterfaceTotals()
         If record.InCity = InCityCode.ValidInCity Then
             Dim quarter As Variant
             Dim qNum As Long
-            For Each quarter In record.rxTotal.Keys
+            For Each quarter In record.RxTotal.Keys
                 qNum = getQuarterNum(quarter)
                 Dim visit As Variant
-                For Each visit In record.rxTotal.Item(quarter).Keys
+                For Each visit In record.RxTotal.Item(quarter).Keys
                     ' Display Rx expenses for all delivery and non-delivery under non-delivery
                     totals.Item(nonDelivery).Item(rx)(qNum) = totals.Item(nonDelivery).Item(rx)(qNum) + _
-                                                              record.rxTotal.Item(quarter).Item(visit)
+                                                              record.RxTotal.Item(quarter).Item(visit)
                 Next visit
             Next quarter
             

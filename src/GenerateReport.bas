@@ -46,3 +46,7 @@ Public Sub generateNonRxReport()
     
     ActiveSheet.Range("A2").Select
 End Sub
+
+Public Sub generateRxReport()
+    ' TODO
+End Sub

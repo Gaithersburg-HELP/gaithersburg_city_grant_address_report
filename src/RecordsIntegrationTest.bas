@@ -67,7 +67,7 @@ Private Sub PasteTestRecords(ByVal csvPath As String, ByVal pasteFn As String)
     Select Case pasteFn
         Case "InterfaceButtons.PasteInterfaceRecords"
             width = 15
-        Case "InterfaceButtons.PasteRxRecordsCalculate"
+        Case "InterfaceButtons.confirmPasteRxRecordsCalculate"
             width = 21
     End Select
     
@@ -87,7 +87,7 @@ Private Sub PasteInterfaceTestRecords(ByVal csvPath As String)
 End Sub
 
 Public Sub PasteRxTestRecordsCalculate(ByVal csvPath As String)
-    PasteTestRecords csvPath, "InterfaceButtons.PasteRxRecordsCalculate"
+    PasteTestRecords csvPath, "InterfaceButtons.confirmPasteRxRecordsCalculate"
 End Sub
 
 '@TestMethod

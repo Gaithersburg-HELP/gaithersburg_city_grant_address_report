@@ -109,8 +109,6 @@ Private Sub PasteRecords(ByVal sheet As Worksheet)
     
     sheet.Cells.Item(1, 1).Select
     Application.ScreenUpdating = True
-    
-    MacroExit sheet
 End Sub
 
 
@@ -118,12 +116,27 @@ End Sub
 Public Sub PasteInterfaceRecords()
     InterfaceSheet.Activate
     PasteRecords InterfaceSheet
+    MacroExit InterfaceSheet
 End Sub
 
 '@EntryPoint
-Public Sub PasteRxRecordsCalculate()
-    RxSheet.Activate
+Public Sub confirmPasteRxRecordsCalculate()
+    Dim confirmResponse As VbMsgBoxResult
+    confirmResponse = MsgBox("Are you sure you wish to paste Rx records and generate the RX report?", vbYesNo + vbQuestion, "Confirmation")
+    If confirmResponse = vbNo Then
+        Exit Sub
+    End If
+    
     PasteRecords RxSheet
+    
+    ' This needs to go AFTER PasteRecords for PasteSpecial to work
+    If Not MacroEntry(RxSheet) Then Exit Sub
+    
+    Records.outputRxTotals Records.computeRxTotals()
+    
+    GenerateReport.generateRxReport
+    
+    MacroExit RxSheet
 End Sub
 
 '@EntryPoint
@@ -188,7 +201,9 @@ Public Sub confirmDeleteRxRecords()
     SheetUtilities.getPastedRxRecordsRng.Clear
     SheetUtilities.getRxTotalsRng.value = 0
     SheetUtilities.getRxMostRecentDateRng.Clear
-    SheetUtilities.getRxDiscardedIDsRng.Clear
+    SheetUtilities.getRxDiscardedIDsRng.value = vbNullString
+    
+    getRxReportRng.Clear
     
     RxSheet.Columns.Item("A").NumberFormat = "mm/dd/yyyy"
     
