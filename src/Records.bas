@@ -486,37 +486,128 @@ Public Function computeRxTotals() As ComputedRx
     
     Dim rxReportRecords As RxRecords
     Set rxReportRecords = New RxRecords
-
+    
+    Dim notInCityRecords As RxRecords
+    Set notInCityRecords = New RxRecords
+    
     Dim i As Long
-    i = 2
+    i = SheetUtilities.getPastedRxRecordsRng.row
     Do While i < getBlankRow(RxSheet.name).row
-        Dim name As String
         Dim guestID As String
-        name = i
+        guestID = RxSheet.Cells.Item(i, 2).value
         
-        If Not rxReportRecords.exists(name) Then
-            Dim newRecord As RxRecord
-            Set newRecord = New RxRecord
-            'Rubberduck bug
-            '@Ignore ValueRequired, ObjectVariableNotSet
-            rxReportRecords.guestRecord(name) = newRecord
+        
+        If Not addresses.exists(guestID) Then
+            ' Duplicated below
+            If totals.discardedIDs = vbNullString Then
+                totals.discardedIDs = guestID
+            Else
+                totals.discardedIDs = totals.discardedIDs & "," & guestID
+            End If
+            GoTo NextRxRecord
         End If
+        Dim addressRecord As RecordTuple
+        Set addressRecord = addresses.Item(guestID)
+        
+        Dim visitDate As Date
+        visitDate = RxSheet.Cells.Item(i, 1)
+        
+        Dim quarter As QuarterNum
+        quarter = getQuarterNum(getQuarterStr(CStr(visitDate)))
+        
+        Dim hasRx As Boolean
+        hasRx = False
+        
+        Dim j As Long
+        For j = 1 To 6
+            Dim name As String
+            Dim prevName As String
+            Dim medication As String
+            name = RxSheet.Cells.Item(i, 3 * j).value
+            medication = RxSheet.Cells.Item(i, 1 + (3 * j)).value
+            If (name = vbNullString) Then
+                If (prevName <> vbNullString) And (medication <> vbNullString) Then
+                    ' Assume previous name
+                    name = prevName
+                Else
+                    GoTo NextName
+                End If
+            End If
+            
+            hasRx = True
+            
+            name = StrConv(name, vbProperCase)
+            
+            ' Replace - ; : with space
+            ' Get proper cased first word
+            medication = Replace(medication, "-", " ", vbTextCompare)
+            medication = Replace(medication, ";", " ", vbTextCompare)
+            medication = Replace(medication, ":", " ", vbTextCompare)
+            medication = LWordTrim(medication)(0)
+            medication = StrConv(medication, vbProperCase)
+            
+            If rxReportRecords.exists(name) Then
+                If Not rxReportRecords.guestRecord(name).medications.exists(medication) Then
+                    totals.numUndupRxInGburgServed(quarter) = totals.numUndupRxInGburgServed(quarter) + 1
+                    totals.numUndupRxInProgramServed(quarter) = totals.numUndupRxInProgramServed(quarter) + 1
+                    rxReportRecords.guestRecord(name).medications.Item(medication) = 1
+                End If
+            ElseIf notInCityRecords.exists(name) Then
+                If Not notInCityRecords.guestRecord(name).medications.exists(medication) Then
+                    totals.numUndupRxInProgramServed(quarter) = totals.numUndupRxInProgramServed(quarter) + 1
+                    notInCityRecords.guestRecord(name).medications.Item(medication) = 1
+                End If
+            Else
+                Dim newRecord As RxRecord
+                Set newRecord = New RxRecord
+                newRecord.guestID = guestID
+                newRecord.medications.Item(medication) = 1
+                newRecord.quarter(quarter) = True
+                
+                totals.numUndupRxInProgramServed(quarter) = totals.numUndupRxInProgramServed(quarter) + 1
+                If addressRecord.InCity = ValidInCity Then
+                    totals.numUndupResidentsServedRx(quarter) = totals.numUndupResidentsServedRx(quarter) + 1
+                    totals.numUndupRxInGburgServed(quarter) = totals.numUndupRxInGburgServed(quarter) + 1
+                    
+                    'Rubberduck bug
+                    '@Ignore ValueRequired, ObjectVariableNotSet
+                    rxReportRecords.guestRecord(name) = newRecord
+                Else
+                    '@Ignore ValueRequired, ObjectVariableNotSet
+                    notInCityRecords.guestRecord(name) = newRecord
+                End If
+            End If
+            
+            prevName = name
+NextName:
+        Next j
+        
+        If Not hasRx Then
+            ' duplicated above
+            If totals.discardedIDs = vbNullString Then
+                totals.discardedIDs = guestID
+            Else
+                totals.discardedIDs = totals.discardedIDs & "," & guestID
+            End If
+            GoTo NextRxRecord
+        End If
+        
+        Dim cost As Double
+        cost = RxSheet.Cells.Item(i, 21).value
+        
+        totals.costRxInProgram(quarter) = totals.costRxInProgram(quarter) + cost
+        If addressRecord.InCity = ValidInCity Then
+            totals.costRxInGburg(quarter) = totals.costRxInGburg(quarter) + cost
+        End If
+        
+        If totals.mostRecentRxDate = vbNullString Then
+            totals.mostRecentRxDate = visitDate
+        ElseIf visitDate > DateValue(totals.mostRecentRxDate) Then
+            totals.mostRecentRxDate = visitDate
+        End If
+NextRxRecord:
         i = i + 1
     Loop
-    
-    ' Loop through each row of SheetUtilities.getPastedRxRecordsRng
-    ' - Check if record has Address data and if record has RX data, skip if false
-    ' - For Each Guest Name:
-    '    Check if GuestID is In City, Increment appropriate expenditure in quarter using RxTotal
-    '    Check if GuestID is in Dictionary, if FALSE and IN CITY increment numUndupResidentsServedRx for quarter
-    '    Check if medication is in Dictionary, if FALSE, check if IN CITY and increment numUndupRxInGburgServed/numUndupRxInProgramServed for quarter appropriately
-    '    Update Dictionary { GuestName:
-    '      { Quarters: { 1:true/false, ...},
-    '        Unduplicated Medications: Dictionary = 1,
-    '        GuestID: guestID }
-    '
-    ' - For Each GuestName in dictionary:
-    '    Write data, initials, and all quarters to Rx Report
     
     Dim out As ComputedRx
     Set out.totals = totals

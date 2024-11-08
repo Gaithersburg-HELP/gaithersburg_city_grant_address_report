@@ -265,19 +265,6 @@ Public Property Set visitData(ByVal dict As Scripting.Dictionary)
     Set pVisitData = dict
 End Property
 
-Private Function getQuarterStr(ByVal dateStr As String) As String
-    Select Case month(dateStr)
-        Case 7 To 9
-            getQuarterStr = "Q1"
-        Case 10 To 12
-            getQuarterStr = "Q2"
-        Case 1 To 3
-            getQuarterStr = "Q3"
-        Case 4 To 6
-            getQuarterStr = "Q4"
-    End Select
-End Function
-
 Public Sub AddVisit(ByVal visitDate As String, ByVal service As String)
     Dim newVisitData As Scripting.Dictionary
     Set newVisitData = New Scripting.Dictionary

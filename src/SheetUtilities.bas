@@ -412,6 +412,7 @@ Public Sub ClearAll()
     InterfaceSheet.Columns.Item("A").NumberFormat = "mm/dd/yyyy"
     
     getRxMostRecentDateRng.value = vbNullString
+    getRxMostRecentDateRng.NumberFormat = "mm/dd/yyyy"
     getRxDiscardedIDsRng.value = vbNullString
     getPastedRxRecordsRng.Clear
     RxSheet.Columns.Item("A").NumberFormat = "mm/dd/yyyy"
@@ -535,8 +536,8 @@ End Sub
 
 ' Use JsonConverter.ConvertToJson instead of old PrintCollection and PrintJson
 
-' Trims off first word including space afterwards
-' Returns [trimmed first word, trimmed string (blank if only one word)]
+' Trims off first word.
+' Returns [trimmed first word with no spaces, rest of string with no spaces before (blank if only one word)]
 Public Function LWordTrim(ByVal str As String) As String()
     Dim firstWord As String
     Dim spaceIndex As Long
@@ -549,4 +550,17 @@ Public Function LWordTrim(ByVal str As String) As String()
     End If
 End Function
 
+' Converts date string to quarter
+Public Function getQuarterStr(ByVal dateStr As String) As String
+    Select Case month(dateStr)
+        Case 7 To 9
+            getQuarterStr = "Q1"
+        Case 10 To 12
+            getQuarterStr = "Q2"
+        Case 1 To 3
+            getQuarterStr = "Q3"
+        Case 4 To 6
+            getQuarterStr = "Q4"
+    End Select
+End Function
 
