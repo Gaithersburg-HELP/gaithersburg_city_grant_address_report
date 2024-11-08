@@ -5,7 +5,7 @@ Option Explicit
 Private Sub writeNonRxReportRecord(ByVal record As RecordTuple)
     Dim row As Range
     
-    Set row = SheetUtilities.getBlankRow(NonRxReportSheet.Name)
+    Set row = SheetUtilities.getBlankRow(NonRxReportSheet.name)
     
     row.Cells.Item(1, 1) = "Gaithersburg HELP"
     row.Cells.Item(1, 2) = record.GburgFormatValidAddress.Item(addressKey.streetNum)
@@ -20,19 +20,19 @@ Private Sub writeNonRxReportRecord(ByVal record As RecordTuple)
     row.Cells.Item(1, 11) = record.eighteenPlusTotal
     row.Cells.Item(1, 12) = record.zeroToOneTotal + record.twoToSeventeenTotal
     
-    Dim quarters() As Boolean
-    quarters = record.quarters
-    If quarters(1) Then row.Cells.Item(1, 13) = "x"
-    If quarters(2) Then row.Cells.Item(1, 14) = "x"
-    If quarters(3) Then row.Cells.Item(1, 15) = "x"
-    If quarters(4) Then row.Cells.Item(1, 16) = "x"
+    Dim Quarters() As Boolean
+    Quarters = record.Quarters
+    If Quarters(1) Then row.Cells.Item(1, 13) = "x"
+    If Quarters(2) Then row.Cells.Item(1, 14) = "x"
+    If Quarters(3) Then row.Cells.Item(1, 15) = "x"
+    If Quarters(4) Then row.Cells.Item(1, 16) = "x"
 End Sub
 
 Public Sub generateNonRxReport()
     SheetUtilities.getNonRxReportRng.Clear
     
     Dim addresses As Scripting.Dictionary
-    Set addresses = Records.loadAddresses(AddressesSheet.Name)
+    Set addresses = records.loadAddresses(AddressesSheet.name)
     
     Dim address As Variant
     For Each address In addresses.Keys()
@@ -42,11 +42,11 @@ Public Sub generateNonRxReport()
         If record.InCity = ValidInCity And record.visitData.count > 0 Then writeNonRxReportRecord record
     Next address
     
-    SheetUtilities.SortSheet NonRxReportSheet.Name
+    SheetUtilities.SortSheet NonRxReportSheet.name
     
     ActiveSheet.Range("A2").Select
 End Sub
 
-Public Sub generateRxReport()
+Public Sub generateRxReport(ByVal records As RxRecords)
     ' TODO
 End Sub

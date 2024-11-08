@@ -354,10 +354,10 @@ End Function
 Private Sub MergeRx(ByVal rxToMerge As Scripting.Dictionary)
     Dim quarter As Variant
     For Each quarter In rxToMerge.Keys
-        If RxTotal.Exists(quarter) Then
+        If RxTotal.exists(quarter) Then
             Dim visit As Variant
             For Each visit In rxToMerge.Item(quarter).Keys
-                If Not RxTotal.Item(quarter).Exists(visit) Then
+                If Not RxTotal.Item(quarter).exists(visit) Then
                     RxTotal.Item(quarter).Add visit, rxToMerge.Item(quarter).Item(visit)
                 End If
             Next visit
@@ -371,11 +371,11 @@ Private Sub MergeVisitData(ByVal visitDataToMerge As Scripting.Dictionary)
     Dim service As Variant
     
     For Each service In visitDataToMerge.Keys
-        If visitData.Exists(service) Then
+        If visitData.exists(service) Then
             ' Loop through quarters and merge
             Dim quarter As Variant
             For Each quarter In visitDataToMerge.Item(service)
-                If visitData.Item(service).Exists(quarter) Then
+                If visitData.Item(service).exists(quarter) Then
                     Dim visitDateToMerge As Variant
                     For Each visitDateToMerge In visitDataToMerge.Item(service).Item(quarter)
                         Dim visitExists As Boolean
@@ -402,7 +402,7 @@ Private Sub MergeVisitData(ByVal visitDataToMerge As Scripting.Dictionary)
 End Sub
 
 ' Returns 1-based array of whether record has quarter or not
-Public Property Get quarters() As Boolean()
+Public Property Get Quarters() As Boolean()
     Dim quarterArr(1 To 4) As Boolean
     
     Dim service As Variant
@@ -422,7 +422,7 @@ Public Property Get quarters() As Boolean()
         Next quarter
     Next service
 
-    quarters = quarterArr
+    Quarters = quarterArr
 End Property
 
 

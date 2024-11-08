@@ -19,17 +19,10 @@ Public Enum TotalType
     [_TotalTypeLast] = rx
 End Enum
 
-Public Enum RxTotalType
-    numUndupResidentsServedRx = 1
-    numUndupRxInProgramServed = 2
-    numUndupRxInGburgServed = 3
-    costRxInProgram = 4
-    costRxInGburg = 5
-    mostRecentRxDate = 6
-    discardedIDs = 7
-    [_RxTotalTypeFirst] = numUndupResidentsServedRx
-    [_RxTotalTypeLast] = discardedIDs
-End Enum
+Public Type ComputedRx
+    totals As RxTotals
+    records As RxRecords
+End Type
 
 Public Function getQuarterNum(ByVal quarter As String) As Long
     Select Case quarter
@@ -87,7 +80,7 @@ Public Function loadRecordFromSheet(ByVal recordRowFirstCell As Range) As Record
     Set record = New RecordTuple
     
     Dim services() As String
-    services = loadServiceNames(recordRowFirstCell.Worksheet.Name)
+    services = loadServiceNames(recordRowFirstCell.Worksheet.name)
     
     record.SetInCity recordRowFirstCell.Offset(0, 0).value
     record.UserVerified = CBool(recordRowFirstCell.Offset(0, 1).value)
@@ -217,7 +210,7 @@ Public Sub writeAddress(ByVal sheetName As String, ByVal record As RecordTuple)
         Dim visitDataToAdd As String
         visitDataToAdd = JsonConverter.ConvertToJson(record.visitData.Item(serviceToAdd))
         
-        If Not serviceCols.Exists(serviceToAdd) Then
+        If Not serviceCols.exists(serviceToAdd) Then
             Dim newServiceCol As Long
             newServiceCol = SheetUtilities.firstServiceColumn + UBound(serviceCols.Keys) + 1
             serviceCols.Add serviceToAdd, newServiceCol
@@ -293,7 +286,7 @@ Private Sub incrementCountyTotal(ByVal record As RecordTuple)
     
     Dim zipCol As Long
     
-    If uniqueCols.Exists(zip) Then
+    If uniqueCols.exists(zip) Then
         zipCol = uniqueCols.Item(zip)
     Else
         ' BUG assumes poorer city
@@ -463,7 +456,7 @@ Private Sub loadAddressComputeCountyTotal(ByVal sheetName As String)
     If Application.StatusBar = False Then appStatus = False Else appStatus = Application.StatusBar
     
     Dim addresses As Scripting.Dictionary
-    Set addresses = Records.loadAddresses(sheetName)
+    Set addresses = records.loadAddresses(sheetName)
     
     Dim recordProgress As Long
     recordProgress = 1
@@ -479,60 +472,71 @@ Private Sub loadAddressComputeCountyTotal(ByVal sheetName As String)
     Application.StatusBar = appStatus
 End Sub
 
-Public Function computeRxTotals() As Scripting.Dictionary
-    Dim totals As Scripting.Dictionary
-    Set totals = New Scripting.Dictionary
-    Dim rxTotalTypename As RxTotalType
-    For rxTotalTypename = [_RxTotalTypeFirst] To [_RxTotalTypeLast]
-        If (rxTotalTypename = discardedIDs) Or (rxTotalTypename = mostRecentRxDate) Then
-            totals.Add rxTotalTypename, "a"
-        Else
-            Dim quarters As Scripting.Dictionary
-            Set quarters = New Scripting.Dictionary
-            quarters.Item(1) = 1
-            quarters.Item(2) = 2
-            quarters.Item(3) = 3
-            quarters.Item(4) = 4
-            totals.Add rxTotalTypename, SheetUtilities.cloneDict(quarters)
-        End If
-    Next rxTotalTypename
+Public Function computeRxTotals() As ComputedRx
+    Dim totals As RxTotals
+    Set totals = New RxTotals
     
-    ' TODO compute totals
-    Set computeRxTotals = totals
-End Function
+    Dim addresses As Scripting.Dictionary
+    Set addresses = records.loadAddresses(AddressesSheet.name)
+    
+    RxSheet.Columns.Item("A").NumberFormat = "mm/dd/yyyy"
+    With SheetUtilities.getPastedRxRecordsRng
+        .Sort key1:=.Columns.Item(1), order1:=xlAscending, Header:=xlNo
+    End With
+    
+    Dim rxReportRecords As RxRecords
+    Set rxReportRecords = New RxRecords
 
-Public Sub outputRxTotals(ByRef totals As Scripting.Dictionary)
-    Dim rng As Range
-    Set rng = SheetUtilities.getRxTotalsRng
-    
-    Dim rxTotalTypename As RxTotalType
-    For rxTotalTypename = [_RxTotalTypeFirst] To [_RxTotalTypeLast]
-        If (rxTotalTypename = mostRecentRxDate) Then
-            SheetUtilities.getRxMostRecentDateRng = totals.Item(rxTotalTypename)
-        ElseIf (rxTotalTypename = discardedIDs) Then
-            SheetUtilities.getRxDiscardedIDsRng = totals.Item(rxTotalTypename)
-        Else
-            Dim i As Long
-            For i = 1 To 4
-                rng.Cells(rxTotalTypename, i) = totals.Item(rxTotalTypename).Item(i)
-            Next i
+    Dim i As Long
+    i = 2
+    Do While i < getBlankRow(RxSheet.name).row
+        Dim name As String
+        Dim guestID As String
+        name = i
+        
+        If Not rxReportRecords.exists(name) Then
+            Dim newRecord As RxRecord
+            Set newRecord = New RxRecord
+            'Rubberduck bug
+            '@Ignore ValueRequired, ObjectVariableNotSet
+            rxReportRecords.guestRecord(name) = newRecord
         End If
-    Next rxTotalTypename
-End Sub
+        i = i + 1
+    Loop
+    
+    ' Loop through each row of SheetUtilities.getPastedRxRecordsRng
+    ' - Check if record has Address data and if record has RX data, skip if false
+    ' - For Each Guest Name:
+    '    Check if GuestID is In City, Increment appropriate expenditure in quarter using RxTotal
+    '    Check if GuestID is in Dictionary, if FALSE and IN CITY increment numUndupResidentsServedRx for quarter
+    '    Check if medication is in Dictionary, if FALSE, check if IN CITY and increment numUndupRxInGburgServed/numUndupRxInProgramServed for quarter appropriately
+    '    Update Dictionary { GuestName:
+    '      { Quarters: { 1:true/false, ...},
+    '        Unduplicated Medications: Dictionary = 1,
+    '        GuestID: guestID }
+    '
+    ' - For Each GuestName in dictionary:
+    '    Write data, initials, and all quarters to Rx Report
+    
+    Dim out As ComputedRx
+    Set out.totals = totals
+    Set out.records = rxReportRecords
+    computeRxTotals = out
+End Function
 
 Public Sub computeCountyTotals()
     getCountyRng.value = 0
     
-    loadAddressComputeCountyTotal AddressesSheet.Name
-    loadAddressComputeCountyTotal AutocorrectAddressesSheet.Name
-    loadAddressComputeCountyTotal DiscardsSheet.Name
+    loadAddressComputeCountyTotal AddressesSheet.name
+    loadAddressComputeCountyTotal AutocorrectAddressesSheet.name
+    loadAddressComputeCountyTotal DiscardsSheet.name
 End Sub
 
 Public Sub computeInterfaceTotals()
     SheetUtilities.ClearInterfaceTotals
     
     Dim addresses As Scripting.Dictionary
-    Set addresses = Records.loadAddresses(AddressesSheet.Name)
+    Set addresses = records.loadAddresses(AddressesSheet.name)
     
     ' First key determines total service type, second key determines total type
     Dim totals As Scripting.Dictionary
@@ -544,13 +548,13 @@ Public Sub computeInterfaceTotals()
         Set totalTypes = New Scripting.Dictionary
         For totalTypename = [_TotalTypeFirst] To [_TotalTypeLast]
             ' initialized to 0
-            Dim quarters As Scripting.Dictionary
-            Set quarters = New Scripting.Dictionary
-            quarters.Item(1) = 0
-            quarters.Item(2) = 0
-            quarters.Item(3) = 0
-            quarters.Item(4) = 0
-            totalTypes.Add totalTypename, SheetUtilities.cloneDict(quarters)
+            Dim Quarters As Scripting.Dictionary
+            Set Quarters = New Scripting.Dictionary
+            Quarters.Item(1) = 0
+            Quarters.Item(2) = 0
+            Quarters.Item(3) = 0
+            Quarters.Item(4) = 0
+            totalTypes.Add totalTypename, SheetUtilities.cloneDict(Quarters)
         Next totalTypename
         totals.Add totalServicename, totalTypes
     Next totalServicename
@@ -610,7 +614,7 @@ Public Sub computeInterfaceTotals()
                     count = record.visitData.Item(service).Item(quarter).count
                     
                     If (count > 0) Then
-                        If Not earliestQuarterAdded.Exists(serviceType) Then
+                        If Not earliestQuarterAdded.exists(serviceType) Then
                             totals.Item(serviceType).Item(uniqueGuestID)(qNum) = totals.Item(serviceType).Item(uniqueGuestID)(qNum) + _
                                                                                  1
                             totals.Item(serviceType).Item(uniqueGuestIDHousehold)(qNum) = totals.Item(serviceType).Item(uniqueGuestIDHousehold)(qNum) + _
@@ -684,10 +688,10 @@ Public Sub writeAddressesComputeInterfaceTotals(ByVal addresses As Scripting.Dic
     
     SheetUtilities.ClearAllPreserveDate
     
-    writeAddresses AddressesSheet.Name, addresses
-    writeAddresses AutocorrectAddressesSheet.Name, needsAutocorrect
-    writeAddresses DiscardsSheet.Name, discards
-    writeAddresses AutocorrectedAddressesSheet.Name, autocorrected
+    writeAddresses AddressesSheet.name, addresses
+    writeAddresses AutocorrectAddressesSheet.name, needsAutocorrect
+    writeAddresses DiscardsSheet.name, discards
+    writeAddresses AutocorrectedAddressesSheet.name, autocorrected
     
     SortAll
     
@@ -703,23 +707,23 @@ Public Sub addRecords()
     Application.StatusBar = "Loading addresses"
         
     Dim addresses As Scripting.Dictionary
-    Set addresses = loadAddresses(AddressesSheet.Name)
+    Set addresses = loadAddresses(AddressesSheet.name)
     
     Dim needsAutocorrect As Scripting.Dictionary
-    Set needsAutocorrect = loadAddresses(AutocorrectAddressesSheet.Name)
+    Set needsAutocorrect = loadAddresses(AutocorrectAddressesSheet.name)
     
     Dim discards As Scripting.Dictionary
-    Set discards = loadAddresses(DiscardsSheet.Name)
+    Set discards = loadAddresses(DiscardsSheet.name)
     
     Dim autocorrected As Scripting.Dictionary
-    Set autocorrected = loadAddresses(AutocorrectedAddressesSheet.Name)
+    Set autocorrected = loadAddresses(AutocorrectedAddressesSheet.name)
        
     Dim recordsToValidate As Scripting.Dictionary
     Set recordsToValidate = New Scripting.Dictionary
     
     Dim i As Long
     i = getPastedInterfaceRecordsRng.row
-    Do While i < getBlankRow(InterfaceSheet.Name).row
+    Do While i < getBlankRow(InterfaceSheet.name).row
         Dim recordToAdd As RecordTuple
         Set recordToAdd = loadRecordFromRaw(InterfaceSheet.Range("A" & i))
         
@@ -729,16 +733,16 @@ Public Sub addRecords()
         Dim existingRecord As RecordTuple
         Set existingRecord = Nothing
         
-        If recordsToValidate.Exists(recordToAdd.key) Then
+        If recordsToValidate.exists(recordToAdd.key) Then
             Set existingRecord = recordsToValidate.Item(recordToAdd.key)
             '@Ignore FunctionReturnValueDiscarded
             existingRecord.MergeRecord recordToAdd
         Else
-            If addresses.Exists(recordToAdd.key) Then
+            If addresses.exists(recordToAdd.key) Then
                 Set existsInDict = addresses
-            ElseIf needsAutocorrect.Exists(recordToAdd.key) Then
+            ElseIf needsAutocorrect.exists(recordToAdd.key) Then
                 Set existsInDict = needsAutocorrect
-            ElseIf discards.Exists(recordToAdd.key) Then
+            ElseIf discards.exists(recordToAdd.key) Then
                 Set existsInDict = discards
             End If
             
@@ -750,7 +754,7 @@ Public Sub addRecords()
                 '@Ignore FunctionReturnValueDiscarded
                 changedAddress = existingRecord.MergeRecord(recordToAdd)
                 
-                If autocorrected.Exists(recordToAdd.key) And Not changedAddress Then
+                If autocorrected.exists(recordToAdd.key) And Not changedAddress Then
                     Set existingRecord = autocorrected.Item(recordToAdd.key)
                     '@Ignore FunctionReturnValueDiscarded
                     existingRecord.MergeRecord recordToAdd
@@ -759,7 +763,7 @@ Public Sub addRecords()
                 Set recordToAdd = existingRecord
                 If changedAddress Then
                     existsInDict.Remove recordToAdd.key
-                    If autocorrected.Exists(recordToAdd.key) Then
+                    If autocorrected.exists(recordToAdd.key) Then
                         autocorrected.Remove recordToAdd.key
                     End If
                 End If
@@ -775,7 +779,7 @@ Public Sub addRecords()
             End If
         End If
         
-        Application.StatusBar = "Adding record " & (i - 8) & " of " & (getBlankRow(InterfaceSheet.Name).row - 8)
+        Application.StatusBar = "Adding record " & (i - 8) & " of " & (getBlankRow(InterfaceSheet.name).row - 8)
         ' yield execution so Excel remains responsive and user can hit Esc
         DoEvents
         i = i + 1
@@ -815,4 +819,5 @@ Public Sub addRecords()
     
     Application.StatusBar = appStatus
 End Sub
+
 

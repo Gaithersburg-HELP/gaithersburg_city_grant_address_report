@@ -184,7 +184,7 @@ Public Function getRng(ByVal sheetName As String, ByVal firstCell As String, ByV
 End Function
 
 Public Function getPastedInterfaceRecordsRng() As Range
-    Set getPastedInterfaceRecordsRng = getRng(InterfaceSheet.Name, "A23", "O23")
+    Set getPastedInterfaceRecordsRng = getRng(InterfaceSheet.name, "A23", "O23")
 End Function
 
 Public Function getInterfaceTotalsRng(ByVal totalService As TotalServiceType) As Range
@@ -218,15 +218,15 @@ Public Function getRxDiscardedIDsRng() As Range
 End Function
 
 Public Function getNonRxReportRng() As Range
-    Set getNonRxReportRng = getRng(NonRxReportSheet.Name, "A3", "P3")
+    Set getNonRxReportRng = getRng(NonRxReportSheet.name, "A3", "P3")
 End Function
 
 Public Function getRxReportRng() As Range
-    Set getRxReportRng = getRng(RxReportSheet.Name, "A3", "M3")
+    Set getRxReportRng = getRng(RxReportSheet.name, "A3", "M3")
 End Function
 
 Public Function getPastedRxRecordsRng() As Range
-    Set getPastedRxRecordsRng = getRng(RxSheet.Name, "A11", "U11")
+    Set getPastedRxRecordsRng = getRng(RxSheet.name, "A11", "U11")
 End Function
 
 Public Function getRxTotalsRng() As Range
@@ -426,10 +426,10 @@ Public Sub ClearAll()
     getNonRxReportRng.Clear
     getRxReportRng.Clear
     
-    ClearSheet AutocorrectAddressesSheet.Name
-    ClearSheet AddressesSheet.Name
-    ClearSheet DiscardsSheet.Name
-    ClearSheet AutocorrectedAddressesSheet.Name
+    ClearSheet AutocorrectAddressesSheet.name
+    ClearSheet AddressesSheet.name
+    ClearSheet DiscardsSheet.name
+    ClearSheet AutocorrectedAddressesSheet.name
 End Sub
 
 Public Sub ClearAllPreserveDate()
@@ -466,7 +466,7 @@ Public Sub SortRange(ByVal rng As Range, ByVal sortOnValidFirst As Boolean)
     rngWithSortCol.Sort _
         key1:=rngWithSortCol.Cells.Item(1, rngWithSortCol.Columns.count), _
         key2:=rng.Range(addressKey), _
-        Order1:=xlAscending, Order2:=xlAscending, Header:=xlNo
+        order1:=xlAscending, Order2:=xlAscending, Header:=xlNo
         
     rngWithSortCol.Columns.Item(rngWithSortCol.Columns.count).EntireColumn.Clear
 End Sub
@@ -475,15 +475,15 @@ Public Sub SortSheet(ByVal sheetName As String)
     Dim sortOnValidFirst As Boolean
     
     Select Case sheetName
-        Case AddressesSheet.Name, AutocorrectedAddressesSheet.Name
+        Case AddressesSheet.name, AutocorrectedAddressesSheet.name
             sortOnValidFirst = True
         ' Rubberduck Inspection bug
         '@Ignore UnreachableCase
-        Case AutocorrectAddressesSheet.Name, DiscardsSheet.Name
+        Case AutocorrectAddressesSheet.name, DiscardsSheet.name
             sortOnValidFirst = False
     End Select
     
-    If sheetName = NonRxReportSheet.Name Or sheetName = RxReportSheet.Name Then
+    If sheetName = NonRxReportSheet.name Or sheetName = RxReportSheet.name Then
         ActiveWorkbook.Worksheets.[_Default](sheetName).Activate
         ActiveSheet.UsedRange.Offset(2, 0).Select
         
@@ -527,10 +527,10 @@ Public Function cloneDict(ByVal dict As Scripting.Dictionary) As Scripting.Dicti
 End Function
 
 Public Sub SortAll() ' TODO refactor? except for Final Report
-    SortSheet AddressesSheet.Name
-    SortSheet AutocorrectAddressesSheet.Name
-    SortSheet DiscardsSheet.Name
-    SortSheet AutocorrectedAddressesSheet.Name
+    SortSheet AddressesSheet.name
+    SortSheet AutocorrectAddressesSheet.name
+    SortSheet DiscardsSheet.name
+    SortSheet AutocorrectedAddressesSheet.name
 End Sub
 
 ' Use JsonConverter.ConvertToJson instead of old PrintCollection and PrintJson

@@ -94,7 +94,7 @@ Option Private Module
         Private Declare PtrSafe Function RemoveDirectoryW Lib "kernel32" (ByVal lpPathName As LongPtr) As Long
         Private Declare PtrSafe Function GetFileSecurity Lib "advapi32.dll" Alias "GetFileSecurityA" (ByVal lpFileName As String, ByVal RequestedInformation As Long, pSecurityDescriptor As Byte, ByVal nLength As Long, lpnLengthNeeded As Long) As Long
         Private Declare PtrSafe Function GetSecurityDescriptorOwner Lib "advapi32.dll" (pSecurityDescriptor As Byte, pOwner As LongPtr, lpbOwnerDefaulted As LongPtr) As Long
-        Private Declare PtrSafe Function LookupAccountSid Lib "advapi32.dll" Alias "LookupAccountSidA" (ByVal lpSystemName As String, ByVal Sid As LongPtr, ByVal Name As String, cbName As Long, ByVal ReferencedDomainName As String, cbReferencedDomainName As Long, peUse As LongPtr) As Long
+        Private Declare PtrSafe Function LookupAccountSid Lib "advapi32.dll" Alias "LookupAccountSidA" (ByVal lpSystemName As String, ByVal Sid As LongPtr, ByVal name As String, cbName As Long, ByVal ReferencedDomainName As String, cbReferencedDomainName As Long, peUse As LongPtr) As Long
         Private Declare PtrSafe Function MultiByteToWideChar Lib "kernel32" (ByVal codePage As Long, ByVal dwFlags As Long, ByVal lpMultiByteStr As LongPtr, ByVal cbMultiByte As Long, ByVal lpWideCharStr As LongPtr, ByVal cchWideChar As Long) As Long
         Private Declare PtrSafe Function WideCharToMultiByte Lib "kernel32" (ByVal codePage As Long, ByVal dwFlags As Long, ByVal lpWideCharStr As LongPtr, ByVal cchWideChar As Long, ByVal lpMultiByteStr As LongPtr, ByVal cbMultiByte As Long, ByVal lpDefaultChar As LongPtr, ByVal lpUsedDefaultChar As LongPtr) As Long
         Private Declare PtrSafe Function SHGetKnownFolderPath Lib "shell32" (ByRef rfID As GUID, ByVal dwFlags As Long, ByVal hToken As Long, ByRef pszPath As LongPtr) As Long
@@ -655,7 +655,7 @@ Public Function BrowseForFolder(Optional ByRef initialPath As String _
         If LenB(initialPath) > 0 Then .InitialFileName = initialPath
         If LenB(.InitialFileName) = 0 Then
             Dim app As Object: Set app = Application 'Needs to be late-binded
-            Select Case Application.Name
+            Select Case Application.name
                 Case "Microsoft Excel": .InitialFileName = GetLocalPath(app.ThisWorkbook.path, , True)
                 Case "Microsoft Word":  .InitialFileName = GetLocalPath(app.ThisDocument.path, , True)
             End Select
@@ -1320,7 +1320,7 @@ Private Sub AddFilesTo(ByVal collTarget As Collection _
             If Not fsoFolder Is Nothing Then
                 With fsoFolder
                     For Each fsoFile In .Files
-                        collTemp.Add fsoFile.Name
+                        collTemp.Add fsoFile.name
                     Next fsoFile
                 End With
             End If
@@ -1708,7 +1708,7 @@ Private Sub AddFoldersTo(ByVal collTarget As Collection _
             If Not fsoFolder Is Nothing Then
                 On Error Resume Next
                 For Each fsoDir In fsoFolder.SubFolders
-                    collFolders.Add fixedPath & fsoDir.Name
+                    collFolders.Add fixedPath & fsoDir.name
                 Next fsoDir
                 On Error GoTo 0
             End If
@@ -1959,7 +1959,7 @@ Public Function GetSpecialFolderPath(ByVal sfc As SpecialFolderConstant _
     '
     On Error Resume Next
     Dim app As Object:        Set app = Application
-    Dim inExcel As Boolean:   inExcel = (app.Name = "Microsoft Excel")
+    Dim inExcel As Boolean:   inExcel = (app.name = "Microsoft Excel")
     Dim appVersion As Double: appVersion = val(app.Version)
     On Error GoTo 0
     '
