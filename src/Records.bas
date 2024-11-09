@@ -496,16 +496,8 @@ Public Function computeRxTotals() As ComputedRx
         Dim guestID As String
         guestID = RxSheet.Cells.Item(i, 2).value
         
+        If Not addresses.exists(guestID) Then GoTo DiscardRecord
         
-        If Not addresses.exists(guestID) Then
-            ' Duplicated below
-            If totals.discardedIDs = vbNullString Then
-                totals.discardedIDs = guestID
-            Else
-                totals.discardedIDs = totals.discardedIDs & "," & guestID
-            End If
-            GoTo NextRxRecord
-        End If
         Dim addressRecord As RecordTuple
         Set addressRecord = addresses.Item(guestID)
         
@@ -523,13 +515,16 @@ Public Function computeRxTotals() As ComputedRx
             Dim name As String
             Dim prevName As String
             Dim medication As String
-            name = RxSheet.Cells.Item(i, 3 * j).value
             medication = RxSheet.Cells.Item(i, 1 + (3 * j)).value
+            If medication = vbNullString Then GoTo NextName
+            
+            name = RxSheet.Cells.Item(i, 3 * j).value
             If (name = vbNullString) Then
-                If (prevName <> vbNullString) And (medication <> vbNullString) Then
+                If (prevName <> vbNullString) Then
                     ' Assume previous name
                     name = prevName
                 Else
+                    ' NOTE this will skip medications with blank guest names, even if later medications have guest names
                     GoTo NextName
                 End If
             End If
@@ -582,15 +577,7 @@ Public Function computeRxTotals() As ComputedRx
 NextName:
         Next j
         
-        If Not hasRx Then
-            ' duplicated above
-            If totals.discardedIDs = vbNullString Then
-                totals.discardedIDs = guestID
-            Else
-                totals.discardedIDs = totals.discardedIDs & "," & guestID
-            End If
-            GoTo NextRxRecord
-        End If
+        If Not hasRx Then GoTo DiscardRecord
         
         Dim cost As Double
         cost = RxSheet.Cells.Item(i, 21).value
@@ -604,6 +591,14 @@ NextName:
             totals.mostRecentRxDate = visitDate
         ElseIf visitDate > DateValue(totals.mostRecentRxDate) Then
             totals.mostRecentRxDate = visitDate
+        End If
+        
+        GoTo NextRxRecord
+DiscardRecord:
+        If totals.discardedIDs = vbNullString Then
+            totals.discardedIDs = guestID
+        Else
+            totals.discardedIDs = totals.discardedIDs & "," & guestID
         End If
 NextRxRecord:
         i = i + 1
