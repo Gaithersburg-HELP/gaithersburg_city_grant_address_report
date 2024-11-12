@@ -105,8 +105,8 @@ Public Sub TestRxAddresses()
     MacroEntry RxSheet
     PasteRxTestRecordsCalculate ThisWorkbook.path & "\testdata\testrxrecords.csv"
     
-    Assert.isTrue SheetUtilities.getRxMostRecentDateRng.value = "4/21/2024"
-    Assert.isTrue SheetUtilities.getRxDiscardedIDsRng.value = "Amazon Rainforest, Apple Rich"
+    Assert.isTrue SheetUtilities.getRxMostRecentDateRng.value = "04/21/2025", "Most recent date is incorrect"
+    Assert.isTrue SheetUtilities.getRxDiscardedIDsRng.value = "Amazon Rainforest, Apple Rich", "Discarded IDs are incorrect"
     
     CompareSheetCSV Assert, RxSheet.name, ThisWorkbook.path & "\testdata\testrx_rxtotalsoutput.csv", SheetUtilities.getRxTotalsRng
     CompareSheetCSV Assert, RxReportSheet.name, ThisWorkbook.path & "\testdata\testrx_rxfinalreportoutput.csv"
