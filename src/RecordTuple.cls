@@ -414,17 +414,21 @@ End Property
 
 
 Public Property Get CleanFirstName() As String
-    CleanFirstName = StrConv(FirstName, vbProperCase)
+    CleanFirstName = CleanString(FirstName)
 End Property
 
 Public Property Get CleanLastName() As String
     Dim properLastName As String
-    properLastName = StrConv(LastName, vbProperCase)
+    properLastName = CleanString(LastName)
     ' Last names beginning with "Mc" should have next letter capitalized
     If Left$(properLastName, 2) = "Mc" Then
         properLastName = "Mc" & UCase$(Mid$(properLastName, 3, 1)) & Mid$(properLastName, 4, 99)
     End If
     CleanLastName = properLastName
+End Property
+
+Public Property Get CleanName() As String
+    CleanName = CleanFirstName & " " & CleanLastName
 End Property
 
 Public Property Get CleanInitials() As String
@@ -465,16 +469,6 @@ Private Function GetDirection(ByVal start As Long, ByVal street As String) As St
     Else
         GetDirection = vbNullString
     End If
-End Function
-
-' Replaces 2 or 3 spaces with single space with nullstring, returns result as ProperCase
-'@Ignore AssignedByValParameter
-Private Function CleanString(ByVal str As String) As String
-    str = Trim$(str)
-    str = Replace(str, "   ", " ")
-    str = Replace(str, "  ", " ")
-    ' Street numbers can have periods, see https://pe.usps.com/text/pub28/28c2_013.htm
-    CleanString = StrConv(str, vbProperCase)
 End Function
 
 ' Splits unit into zero-based array of abbreviated unit type, unit num, additional words

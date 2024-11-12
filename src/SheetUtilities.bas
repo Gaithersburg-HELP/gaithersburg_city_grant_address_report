@@ -564,3 +564,13 @@ Public Function getQuarterStr(ByVal dateStr As String) As String
     End Select
 End Function
 
+' Replaces 2 or 3 spaces with single space with nullstring, returns result as ProperCase
+'@Ignore AssignedByValParameter
+Public Function CleanString(ByVal str As String) As String
+    str = Trim$(str)
+    str = Replace(str, "   ", " ")
+    str = Replace(str, "  ", " ")
+    ' Street numbers can have periods, see https://pe.usps.com/text/pub28/28c2_013.htm
+    CleanString = StrConv(str, vbProperCase)
+End Function
+

@@ -524,14 +524,14 @@ Public Function computeRxTotals() As ComputedRx
                     ' Assume previous name
                     name = prevName
                 Else
-                    ' NOTE this will skip medications with blank guest names, even if later medications have guest names
-                    GoTo NextName
+                    ' Assume address name if medication with no name
+                    name = addressRecord.CleanName
                 End If
             End If
             
             hasRx = True
             
-            name = StrConv(name, vbProperCase)
+            name = CleanString(name)
             
             ' Replace - ; : with space
             ' Get proper cased first word
