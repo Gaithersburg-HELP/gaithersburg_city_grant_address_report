@@ -123,7 +123,7 @@ Public Sub output()
     Dim rxTotalTypeRow As RxTotalRowNum
     For rxTotalTypeRow = [_RxTotalRowFirst] To [_RxTotalRowLast]
         If (rxTotalTypeRow = mostRecentRxDateRow) Then
-            SheetUtilities.getRxMostRecentDateRng.value = totals.Item(rxTotalTypeRow)
+            SheetUtilities.getRxMostRecentDateRng.value = Format$(totals.Item(rxTotalTypeRow), "mm/dd/yyyy")
         ElseIf (rxTotalTypeRow = discardedIDsRow) Then
             SheetUtilities.getRxDiscardedIDsRng.value = totals.Item(rxTotalTypeRow)
         Else
