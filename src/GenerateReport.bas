@@ -47,6 +47,36 @@ Public Sub generateNonRxReport()
     ActiveSheet.Range("A2").Select
 End Sub
 
-Public Sub generateRxReport(ByVal records As RxRecords)
-    ' TODO
+Public Sub generateRxReport(ByVal records As RxRecords, ByVal addresses As Scripting.Dictionary)
+    Dim name As Variant
+    For Each name In records.guestNames()
+        Dim record As RxRecord
+        Set record = records.guestRecord(name)
+        
+        Dim addressRecord As RecordTuple
+        Set addressRecord = addresses.Item(record.guestID)
+        
+        Dim row As Range
+        Set row = SheetUtilities.getBlankRow(RxReportSheet.name)
+        
+        row.Cells.Item(1, 1) = "Gaithersburg HELP"
+        row.Cells.Item(1, 2) = addressRecord.GburgFormatValidAddress.Item(addressKey.streetNum)
+        row.Cells.Item(1, 3) = addressRecord.GburgFormatValidAddress.Item(addressKey.PrefixedStreetname)
+        row.Cells.Item(1, 4) = addressRecord.GburgFormatValidAddress.Item(addressKey.StreetType)
+        row.Cells.Item(1, 5) = addressRecord.GburgFormatValidAddress.Item(addressKey.unitType)
+        row.Cells.Item(1, 6) = addressRecord.GburgFormatValidAddress.Item(addressKey.unitNum)
+        row.Cells.Item(1, 7) = "Gaithersburg"
+        row.Cells.Item(1, 8) = "MD"
+        row.Cells.Item(1, 9) = CleanInitials(name)
+        
+        If record.quarter(q1) Then row.Cells.Item(1, 10) = "x"
+        If record.quarter(q2) Then row.Cells.Item(1, 11) = "x"
+        If record.quarter(q3) Then row.Cells.Item(1, 12) = "x"
+        If record.quarter(q4) Then row.Cells.Item(1, 13) = "x"
+        
+    Next name
+    
+    SheetUtilities.SortSheet RxReportSheet.name
+    
+    RxReportSheet.Range("A2").Select
 End Sub

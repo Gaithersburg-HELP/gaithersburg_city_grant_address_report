@@ -21,8 +21,8 @@ Private Property Get records() As Scripting.Dictionary
     Set records = pRecords
 End Property
 
-Public Property Get guestNames() As Variant
-    Set guestNames = records.Keys
+Public Property Get guestNames() As Variant()
+    guestNames = records.Keys
 End Property
 
 Public Property Get exists(ByVal name As String) As Boolean

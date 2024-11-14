@@ -427,13 +427,12 @@ Public Property Get CleanLastName() As String
     CleanLastName = properLastName
 End Property
 
-Public Property Get CleanName() As String
-    CleanName = CleanFirstName & " " & CleanLastName
+Public Property Get cleanName() As String
+    cleanName = CleanFirstName & " " & CleanLastName
 End Property
 
 Public Property Get CleanInitials() As String
-    CleanInitials = UCase$(Left$(CleanFirstName, 1)) _
-                    & UCase$(Left$(CleanLastName, 1))
+    CleanInitials = SheetUtilities.CleanInitials(cleanName)
 End Property
 
 ' Checks street name from start position onwards for an abbreviated direction with spaces around it

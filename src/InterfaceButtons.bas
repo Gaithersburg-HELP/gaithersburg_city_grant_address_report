@@ -132,11 +132,14 @@ Public Sub confirmPasteRxRecordsCalculate()
     ' This needs to go AFTER PasteRecords for PasteSpecial to work
     If Not MacroEntry(RxSheet) Then Exit Sub
     
+    Dim addresses As Scripting.Dictionary
+    Set addresses = records.loadAddresses(AddressesSheet.name)
+    
     Dim out As records.ComputedRx
-    out = records.computeRxTotals()
+    out = records.computeRxTotals(addresses)
     out.totals.output
     
-    GenerateReport.generateRxReport out.records
+    GenerateReport.generateRxReport out.records, addresses
     
     MacroExit RxSheet
 End Sub

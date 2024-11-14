@@ -574,3 +574,17 @@ Public Function CleanString(ByVal str As String) As String
     CleanString = StrConv(str, vbProperCase)
 End Function
 
+
+' Returns initials given clean name
+Public Function CleanInitials(ByVal cleanName As String) As String
+    Dim initials As String
+    initials = vbNullString
+    Dim words() As String
+    words = Split(cleanName, " ")
+    Dim word As Variant
+    For Each word In words
+        initials = initials & UCase$(Left$(word, 1))
+    Next word
+    CleanInitials = initials
+End Function
+

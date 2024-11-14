@@ -472,12 +472,9 @@ Private Sub loadAddressComputeCountyTotal(ByVal sheetName As String)
     Application.StatusBar = appStatus
 End Sub
 
-Public Function computeRxTotals() As ComputedRx
+Public Function computeRxTotals(ByVal addresses As Scripting.Dictionary) As ComputedRx
     Dim totals As RxTotals
     Set totals = New RxTotals
-    
-    Dim addresses As Scripting.Dictionary
-    Set addresses = records.loadAddresses(AddressesSheet.name)
     
     RxSheet.Columns.Item("A").NumberFormat = "mm/dd/yyyy"
     With SheetUtilities.getPastedRxRecordsRng
@@ -525,7 +522,7 @@ Public Function computeRxTotals() As ComputedRx
                     name = prevName
                 Else
                     ' Assume address name if medication with no name
-                    name = addressRecord.CleanName
+                    name = addressRecord.cleanName
                 End If
             End If
             
@@ -542,6 +539,7 @@ Public Function computeRxTotals() As ComputedRx
             medication = StrConv(medication, vbProperCase)
             
             If rxReportRecords.exists(name) Then
+                rxReportRecords.guestRecord(name).quarter(quarter) = True
                 If Not rxReportRecords.guestRecord(name).medications.exists(medication) Then
                     totals.numUndupRxInGburgServed(quarter) = totals.numUndupRxInGburgServed(quarter) + 1
                     totals.numUndupRxInProgramServed(quarter) = totals.numUndupRxInProgramServed(quarter) + 1
