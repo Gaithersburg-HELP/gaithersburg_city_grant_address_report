@@ -574,7 +574,6 @@ Public Function CleanString(ByVal str As String) As String
     CleanString = StrConv(str, vbProperCase)
 End Function
 
-
 ' Returns initials given clean name
 Public Function CleanInitials(ByVal cleanName As String) As String
     Dim initials As String
@@ -588,3 +587,23 @@ Public Function CleanInitials(ByVal cleanName As String) As String
     CleanInitials = initials
 End Function
 
+' Merge two dictionaries without affecting the originals
+' Keys in the 2nd dictionary will override the first
+Function MergeDicts(ByVal dct1 As Scripting.Dictionary, ByVal dct2 As Scripting.Dictionary)
+    'Merge 2 dictionaries. The second dictionary will override the first if they have the same key
+
+    Dim res As Scripting.Dictionary
+    Dim key As Variant
+
+    Set res = New Scripting.Dictionary
+
+    For Each key In dct1.Keys()
+        res.Item(key) = dct1(key)
+    Next
+
+    For Each key In dct2.Keys()
+        res.Item(key) = dct2(key)
+    Next
+
+    Set MergeDicts = res
+End Function

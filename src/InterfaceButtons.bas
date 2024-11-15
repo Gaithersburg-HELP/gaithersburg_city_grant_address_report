@@ -135,6 +135,11 @@ Public Sub confirmPasteRxRecordsCalculate()
     Dim addresses As Scripting.Dictionary
     Set addresses = records.loadAddresses(AddressesSheet.name)
     
+    Dim discards As Scripting.Dictionary
+    Set discards = records.loadAddresses(DiscardsSheet.name)
+    
+    Set addresses = MergeDicts(addresses, discards)
+    
     Dim out As records.ComputedRx
     out = records.computeRxTotals(addresses)
     out.totals.output
