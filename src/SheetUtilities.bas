@@ -589,7 +589,8 @@ End Function
 
 ' Merge two dictionaries without affecting the originals
 ' Keys in the 2nd dictionary will override the first
-Function MergeDicts(ByVal dct1 As Scripting.Dictionary, ByVal dct2 As Scripting.Dictionary)
+'@Ignore UseMeaningfulName
+Public Function MergeDicts(ByVal dict1 As Scripting.Dictionary, ByVal dict2 As Scripting.Dictionary) As Scripting.Dictionary
     'Merge 2 dictionaries. The second dictionary will override the first if they have the same key
 
     Dim res As Scripting.Dictionary
@@ -597,13 +598,20 @@ Function MergeDicts(ByVal dct1 As Scripting.Dictionary, ByVal dct2 As Scripting.
 
     Set res = New Scripting.Dictionary
 
-    For Each key In dct1.Keys()
-        res.Item(key) = dct1(key)
+    For Each key In dict1.Keys()
+        res.Add key, dict1.Item(key)
     Next
 
-    For Each key In dct2.Keys()
-        res.Item(key) = dct2(key)
+    For Each key In dict2.Keys()
+        If res.exists(key) Then
+            '.Item does not work with VBA custom classes
+            res.Remove key
+            res.Add key, dict2.Item(key)
+        Else
+            res.Add key, dict2.Item(key)
+        End If
     Next
 
     Set MergeDicts = res
 End Function
+
