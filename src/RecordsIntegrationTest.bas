@@ -111,6 +111,11 @@ Public Sub TestRxAddresses()
     CompareSheetCSV Assert, RxSheet.name, ThisWorkbook.path & "\testdata\testrx_rxtotalsoutput.csv", SheetUtilities.getRxTotalsRng
     CompareSheetCSV Assert, RxReportSheet.name, ThisWorkbook.path & "\testdata\testrx_rxfinalreportoutput.csv"
     
+    InterfaceButtons.confirmDeleteRxRecords
+    
+    Assert.isTrue SheetUtilities.getRxMostRecentDateRng.value = "None", "Most recent date is not none"
+    Assert.isTrue SheetUtilities.getRxDiscardedIDsRng.value = "None", "Discarded IDs is not none"
+    Assert.isTrue RxSheet.UsedRange.rows.count = 10, "Not all data was deleted"
     Exit Sub
 TestFail:
     Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description

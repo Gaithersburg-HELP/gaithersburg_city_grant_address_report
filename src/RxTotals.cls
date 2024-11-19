@@ -125,7 +125,11 @@ Public Sub output()
         If (rxTotalTypeRow = mostRecentRxDateRow) Then
             SheetUtilities.getRxMostRecentDateRng.value = Format$(totals.Item(rxTotalTypeRow), "mm/dd/yyyy")
         ElseIf (rxTotalTypeRow = discardedIDsRow) Then
-            SheetUtilities.getRxDiscardedIDsRng.value = totals.Item(rxTotalTypeRow)
+            If totals.Item(rxTotalTypeRow) = vbNullString Then
+                SheetUtilities.getRxDiscardedIDsRng.value = "None"
+            Else
+                SheetUtilities.getRxDiscardedIDsRng.value = totals.Item(rxTotalTypeRow)
+            End If
         Else
             Dim i As Long
             For i = 1 To 4

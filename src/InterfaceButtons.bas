@@ -208,14 +208,7 @@ Public Sub confirmDeleteRxRecords()
     
     If Not MacroEntry(ThisWorkbook.ActiveSheet) Then Exit Sub
     
-    SheetUtilities.getPastedRxRecordsRng.Clear
-    SheetUtilities.getRxTotalsRng.value = 0
-    SheetUtilities.getRxMostRecentDateRng.Clear
-    SheetUtilities.getRxDiscardedIDsRng.value = vbNullString
-    
-    getRxReportRng.Clear
-    
-    RxSheet.Columns.Item("A").NumberFormat = "mm/dd/yyyy"
+    SheetUtilities.ClearRxTotals
     
     MacroExit ThisWorkbook.ActiveSheet
 End Sub

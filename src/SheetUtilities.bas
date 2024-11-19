@@ -402,6 +402,14 @@ Public Sub ClearInterfaceTotals()
     Next totalService
 End Sub
 
+Public Sub ClearRxTotals()
+    getRxMostRecentDateRng.value = "None"
+    getRxMostRecentDateRng.NumberFormat = "mm/dd/yyyy"
+    getRxDiscardedIDsRng.value = "None"
+    getPastedRxRecordsRng.Clear
+    RxSheet.Columns.Item("A").NumberFormat = "mm/dd/yyyy"
+End Sub
+
 Public Sub ClearAll()
     '@Ignore FunctionReturnValueDiscarded
     InterfaceButtons.MacroEntry ThisWorkbook.ActiveSheet
@@ -411,12 +419,7 @@ Public Sub ClearAll()
     getPastedInterfaceRecordsRng.Clear
     InterfaceSheet.Columns.Item("A").NumberFormat = "mm/dd/yyyy"
     
-    getRxMostRecentDateRng.value = vbNullString
-    getRxMostRecentDateRng.NumberFormat = "mm/dd/yyyy"
-    getRxDiscardedIDsRng.value = vbNullString
-    getPastedRxRecordsRng.Clear
-    RxSheet.Columns.Item("A").NumberFormat = "mm/dd/yyyy"
-    
+    ClearRxTotals
     ClearInterfaceTotals
     getNonDeliveryTotalHeaderRng.value = "Non-delivery"
     getDeliveryTotalHeaderRng.value = "Delivery"
