@@ -121,3 +121,5 @@ Visit on,Tracking Method,Guest ID,First Name,Last Name,Address,Apartment/Suite,C
 11/1/2023 0:00,Food,119,119,119,,,Wheaton,MD,20902,1,0,0,1,,
 12/1/2023 0:00,Food,120,120,120,,,Washington Grove,MD,20915,1,0,0,1,,
 1/1/2023 0:00,Food,121,121,121,,,Wheaton,MD,20915,1,0,0,1,,
+2/1/2023 0:00,Rx Asst,122,122,122,,,Wheaton,MD,20915,1,0,0,1,,should be discarded because Rx Asst
+3/1/2023 0:00,Delivery,123,123,123,,,Wheaton,MD,20915,1,0,0,1,,should add to included services

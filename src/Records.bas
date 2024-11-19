@@ -252,8 +252,20 @@ Private Sub incrementCountyTotal(ByVal record As RecordTuple)
     
     Dim monthNum As Long
     
+    Dim includedServices As String
+    includedServices = SheetUtilities.getCountyTotalServicesRng.value
+    
     Dim service As Variant
     For Each service In record.visitData.Keys
+        If service = "Rx Asst" Then
+            GoTo NextService
+        Else
+            If includedServices = vbNullString Then
+                includedServices = service
+            ElseIf InStr(1, includedServices, service, vbTextCompare) = 0 Then
+                includedServices = includedServices & "," & service
+            End If
+        End If
         Dim quarter As Variant
         For Each quarter In record.visitData.Item(service).Keys
             Dim visit As Variant
@@ -272,7 +284,10 @@ Private Sub incrementCountyTotal(ByVal record As RecordTuple)
                 End If
             Next visit
         Next quarter
+NextService:
     Next service
+    
+    SheetUtilities.getCountyTotalServicesRng.value = includedServices
     
     Dim zip As String
     If record.ValidZipcode <> vbNullString Then

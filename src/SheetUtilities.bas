@@ -205,6 +205,10 @@ Public Function getDeliveryTotalHeaderRng() As Range
     Set getDeliveryTotalHeaderRng = InterfaceSheet.Range("W1")
 End Function
 
+Public Function getCountyTotalServicesRng() As Range
+    Set getCountyTotalServicesRng = InterfaceSheet.Range("B21")
+End Function
+
 Public Function getCountyRng() As Range
     Set getCountyRng = InterfaceSheet.Range("B9:CS20")
 End Function
@@ -423,6 +427,7 @@ Public Sub ClearAll()
     ClearInterfaceTotals
     getNonDeliveryTotalHeaderRng.value = "Non-delivery"
     getDeliveryTotalHeaderRng.value = "Delivery"
+    getCountyTotalServicesRng.value = vbNullString
     getCountyRng.value = 0
     
     getRxTotalsRng.value = 0
