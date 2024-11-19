@@ -418,13 +418,13 @@ Public Sub TestCountyTotals()
     MacroEntry InterfaceSheet
     addRecords
     
-    CompareSheetCSV Assert, InterfaceSheet.name, ThisWorkbook.path & "\testdata\testcounty_1added_nondeliverytotalsoutput.csv", getCountyRng
+    CompareSheetCSV Assert, InterfaceSheet.name, ThisWorkbook.path & "\testdata\testcounty_1added_totalsoutput.csv", getCountyRng
     
     attemptValidation
     
     Assert.isTrue SheetUtilities.getCountyTotalServicesRng.value = "Food,Delivery", "Included services are incorrect"
     
-    CompareSheetCSV Assert, InterfaceSheet.name, ThisWorkbook.path & "\testdata\testcounty_2validated_nondeliverytotalsoutput.csv", getCountyRng
+    CompareSheetCSV Assert, InterfaceSheet.name, ThisWorkbook.path & "\testdata\testcounty_2validated_totalsoutput.csv", getCountyRng
     MacroExit InterfaceSheet
     
     
