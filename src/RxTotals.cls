@@ -7,8 +7,9 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-
 '@Folder("City_Grant_Address_Report.src")
+'@IgnoreModule ProcedureNotUsed
+'ProcedureNotUsed is Rubberduck bug
 Option Explicit
 
 Public Enum QuarterNum
