@@ -519,7 +519,8 @@ Public Sub ImportRecords()
     records.computeCountyTotals
     
     InterfaceSheet.Range("A1").value = versionNum
-    getInterfaceMostRecentRng.value = wbook.Worksheets.[_Default](InterfaceSheet.name).Range(SheetUtilities.mostRecentDateCell).value
+    ' v3.10 renames Interface to Home
+    getInterfaceMostRecentRng.value = wbook.Worksheets.[_Default]("Interface").Range(SheetUtilities.mostRecentDateCell).value
     
     wbook.Close
     
