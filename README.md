@@ -121,6 +121,18 @@ To print this documentation, click [here](README.md) and print that page.
 > [!NOTE]
 > If you need to generate Rx Final Report and totals, see below. 
 ## Adding Rx medication records and generating totals and Rx Final Report
-1) Ensure you have done the following:
-    1) Imported in all address records pertaining to "Rx Asst" (follow steps for [Importing Data](#importing-data), and make sure "Rx Asst" tracking methods are included when copying and pasting data).
-    2) TODO
+1) Records pasted in on the "Home" sheet are referred to as "address records", while records pasted in on the "Rx" sheet are referred to as "medication records".
+2) Ensure you have done the following:
+    1) Imported in all address records pertaining to "Rx Asst" (follow steps for [Importing Data](#importing-data), and make sure "Rx Asst" tracking methods are included when copying and pasting data). Note that it does not matter if you are under the "Gaithersburg HELP" location or the "Gaithersburg HELP Financial" location.
+    2) Validated or discarded all relevant address records pertaining to "Rx Asst" tracking method, so there are no "Rx Asst" tracking methods under "Needs Autocorrect". Records which are still under "Needs Autocorrect" will not be counted in totals or added to the Rx Final Report.
+3) Delete all old Rx medication records on the "Rx" sheet by clicking "Delete All Rx Records". Do this even for each quarter in the same fiscal year, otherwise duplicate records will be counted twice for Rx expenditures.
+4) Import Rx medication records by following steps for [Importing Data](#importing-data) with the following changes:
+	* Use the preset "city grant address rx v3"
+	* Select dates from the beginning of the fiscal year to the end of the current quarter.
+	* On the "Rx" sheet, click "Paste Additional Rx Records and Generate Report" instead of pasting records on the "Home" sheet.
+5) Verify and fix any guest IDs in the "Discarded Guest IDs" field. After fixing the guest IDs, go back to step 2, delete all medication records, and reimport. Guest IDs can be discarded for the following reasons:
+    * Address may be in "Needs Autocorrect". Validate or discard the address.
+	* Address record may not have been added. Make sure all "Rx Asst" tracking methods were imported when importing address records.
+	* Medication record may have no medications. Contact the Rx coordinator if you think this is an error, otherwise ignore this guest ID.
+6) Totals can be seen at the top of the "Rx" sheet. To export the Rx final report, start from step 4 of [generating the Non Rx report](#generating-totals-and-non-rx-final-report) but use the "Rx Report" sheet instead.
+	
