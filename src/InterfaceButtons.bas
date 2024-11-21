@@ -621,6 +621,8 @@ Public Sub CopyAndOpenCountyTotalsSite()
     
     code = code & "}}')"
     
+    code = code & "; location.reload()"
+    
     code = Replace(code, "~", """")
 
     With CreateObject("htmlfile")
