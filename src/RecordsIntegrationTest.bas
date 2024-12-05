@@ -34,18 +34,12 @@ End Sub
 
 '@TestInitialize
 Private Sub TestInitialize()
-    MacroEntry InterfaceSheet
-    ClearAll
-    Autocorrect.printRemainingRequests 8000
-    MacroExit InterfaceSheet
+    SheetUtilities.TestSetupCleanup
 End Sub
 
 '@TestCleanup
 Private Sub TestCleanup()
-    MacroEntry InterfaceSheet
-    ClearAll
-    Autocorrect.printRemainingRequests 8000
-    MacroExit InterfaceSheet
+    SheetUtilities.TestSetupCleanup
 End Sub
 
 

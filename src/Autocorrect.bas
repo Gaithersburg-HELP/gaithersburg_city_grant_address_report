@@ -6,7 +6,7 @@ Public Const requestLimit As Long = 8000
 
 Public Function getRemainingRequests() As Long
     Dim text As String
-    text = AutocorrectAddressesSheet.Shapes.[_Default]("API Limit").TextFrame.Characters.text
+    text = SheetUtilities.getAutocorrectRequestCharacters.text
     Dim refreshMonth As String
     refreshMonth = Lookup.RWordTrim(text)(1)
     If month(DateValue(refreshMonth & " 1 2024")) = month(Date) Then
@@ -19,8 +19,14 @@ Public Function getRemainingRequests() As Long
 End Function
 
 Public Sub printRemainingRequests(ByVal num As Long)
-    AutocorrectAddressesSheet.Shapes.[_Default]("API Limit").TextFrame.Characters.text = _
-        num & " / " & requestLimit & " left until " & MonthName(month(Date) + 1)
+    Dim nameOfMonth As String
+    If month(Date) = 12 Then
+        nameOfMonth = "January"
+    Else
+        nameOfMonth = MonthName(month(Date) + 1)
+    End If
+    SheetUtilities.getAutocorrectRequestCharacters.text = _
+        num & " / " & requestLimit & " left until " & nameOfMonth
 End Sub
 
 Public Sub attemptValidation()

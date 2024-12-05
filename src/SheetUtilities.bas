@@ -263,6 +263,10 @@ Public Function getServiceHeaderRng(ByVal sheetName As String) As Range
     End If
 End Function
 
+Public Function getAutocorrectRequestCharacters() As Characters
+    Set getAutocorrectRequestCharacters = AutocorrectAddressesSheet.Shapes.[_Default]("API Limit").TextFrame.Characters
+End Function
+
 ' Returns zero based service array
 ' If no services returns array with vbNullString at index 0
 Public Function loadServiceNames(ByVal sheetName As String) As String()
@@ -623,3 +627,12 @@ Public Function MergeDicts(ByVal dict1 As Scripting.Dictionary, ByVal dict2 As S
     Set MergeDicts = res
 End Function
 
+Public Sub TestSetupCleanup()
+    If Not MacroEntry(InterfaceSheet) Then
+        Err.Raise 514, Description:="Cannot run test with filters enabled"
+    End If
+        
+    ClearAll
+    Autocorrect.printRemainingRequests 8000
+    MacroExit InterfaceSheet
+End Sub
