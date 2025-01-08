@@ -1,4 +1,5 @@
 Attribute VB_Name = "UIUnitTest"
+'@IgnoreModule FunctionReturnValueDiscarded
 '@TestModule
 '@Folder "City_Grant_Address_Report.test"
 
