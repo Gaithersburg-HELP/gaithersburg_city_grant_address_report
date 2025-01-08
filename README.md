@@ -115,7 +115,8 @@ To print this documentation, click [here](README.md) and print that page.
 1) If you need to submit county totals, on the "Home" sheet, select the month you want to report County totals for. Click "Copy selected zip totals code and open county totals site". This will open the county totals form in the browser.
 2) In the browser, hit F12 to open developer tools. Select the "Console" tab. Click to the right of the > symbol to set the cursor. Paste using Ctrl-V into the console and hit Enter. If you receive a warning, type in 'allow pasting' without quotes and hit Enter, then paste using Ctrl-V and hit enter. This will refresh the page and all values will be filled in. Double check the household totals and zip code total values for e.g. 20877, 20878, 20879, 20886 since this code will break if the form gets updated.
     ![Paste in developer console](readme/5.2countypasted.png)
-4) Fill in the other questions. Make sure to check the box at the bottom to email a copy of the form.
+4) Fill in the other questions.
+5) **Before submission** save a copy of the form (the emailed copy does not include zip code totals). Hit Ctrl-P (Right click > Print and Menu > Print do not work). Enable "Format for printers", then select "Save as PDF" in the print dialog.
 > [!NOTE]
 > If you need to generate Rx Final Report and totals, see below. 
 ## Adding Rx medication records and generating totals and Rx Final Report
