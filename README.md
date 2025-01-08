@@ -132,4 +132,8 @@ To print this documentation, click [here](README.md) and print that page.
 	* Address record may not have been added. Make sure all "Rx Asst" tracking methods were imported when importing address records.
 	* Medication record may have no medications. Contact the Rx coordinator if you think this is an error, otherwise ignore this guest ID.
 6) Totals can be seen at the top of the "Rx" sheet. To export the Rx final report, start from step 4 of [generating the Non Rx report](#generating-totals-and-non-rx-final-report) but use the "Rx Report" sheet instead.
-	
+
+# Software setup
+This project uses Excel with the Rubberduck VBA plugin for running tests and linting. See the Rubberduck installation instructions [here](https://github.com/rubberduck-vba/Rubberduck/wiki/Installing)
+
+.NET Framework 3.5 and 4.0 must be enabled, see instructions [here](https://stackoverflow.com/a/56430192/13342792).
