@@ -92,6 +92,7 @@ To print this documentation, click [here](README.md) and print that page.
     * In the USPS website, the DPV Confirmation will be Y for a valid address, and a different letter if invalid.
 5) Look at the keyboard for possible typos, e.g. 419 was entered instead of 119
 6) If unable to validate unit type and number but you can validate the address, the XLSM file will accept it if "User Verified" is set to "True" and the "Validated" unit type and number fields are blank before clicking "Attempt Validation"
+7) The Gaithersburg [Batch Address Match tool](https://maps.gaithersburgmd.gov/batchAddressMatch/) is the standard for what is considered valid - as of 1/8/25 they do not care about valid unit type and number, only the core address matters. You can upload the Address Listings report to this tool to verify all core addresses are valid.
 ### Tips for editing
 1) To change multiple addresses, you can filter on the addresses you want to change. You can fill on the filtered list by clicking and dragging on the bottom right corner of the cell to e.g. change multiple rows to the same value. This doesn’t affect hidden filtered rows.
     * You must disable the filters before clicking any buttons, the XLSM will check for enabled filters before allowing further changes.
