@@ -133,6 +133,12 @@ To print this documentation, click [here](README.md) and print that page.
     * Address may be in "Needs Autocorrect". Validate or discard the address.
 	* Address record may not have been added. Make sure all "Rx Asst" tracking methods were imported when importing address records.
 	* Medication record may have no medications. Contact the Rx coordinator if you think this is an error, otherwise ignore this guest ID.
+6) On the "Rx Report" sheet, check for duplicate addresses with the same initials. If they exist, it's probably because of the same name being spelled incorrectly, which the report wrongly assumes are different people. As a temporary measure, you can delete the duplicated records off of the "Rx Report" sheet. To fix this error, you can do the following:
+   1) On the "Addresses" sheet, search for the duplicated address to find the associated guest ID(s). There may be multiple guest IDs associated to the same address.
+   2) On the "Rx" sheet, search for the guest ID(s) to find the records which are associated with that address.
+   3) Check those records for name misspellings.
+   4) If names are misspelled, you can either correct the misspelling in the raw "city grant address rx v3" exported CSV, or fix it in Soxbox so it doesn't happen again.
+   5) When fixed, start again with deleting old Rx medication records from step 3.
 6) Totals can be seen at the top of the "Rx" sheet. To export the Rx final report, start from step 4 of [generating the Non Rx report](#generating-totals-and-non-rx-final-report) but use the "Rx Report" sheet instead.
 
 # Software setup
