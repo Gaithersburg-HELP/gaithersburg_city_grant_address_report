@@ -42,7 +42,6 @@ Private Sub TestCleanup()
     SheetUtilities.TestSetupCleanup
 End Sub
 
-
 Private Sub ClearClipboard()
     Dim data As DataObject
     Set data = New DataObject
@@ -82,6 +81,51 @@ End Sub
 
 Public Sub PasteRxTestRecordsCalculate(ByVal csvPath As String)
     PasteTestRecords csvPath, "InterfaceButtons.confirmPasteRxRecordsCalculate"
+End Sub
+
+'@TestMethod
+Public Sub TestMultiDeliveryTypeCount() ' Issue #4
+    On Error GoTo TestFail
+    
+    MacroEntry AddressesSheet
+    
+    Dim testAddresses As Scripting.Dictionary
+    Set testAddresses = New Scripting.Dictionary
+    
+    Dim deliveryRecord As RecordTuple
+    Set deliveryRecord = New RecordTuple
+    
+    Dim nondeliveryRecord As RecordTuple
+    Set nondeliveryRecord = New RecordTuple
+    
+    Dim multiDeliveryTypeRecord As RecordTuple
+    Set multiDeliveryTypeRecord = New RecordTuple
+    
+    deliveryRecord.SetInCity InCityCode.ValidInCity
+    deliveryRecord.guestID = "1"
+    nondeliveryRecord.SetInCity InCityCode.ValidInCity
+    nondeliveryRecord.guestID = "2"
+    multiDeliveryTypeRecord.SetInCity InCityCode.ValidInCity
+    multiDeliveryTypeRecord.guestID = "3"
+    
+    deliveryRecord.AddVisit "7/8/2024", "Delivery Service"
+    nondeliveryRecord.AddVisit "11/11/2024", "Food Service"
+    multiDeliveryTypeRecord.AddVisit "2/3/2025", "Delivery Service"
+    multiDeliveryTypeRecord.AddVisit "5/5/2025", "Food Service"
+    
+    testAddresses.Add deliveryRecord.key, deliveryRecord
+    testAddresses.Add nondeliveryRecord.key, nondeliveryRecord
+    testAddresses.Add multiDeliveryTypeRecord.key, multiDeliveryTypeRecord
+    
+    records.writeAddresses AddressesSheet.name, testAddresses
+    
+    records.computeInterfaceTotals
+    
+    CompareSheetCSV Assert, InterfaceSheet.name, ThisWorkbook.path & "\testdata\testMultiDeliveryTypeCount_multideliverytypetotalsoutput.csv", SheetUtilities.getMultiDeliveryTypeTotalsRng()
+    
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
 End Sub
 
 '@TestMethod

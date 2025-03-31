@@ -201,6 +201,10 @@ Public Function getNonDeliveryTotalHeaderRng() As Range
     Set getNonDeliveryTotalHeaderRng = InterfaceSheet.Range("R1")
 End Function
 
+Public Function getMultiDeliveryTypeTotalsRng() As Range
+    Set getMultiDeliveryTypeTotalsRng = InterfaceSheet.Range("X7:AA7")
+End Function
+
 Public Function getDeliveryTotalHeaderRng() As Range
     Set getDeliveryTotalHeaderRng = InterfaceSheet.Range("W1")
 End Function
