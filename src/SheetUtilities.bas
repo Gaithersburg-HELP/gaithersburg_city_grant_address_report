@@ -194,15 +194,13 @@ Public Function getInterfaceTotalsRng(ByVal totalService As TotalServiceType) As
             Set getInterfaceTotalsRng = InterfaceSheet.Range("S3:V7")
         Case Delivery
             Set getInterfaceTotalsRng = InterfaceSheet.Range("X3:AA6")
+        Case multiDeliveryType
+            Set getInterfaceTotalsRng = InterfaceSheet.Range("X7:AA7")
     End Select
 End Function
 
 Public Function getNonDeliveryTotalHeaderRng() As Range
     Set getNonDeliveryTotalHeaderRng = InterfaceSheet.Range("R1")
-End Function
-
-Public Function getMultiDeliveryTypeTotalsRng() As Range
-    Set getMultiDeliveryTypeTotalsRng = InterfaceSheet.Range("X7:AA7")
 End Function
 
 Public Function getDeliveryTotalHeaderRng() As Range
@@ -412,7 +410,6 @@ Public Sub ClearInterfaceTotals()
     For totalService = [_TotalServiceTypeFirst] To [_TotalServiceTypeLast]
         getInterfaceTotalsRng(totalService).value = 0
     Next totalService
-    getMultiDeliveryTypeTotalsRng.value = 0
 End Sub
 
 Public Sub ClearRxTotals()

@@ -5,8 +5,9 @@ Option Explicit
 Public Enum TotalServiceType
     nonDelivery = 1
     Delivery = 2
+    multiDeliveryType = 3
     [_TotalServiceTypeFirst] = nonDelivery
-    [_TotalServiceTypeLast] = Delivery
+    [_TotalServiceTypeLast] = multiDeliveryType
 End Enum
 
 Public Enum TotalType
@@ -766,6 +767,11 @@ NextIteration:
         Set totalsRng = SheetUtilities.getInterfaceTotalsRng(totalServicename)
         Dim i As Long
         For i = 1 To 4
+            If totalServicename = multiDeliveryType Then
+                totalsRng.Cells.Item(1, i) = totals.Item(totalServicename).Item(uniqueGuestIDHousehold)(i)
+                GoTo NextQuarterForLoop
+            End If
+            
             totalsRng.Cells.Item(1, i) = totals.Item(totalServicename).Item(uniqueGuestID)(i)
             totalsRng.Cells.Item(2, i) = totals.Item(totalServicename).Item(uniqueGuestIDHousehold)(i)
             totalsRng.Cells.Item(3, i) = totals.Item(totalServicename).Item(nonUniqueGuestID)(i)
@@ -774,6 +780,7 @@ NextIteration:
             If totalServicename = nonDelivery Then
                 totalsRng.Cells.Item(5, i) = totals.Item(totalServicename).Item(rx)(i)
             End If
+NextQuarterForLoop:
         Next i
     Next totalServicename
     
