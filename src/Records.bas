@@ -663,6 +663,7 @@ Public Sub computeInterfaceTotals()
     Set uniqueNonDeliveryServices = New Scripting.Dictionary
     Dim uniqueDeliveryServices As Scripting.Dictionary
     Set uniqueDeliveryServices = New Scripting.Dictionary
+
     
     Dim appStatus As Variant
     If Application.StatusBar = False Then appStatus = False Else appStatus = Application.StatusBar
@@ -701,11 +702,13 @@ Public Sub computeInterfaceTotals()
                 If InStr(1, service, "delivery", vbTextCompare) > 0 Then
                     serviceType = Delivery
                     uniqueDeliveryServices.Item(service) = 1
+   
                 ElseIf InStr(1, service, "Rx Asst", vbTextCompare) > 0 Then
                     GoTo NextIteration
                 Else
                     serviceType = nonDelivery
                     uniqueNonDeliveryServices.Item(service) = 1
+                    
                 End If
 
                 For Each quarter In record.visitData.Item(service).Keys

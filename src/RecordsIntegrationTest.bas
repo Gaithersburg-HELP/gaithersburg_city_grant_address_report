@@ -98,30 +98,52 @@ Public Sub TestMultiDeliveryTypeCount() ' Issue #4
     Dim nondeliveryRecord As RecordTuple
     Set nondeliveryRecord = New RecordTuple
     
-    Dim multiDeliveryTypeRecord As RecordTuple
-    Set multiDeliveryTypeRecord = New RecordTuple
+    Dim deliveryAfterNonDeliveryRecord As RecordTuple
+    Set deliveryAfterNonDeliveryRecord = New RecordTuple
+    
+    Dim deliveryInSameQuarterNonDeliveryRecord As RecordTuple
+    Set deliveryInSameQuarterNonDeliveryRecord = New RecordTuple
+    
+    Dim deliveryBeforeNonDeliveryRecord As RecordTuple
+    Set deliveryBeforeNonDeliveryRecord = New RecordTuple
     
     deliveryRecord.SetInCity InCityCode.ValidInCity
     deliveryRecord.guestID = "1"
+    deliveryRecord.householdTotal = 1
     nondeliveryRecord.SetInCity InCityCode.ValidInCity
     nondeliveryRecord.guestID = "2"
-    multiDeliveryTypeRecord.SetInCity InCityCode.ValidInCity
-    multiDeliveryTypeRecord.guestID = "3"
+    nondeliveryRecord.householdTotal = 2
+    deliveryAfterNonDeliveryRecord.SetInCity InCityCode.ValidInCity
+    deliveryAfterNonDeliveryRecord.guestID = "3"
+    deliveryAfterNonDeliveryRecord.householdTotal = 3
+    deliveryInSameQuarterNonDeliveryRecord.SetInCity InCityCode.ValidInCity
+    deliveryInSameQuarterNonDeliveryRecord.guestID = "4"
+    deliveryInSameQuarterNonDeliveryRecord.householdTotal = 4
+    deliveryBeforeNonDeliveryRecord.SetInCity InCityCode.ValidInCity
+    deliveryBeforeNonDeliveryRecord.guestID = "5"
+    deliveryBeforeNonDeliveryRecord.householdTotal = 5
+    
     
     deliveryRecord.AddVisit "7/8/2024", "Delivery Service"
     nondeliveryRecord.AddVisit "11/11/2024", "Food Service"
-    multiDeliveryTypeRecord.AddVisit "2/3/2025", "Delivery Service"
-    multiDeliveryTypeRecord.AddVisit "5/5/2025", "Food Service"
+    deliveryAfterNonDeliveryRecord.AddVisit "7/3/2025", "Food Service"
+    deliveryAfterNonDeliveryRecord.AddVisit "10/5/2025", "Delivery Service"
+    deliveryInSameQuarterNonDeliveryRecord.AddVisit "11/3/2025", "Delivery Service"
+    deliveryInSameQuarterNonDeliveryRecord.AddVisit "12/5/2025", "Food Service"
+    deliveryBeforeNonDeliveryRecord.AddVisit "2/3/2025", "Delivery Service"
+    deliveryBeforeNonDeliveryRecord.AddVisit "5/5/2025", "Food Service"
     
     testAddresses.Add deliveryRecord.key, deliveryRecord
     testAddresses.Add nondeliveryRecord.key, nondeliveryRecord
-    testAddresses.Add multiDeliveryTypeRecord.key, multiDeliveryTypeRecord
+    testAddresses.Add deliveryAfterNonDeliveryRecord.key, deliveryAfterNonDeliveryRecord
+    testAddresses.Add deliveryInSameQuarterNonDeliveryRecord.key, deliveryInSameQuarterNonDeliveryRecord
+    testAddresses.Add deliveryBeforeNonDeliveryRecord.key, deliveryBeforeNonDeliveryRecord
     
     records.writeAddresses AddressesSheet.name, testAddresses
     
     records.computeInterfaceTotals
     
-    CompareSheetCSV Assert, InterfaceSheet.name, ThisWorkbook.path & "\testdata\testMultiDeliveryTypeCount_multideliverytypetotalsoutput.csv", SheetUtilities.getMultiDeliveryTypeTotalsRng()
+    CompareSheetCSV Assert, InterfaceSheet.name, ThisWorkbook.path & "\testdata\testMultiDeliveryTypeCount_multideliverytypetotalsoutput.csv", SheetUtilities.getInterfaceTotalsRng(multiDeliveryType)
     
     Exit Sub
 TestFail:
