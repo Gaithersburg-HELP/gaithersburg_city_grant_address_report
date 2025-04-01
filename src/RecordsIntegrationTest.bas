@@ -125,8 +125,10 @@ Public Sub TestMultiDeliveryTypeCount() ' Issue #4
     
     
     deliveryRecord.AddVisit "7/8/2024", "Delivery Service"
+    nondeliveryRecord.AddVisit "8/8/2024", "Food Service"
     nondeliveryRecord.AddVisit "11/11/2024", "Food Service"
     deliveryAfterNonDeliveryRecord.AddVisit "7/3/2025", "Food Service"
+    deliveryAfterNonDeliveryRecord.AddVisit "8/3/2025", "Food Service"
     deliveryAfterNonDeliveryRecord.AddVisit "10/5/2025", "Delivery Service"
     deliveryInSameQuarterNonDeliveryRecord.AddVisit "11/3/2025", "Delivery Service"
     deliveryInSameQuarterNonDeliveryRecord.AddVisit "12/5/2025", "Food Service"
@@ -143,7 +145,7 @@ Public Sub TestMultiDeliveryTypeCount() ' Issue #4
     
     records.computeInterfaceTotals
     
-    CompareSheetCSV Assert, InterfaceSheet.name, ThisWorkbook.path & "\testdata\testMultiDeliveryTypeCount_multideliverytypetotalsoutput.csv", SheetUtilities.getInterfaceTotalsRng(multiDeliveryType)
+    CompareSheetCSV Assert, InterfaceSheet.name, ThisWorkbook.path & "\testdata\testMultiDeliveryTypeCount_multideliverytypetotalsoutput.csv", SheetUtilities.getInterfaceTotalsRng(numDoubleCountedAdditionalDeliveryType)
     
     Exit Sub
 TestFail:
@@ -370,7 +372,7 @@ Public Sub TestDelivery()
     Assert.isTrue SheetUtilities.getDeliveryTotalHeaderRng.value = "Delivery: Delivery,Food-Delivery", "Delivery service header doesn't match"
     
     CompareSheetCSV Assert, InterfaceSheet.name, ThisWorkbook.path & "\testdata\testdeliveryaddresses_nondeliverytotalsoutput.csv", getInterfaceTotalsRng(nonDelivery)
-    CompareSheetCSV Assert, InterfaceSheet.name, ThisWorkbook.path & "\testdata\testdeliveryaddresses_deliverytotalsoutput.csv", getInterfaceTotalsRng(Delivery)
+    CompareSheetCSV Assert, InterfaceSheet.name, ThisWorkbook.path & "\testdata\testdeliveryaddresses_deliverytotalsoutput.csv", getInterfaceTotalsRng(delivery)
     CompareSheetCSV Assert, NonRxReportSheet.name, ThisWorkbook.path & "\testdata\testdeliveryaddresses_nonrxfinalreportoutput.csv"
     
     Exit Sub

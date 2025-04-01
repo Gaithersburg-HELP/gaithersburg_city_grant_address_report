@@ -192,9 +192,9 @@ Public Function getInterfaceTotalsRng(ByVal totalService As TotalServiceType) As
         Case nonDelivery
             ' Include RxTotal for easy test comparison
             Set getInterfaceTotalsRng = InterfaceSheet.Range("S3:V7")
-        Case Delivery
+        Case delivery
             Set getInterfaceTotalsRng = InterfaceSheet.Range("X3:AA6")
-        Case multiDeliveryType
+        Case numDoubleCountedAdditionalDeliveryType
             Set getInterfaceTotalsRng = InterfaceSheet.Range("X7:AA7")
     End Select
 End Function

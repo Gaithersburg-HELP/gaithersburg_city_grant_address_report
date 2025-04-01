@@ -4,10 +4,10 @@ Option Explicit
 '@Folder "City_Grant_Address_Report.src"
 Public Enum TotalServiceType
     nonDelivery = 1
-    Delivery = 2
-    multiDeliveryType = 3
+    delivery = 2
+    numDoubleCountedAdditionalDeliveryType = 3
     [_TotalServiceTypeFirst] = nonDelivery
-    [_TotalServiceTypeLast] = multiDeliveryType
+    [_TotalServiceTypeLast] = numDoubleCountedAdditionalDeliveryType
 End Enum
 
 Public Enum TotalType
@@ -632,6 +632,14 @@ Public Sub computeCountyTotals()
     loadAddressComputeCountyTotal DiscardsSheet.name
 End Sub
 
+Private Function getServiceType(ByVal service As Variant) As TotalServiceType
+    If InStr(1, service, "delivery", vbTextCompare) > 0 Then
+        getServiceType = delivery
+    Else
+        getServiceType = nonDelivery
+    End If
+End Function
+
 Public Sub computeInterfaceTotals()
     SheetUtilities.ClearInterfaceTotals
     
@@ -691,32 +699,47 @@ Public Sub computeInterfaceTotals()
                 Next visit
             Next quarter
             
-            ' Keep track of whether we've counted unduplicated for Delivery and Non Delivery using a dict holding earliest quarter added
-            ' If service key does not exist, not counted
+            ' Store whether a service type was present in each quarter
+            ' so we can calculate later the number of double counts
+            Dim deliveryServiceQuarters(1 To 4) As Boolean
+            Dim nondeliveryServiceQuarters(1 To 4) As Boolean
+            Dim i As Long
+            For i = 1 To 4
+                deliveryServiceQuarters(i) = False
+                nondeliveryServiceQuarters(i) = False
+            Next i
+            
+            ' Calculate totals for Delivery and Nondelivery
+            ' Keep track of whether we've counted unduplicated for Delivery and Non Delivery
+            ' using a dict of TotalServiceType : earliest quarter added
             Dim earliestQuarterAdded As Dictionary
             Set earliestQuarterAdded = New Scripting.Dictionary
-            
             Dim service As Variant
             For Each service In record.visitData.Keys
                 Dim serviceType As TotalServiceType
-                If InStr(1, service, "delivery", vbTextCompare) > 0 Then
-                    serviceType = Delivery
+                serviceType = getServiceType(service)
+                If serviceType = delivery Then
                     uniqueDeliveryServices.Item(service) = 1
-   
                 ElseIf InStr(1, service, "Rx Asst", vbTextCompare) > 0 Then
                     GoTo NextIteration
                 Else
-                    serviceType = nonDelivery
                     uniqueNonDeliveryServices.Item(service) = 1
-                    
                 End If
 
                 For Each quarter In record.visitData.Item(service).Keys
                     qNum = getQuarterNum(quarter)
+                    
                     Dim count As Long
                     count = record.visitData.Item(service).Item(quarter).count
                     
                     If (count > 0) Then
+                        ' Set service types visited in the quarter
+                        If serviceType = delivery Then
+                            deliveryServiceQuarters(qNum) = True
+                        Else
+                            nondeliveryServiceQuarters(qNum) = True
+                        End If
+                    
                         If Not earliestQuarterAdded.exists(serviceType) Then
                             totals.Item(serviceType).Item(uniqueGuestID)(qNum) = totals.Item(serviceType).Item(uniqueGuestID)(qNum) + _
                                                                                  1
@@ -746,6 +769,23 @@ Public Sub computeInterfaceTotals()
                 Next quarter
 NextIteration:
             Next service
+          
+            ' Check for first time client changed services and increment double count total accordingly
+            Dim visitedDelivery As Boolean
+            visitedDelivery = False
+            Dim visitedNonDelivery As Boolean
+            visitedNonDelivery = False
+            For i = 1 To 4
+                If deliveryServiceQuarters(i) Then visitedDelivery = True
+                If nondeliveryServiceQuarters(i) Then visitedNonDelivery = True
+                
+                If visitedDelivery And visitedNonDelivery Then
+                    totals.Item(numDoubleCountedAdditionalDeliveryType).Item(uniqueGuestIDHousehold)(i) = totals.Item(numDoubleCountedAdditionalDeliveryType).Item(uniqueGuestIDHousehold)(i) + _
+                                                                                                          record.householdTotal
+                    Exit For
+                End If
+            Next i
+
         End If
 
         recordProgress = recordProgress + 1
@@ -768,9 +808,8 @@ NextIteration:
     For totalServicename = [_TotalServiceTypeFirst] To [_TotalServiceTypeLast]
         Dim totalsRng As Range
         Set totalsRng = SheetUtilities.getInterfaceTotalsRng(totalServicename)
-        Dim i As Long
         For i = 1 To 4
-            If totalServicename = multiDeliveryType Then
+            If totalServicename = numDoubleCountedAdditionalDeliveryType Then
                 totalsRng.Cells.Item(1, i) = totals.Item(totalServicename).Item(uniqueGuestIDHousehold)(i)
                 GoTo NextQuarterForLoop
             End If
