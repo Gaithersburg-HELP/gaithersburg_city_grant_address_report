@@ -412,6 +412,7 @@ Public Sub ClearInterfaceTotals()
     For totalService = [_TotalServiceTypeFirst] To [_TotalServiceTypeLast]
         getInterfaceTotalsRng(totalService).value = 0
     Next totalService
+    getMultiDeliveryTypeTotalsRng.value = 0
 End Sub
 
 Public Sub ClearRxTotals()
