@@ -60,7 +60,7 @@ To print this documentation, click [here](README.md) and print that page.
 ## Automatically validating addresses
 1) Google Address Validation requires a [Google Address Validation key](https://developers.google.com/maps/documentation/address-validation/get-api-key). Please be careful to avoid sharing this file with the key inside publically on the Internet (email to selected recipients is fine).
     1) Open apikeys.csv, select cell B1 (second column, first row cell), copy.
-    2) Open this XLSM, paste the key into cell F1 of the "Interface" sheet.
+    2) Open this XLSM, paste the key into cell F1 of the "Home" sheet.
 2) This XLSM file attempts to keep usage of the API within the free tier and limits you to 8,000 requests per month. To increase this limit, email me.
 3) On the "Needs Autocorrect" sheet, click "Attempt validation" This will attempt to autocorrect and validate all addresses against Google Address Validation if the In City Code is "Not yet autocorrected". Addresses returned from this validation will be placed in the "Validated Address", "Validated Unit Type and No.", and "Validated Zip Code" fields. All addresses are then verified on the "Validated" address fields against the Gaithersburg database. 
     * The same restrictions apply as before while validating addresses (you cannot use excel, progress will be shown in the lower left corner, etc.)
