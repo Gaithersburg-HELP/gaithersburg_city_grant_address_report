@@ -518,14 +518,23 @@ Public Sub SortSheet(ByVal sheetName As String)
 End Sub
 
 Public Function sortArr(ByRef arr() As Variant) As Variant()
-    Dim sorted As Variant
-    Set sorted = CreateObject("System.Collections.ArrayList")
-    Dim element As Variant
-    For Each element In arr
-        sorted.Add element
-    Next element
-    sorted.Sort
-    sortArr = sorted.toarray
+    Dim sorted() As Variant
+    sorted = arr
+
+    ' Bubble sort
+    Dim i As Long, j As Long
+    Dim temp As Variant
+    For i = LBound(sorted) To UBound(sorted) - 1
+        For j = i + 1 To UBound(sorted)
+            If sorted(i) > sorted(j) Then
+                temp = sorted(i)
+                sorted(i) = sorted(j)
+                sorted(j) = temp
+            End If
+        Next j
+    Next i
+
+    sortArr = sorted
 End Function
 
 Public Function cloneDict(ByVal dict As Scripting.Dictionary) As Scripting.Dictionary
