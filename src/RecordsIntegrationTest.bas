@@ -42,14 +42,6 @@ Private Sub TestCleanup()
     SheetUtilities.TestSetupCleanup
 End Sub
 
-Private Sub ClearClipboard()
-    Dim data As DataObject
-    Set data = New DataObject
-    
-    data.SetText text:=Empty
-    data.PutInClipboard
-End Sub
-
 Private Sub PasteTestRecords(ByVal csvPath As String, ByVal pasteFn As String)
     Dim bookToCopy As Workbook
     Set bookToCopy = Workbooks.Open(csvPath)
@@ -70,7 +62,7 @@ Private Sub PasteTestRecords(ByVal csvPath As String, ByVal pasteFn As String)
     ThisWorkbook.Activate
     Application.Run (pasteFn)
     
-    ClearClipboard
+    setClipboardToBlankLine
     
     bookToCopy.Close
 End Sub
